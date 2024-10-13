@@ -1,0 +1,11 @@
+C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\bin\Release\net8.0\ValorModels.deps.json
+C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\bin\Release\net8.0\ValorModels.dll
+C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\bin\Release\net8.0\ValorModels.pdb
+C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\obj\Release\net8.0\ValorModels.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\obj\Release\net8.0\ValorModels.AssemblyInfoInputs.cache
+C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\obj\Release\net8.0\ValorModels.AssemblyInfo.cs
+C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\obj\Release\net8.0\ValorModels.csproj.CoreCompileInputs.cache
+C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\obj\Release\net8.0\ValorModels.dll
+C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\obj\Release\net8.0\refint\ValorModels.dll
+C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\obj\Release\net8.0\ValorModels.pdb
+C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\obj\Release\net8.0\ref\ValorModels.dll

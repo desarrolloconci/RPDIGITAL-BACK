@@ -1,0 +1,11 @@
+C:\CC_VALORES\ValorData\obj\Debug\net8.0\ValorData.GeneratedMSBuildEditorConfig.editorconfig
+C:\CC_VALORES\ValorData\obj\Debug\net8.0\ValorData.AssemblyInfoInputs.cache
+C:\CC_VALORES\ValorData\obj\Debug\net8.0\ValorData.AssemblyInfo.cs
+C:\CC_VALORES\ValorData\obj\Debug\net8.0\ValorData.csproj.CoreCompileInputs.cache
+C:\CC_VALORES\ValorData\bin\Debug\net8.0\ValorData.deps.json
+C:\CC_VALORES\ValorData\bin\Debug\net8.0\ValorData.dll
+C:\CC_VALORES\ValorData\bin\Debug\net8.0\ValorData.pdb
+C:\CC_VALORES\ValorData\obj\Debug\net8.0\ValorData.dll
+C:\CC_VALORES\ValorData\obj\Debug\net8.0\refint\ValorData.dll
+C:\CC_VALORES\ValorData\obj\Debug\net8.0\ValorData.pdb
+C:\CC_VALORES\ValorData\obj\Debug\net8.0\ref\ValorData.dll
