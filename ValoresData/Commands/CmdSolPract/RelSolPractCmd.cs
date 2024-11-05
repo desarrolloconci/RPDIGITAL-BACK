@@ -46,7 +46,8 @@ namespace ValoresData.Commands.CmdSolPract
             {
                 relsol.idPedido = relSolPractModel.idPedido;
                 relsol.idEstudio = relSolPractModel.idEstudio;
-                relsol.estado = relSolPractModel.estado;
+                relsol.estadoPrograma = relSolPractModel.estadoPrograma;
+                relsol.estadoTurno = relSolPractModel.estadoTurno;
                 relsol.fechaGestion = relSolPractModel.fechaGestion;
                 relsol.observaciones = relSolPractModel.observaciones;
                 relsol.creado = relSolPractModel.creado;

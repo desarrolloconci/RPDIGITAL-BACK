@@ -11,23 +11,35 @@ namespace ValoresData.Services.SolPractBhInterfaces
     public interface ISolPractBhService
     {
         public Task<IEnumerable<SolPractBhDto>> GetSolPractAsync(
-               DateTime? fechaCreacionRP = null,
-              string unidad = null,
-              //string metodo = null,
-              string dni = null,
-              string metodo = null,
-              string prestador = null,
-              string estudio = null,
-              string estadoPractica = null);
+                   DateTime? fechaCreacionRP,
+    string? startFechaRP,
+    string? endFechaRP,
+    string? unidad,
+    string? dni,
+    string? metodo,
+    string? prestador,
+    string? estudio,
+    string? estadoPractica,
+    string? estadoTurno,
+    string? usuario,
+    string? servicio,
+    string? obrasocial,
+    string? ultimoContacto);
 
         public Task<IEnumerable<SolPractBhDto>> GetSolPractAsyncDistinct(
-              DateTime? fechaCreacionRP = null,
-             string unidad = null,
-             //string metodo = null,
-             string dni = null,
-             string metodo = null,
-             string prestador = null,
-             string estudio = null,
-             string estadoPractica = null);
+             DateTime? fechaCreacionRP,
+    string? startFechaRP,
+    string? endFechaRP,
+    string? unidad,
+    string? dni,
+    string? metodo,
+    string? prestador,
+    string? estudio,
+    string? estadoPractica,
+    string? estadoTurno,
+    string? usuario,
+    string? servicio,
+    string? obrasocial,
+    string? ultimoContacto);
     }
 }

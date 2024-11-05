@@ -28,3 +28,4 @@ C:\Users\ialvarez\Desktop\CC_VALORES\ValoresData\obj\Debug\net8.0\ValoresData.dl
 C:\Users\ialvarez\Desktop\CC_VALORES\ValoresData\obj\Debug\net8.0\refint\ValoresData.dll
 C:\Users\ialvarez\Desktop\CC_VALORES\ValoresData\obj\Debug\net8.0\ValoresData.pdb
 C:\Users\ialvarez\Desktop\CC_VALORES\ValoresData\obj\Debug\net8.0\ref\ValoresData.dll
+C:\CC_VALORES\ValoresData\obj\Debug\net8.0\ValoresData.sourcelink.json

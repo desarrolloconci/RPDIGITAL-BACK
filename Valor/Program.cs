@@ -53,6 +53,8 @@ builder.Services.AddScoped<IRelSolPractBhUtilsService, RelSolPractBhUtilsService
 builder.Services.AddScoped<IRelSolPractBhUtilsCmd, RelSolPractBhUtilsCmd>();
 builder.Services.AddScoped<IListadoTurnoCmd, ListadoTurnoCmd>();
 builder.Services.AddScoped<IListadoTurnoService, ListadoTurnoService>();
+builder.Services.AddScoped<IRolUserService, RolUserService>();
+builder.Services.AddScoped<IRolUserCmd, RolUserCmd>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

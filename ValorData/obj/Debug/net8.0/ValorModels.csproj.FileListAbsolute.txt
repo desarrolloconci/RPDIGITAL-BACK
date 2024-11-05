@@ -20,3 +20,4 @@ C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\obj\Debug\net8.0\ValorModels.dll
 C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\obj\Debug\net8.0\refint\ValorModels.dll
 C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\obj\Debug\net8.0\ValorModels.pdb
 C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\obj\Debug\net8.0\ref\ValorModels.dll
+C:\CC_VALORES\ValorData\obj\Debug\net8.0\ValorModels.sourcelink.json

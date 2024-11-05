@@ -17,7 +17,8 @@ namespace ValorModels.Dtos.BhDto
         public int? idrelsol { get; set; }
         public string idPedido { get; set; }
         public string idEstudio { get; set; }
-        public string? estado { get; set; }
+        public string? estadoPrograma { get; set; }
+        public string? estadoTurno { get; set; }
         public DateOnly? fechaGestion { get; set; }
         public string? observaciones { get; set; }
         public DateOnly? creado { get; set; }
@@ -25,6 +26,7 @@ namespace ValorModels.Dtos.BhDto
         public string? ESTUDIO { get; set; }
         public int ? turno_id { get; set; }
         public string? METODOPRACTICA { get; set; }
-        public string? unidad { get; set; }
+        public int? unidad { get; set; }
+        public string? servicio { get; set; }
     }
 }

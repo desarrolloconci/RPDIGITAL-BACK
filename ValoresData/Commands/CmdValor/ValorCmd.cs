@@ -22,7 +22,7 @@ namespace ValoresData.Commands.CmdValor
         public async Task<IEnumerable<OsPlanDto>> GetOsAsync()
         {
 
-            var result = await _context.V_OSPlanConCodOs
+            var result = await _context.OSPlanConCodOs
          .Select(e => new OsPlanDto
          {
              CodigoOs = e.codigoOS,
@@ -38,7 +38,7 @@ namespace ValoresData.Commands.CmdValor
 
         public async Task<IEnumerable<PlanDto>> GetPlaOs(int CodigoOS)
         {
-            var result = await _context.V_OSPlanConCodOs
+            var result = await _context.OSPlanConCodOs
                 .Where (e => e.codigoOS == CodigoOS)
                 .Select(e => new PlanDto
                     {

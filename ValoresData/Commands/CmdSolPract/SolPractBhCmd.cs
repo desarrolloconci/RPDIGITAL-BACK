@@ -22,13 +22,20 @@ namespace ValoresData.Commands.CmdSolPract
         }
 
         public async Task<IEnumerable<SolPractBhDto>> GetSolPractAsyncDistinct(
-       DateTime? fechaCreacionRP = null,
-       string unidad = null,
-       string dni = null,
-       string metodo = null,
-       string prestador = null,
-       string estudio = null,
-       string estadoPractica = null)
+    DateTime? fechaCreacionRP = null,
+     string? startFechaRP = null,
+     string? endFechaRP = null,
+     string? unidad = null,
+     string? dni = null,
+     string? metodo = null,
+     string? prestador = null,
+     string? estudio = null,
+     string? estadoPractica = null,
+     string? estadoTurno = null,
+     string? usuario = null,
+     string? servicio = null,
+     string? obrasocial = null,
+     string? ultimoContacto = null)
         {
             // Crear la consulta base
             var query =
@@ -49,7 +56,8 @@ namespace ValoresData.Commands.CmdSolPract
                     idrelsol = e != null ? e.id : (int?)null,
                     idPedido = v.IDPEDIDO,
                     idEstudio = v.IDESTUDIO,
-                    estado = e.estado,
+                    estadoPrograma = e.estadoPrograma,
+                    estadoTurno = e.estadoPrograma,
                     fechaGestion = e.fechaGestion,
                     observaciones = e.observaciones,
                     creado = e.creado,
@@ -57,10 +65,15 @@ namespace ValoresData.Commands.CmdSolPract
                     ESTUDIO = v.ESTUDIO,
                     turno_id = e.turno_id,
                     METODOPRACTICA = v.METODOPRACTICA,
-                    unidad = v.UNIDAD,
+                    unidad = v.UNIDAD_ID
+                    
                 };
 
             // Aplicar filtros 
+            if (!string.IsNullOrEmpty(startFechaRP) && !string.IsNullOrEmpty(endFechaRP))
+            {
+                query = query.Where(v => v.FECHA >= DateTime.Parse(startFechaRP) && v.FECHA <= DateTime.Parse(endFechaRP));
+            }
             if (!string.IsNullOrEmpty(dni))
             {
                 query = query.Where(v => v.DNI == dni);
@@ -71,9 +84,9 @@ namespace ValoresData.Commands.CmdSolPract
                 query = query.Where(v => v.METODOPRACTICA == metodo);
             }
 
-            if (!string.IsNullOrEmpty(prestador))
+            if (!string.IsNullOrEmpty(unidad))
             {
-                query = query.Where(v => v.PRESTADORQUEGENERASOLICITUD == prestador);
+                query = query.Where(v => v.unidad ==int.Parse( unidad));
             }
 
             if (!string.IsNullOrEmpty(estudio))
@@ -83,7 +96,27 @@ namespace ValoresData.Commands.CmdSolPract
 
             if (!string.IsNullOrEmpty(estadoPractica))
             {
-                query = query.Where(e => e.estado == estadoPractica);
+                query = query.Where(e => e.estadoPrograma == estadoPractica);
+            }
+            if (!string.IsNullOrEmpty(estadoTurno))
+            {
+                query = query.Where(e => e.estadoTurno == estadoTurno);
+            }
+            if (!string.IsNullOrEmpty(usuario))
+            {
+                query = query.Where(e => e.usuario == usuario);
+            }
+            if (!string.IsNullOrEmpty(servicio))
+            {
+                query = query.Where(v => v.servicio == servicio);
+            }
+            if (!string.IsNullOrEmpty(obrasocial))
+            {
+                query = query.Where(v => v.OBRASOCIAL == obrasocial);
+            }
+            if (!string.IsNullOrEmpty(ultimoContacto))
+            {
+                query = query.Where(e => e.fechaGestion == DateOnly.Parse(ultimoContacto));
             }
 
 
@@ -103,12 +136,22 @@ namespace ValoresData.Commands.CmdSolPract
 
         public async Task<IEnumerable<SolPractBhDto>> GetSolPractAsync(
      DateTime? fechaCreacionRP = null,
-     string unidad = null,
-     string dni = null,
-     string metodo = null,
-     string prestador = null,
-     string estudio = null,
-     string estadoPractica = null)
+     string? startFechaRP = null,
+     string? endFechaRP = null,
+     string? unidad = null,
+     string? dni = null,
+     string? metodo = null,
+     string? prestador = null,
+     string? estudio = null,
+     string? estadoPractica = null,
+     string? estadoTurno = null,
+     string? usuario= null,
+     string? servicio = null,
+     string? obrasocial= null,
+     string? ultimoContacto = null
+     )
+
+
         {
             // Crear la consulta base
             var query =
@@ -129,7 +172,8 @@ namespace ValoresData.Commands.CmdSolPract
                     idrelsol = e != null ? e.id : (int?)null,
                     idPedido = v.IDPEDIDO,
                     idEstudio = v.IDESTUDIO,
-                    estado = e.estado,
+                    estadoPrograma = e.estadoPrograma,
+                    estadoTurno= e.estadoPrograma,
                     fechaGestion = e.fechaGestion,
                     observaciones = e.observaciones,
                     creado = e.creado,
@@ -137,10 +181,15 @@ namespace ValoresData.Commands.CmdSolPract
                     ESTUDIO = v.ESTUDIO,
                     turno_id = e.turno_id,
                     METODOPRACTICA = v.METODOPRACTICA,
-                    unidad = v.UNIDAD,
+                    unidad = v.UNIDAD_ID,
+                    servicio = v.IDSERVICIOSOLICITUD,
                 };
 
             // Aplicar filtros 
+            if (!string.IsNullOrEmpty(startFechaRP) && !string.IsNullOrEmpty(endFechaRP))
+            {
+                query = query.Where(v => v.FECHA >= DateTime.Parse(startFechaRP) && v.FECHA <= DateTime.Parse(endFechaRP));
+            }
             if (!string.IsNullOrEmpty(dni))
             {
                 query = query.Where(v => v.DNI == dni);
@@ -151,9 +200,9 @@ namespace ValoresData.Commands.CmdSolPract
                 query = query.Where(v => v.METODOPRACTICA == metodo);
             }
 
-            if (!string.IsNullOrEmpty(prestador))
+            if (!string.IsNullOrEmpty(unidad))
             {
-                query = query.Where(v => v.PRESTADORQUEGENERASOLICITUD == prestador);
+                query = query.Where(v => v.unidad == int.Parse(unidad));
             }
 
             if (!string.IsNullOrEmpty(estudio))
@@ -163,9 +212,28 @@ namespace ValoresData.Commands.CmdSolPract
 
             if (!string.IsNullOrEmpty(estadoPractica))
             {
-                query = query.Where(e => e.estado == estadoPractica);
+                query = query.Where(e => e.estadoPrograma == estadoPractica);
             }
-
+            if (!string.IsNullOrEmpty(estadoTurno))
+            {
+                query = query.Where(e => e.estadoTurno == estadoTurno);
+            }
+            if (!string.IsNullOrEmpty(usuario))
+            {
+                query = query.Where(e => e.usuario == usuario);
+            }
+            if (!string.IsNullOrEmpty(servicio))
+            {
+                query = query.Where(v => v.servicio == servicio);
+            }
+            if (!string.IsNullOrEmpty(obrasocial))
+            {
+                query = query.Where(v => v.OBRASOCIAL == obrasocial);
+            }
+            if (!string.IsNullOrEmpty(ultimoContacto))
+            {
+                query = query.Where(e => e.fechaGestion == DateOnly.Parse(ultimoContacto));
+            }
 
             var resultados = await query.Take(100).ToListAsync();
 
