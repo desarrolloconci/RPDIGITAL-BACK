@@ -27,14 +27,14 @@ namespace Valor.Controllers
     string? metodo,
     string? prestador,
     string? estudio,
-    string? estadoPractica,
+    int? estadoPrograma,
     string? estadoTurno,
     string? usuario,
     string? servicio,
     string? obrasocial,
-    string? ultimoContacto)
+    string? ultimoContacto, string? inductor)
         {
-            return await _solPractBhService.GetSolPractAsync(fechaCreacionRP, startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPractica, estadoTurno, usuario, servicio, obrasocial, ultimoContacto);
+            return await _solPractBhService.GetSolPractAsync(fechaCreacionRP, startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto, inductor);
         }
 
         [HttpGet]
@@ -48,14 +48,14 @@ namespace Valor.Controllers
     string? metodo,
     string? prestador,
     string? estudio,
-    string? estadoPractica,
+    int? estadoPrograma,
     string? estadoTurno,
     string? usuario,
     string? servicio,
     string? obrasocial,
-    string? ultimoContacto)
+    string? ultimoContacto, string? inductor)
         {
-            return await _solPractBhService.GetSolPractAsyncDistinct(fechaCreacionRP, startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPractica, estadoTurno, usuario, servicio, obrasocial, ultimoContacto);
+            return await _solPractBhService.GetSolPractAsyncDistinct(fechaCreacionRP, startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto, inductor);
         }
 
     }

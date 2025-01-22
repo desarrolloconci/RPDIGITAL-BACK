@@ -20,12 +20,13 @@ namespace ValoresData.Commands.CmdInterfaces
     string? metodo,
     string? prestador,
     string? estudio,
-    string? estadoPractica,
+    int? estadoPrograma,
      string? estadoTurno,
     string? usuario,
     string? servicio,
     string? obrasocial,
-    string? ultimoContacto);
+    string? ultimoContacto,
+    string? inductor);
         public Task<IEnumerable<SolPractBhDto>> GetSolPractAsyncDistinct(
                    DateTime? fechaCreacionRP,
     string? startFechaRP,
@@ -35,12 +36,13 @@ namespace ValoresData.Commands.CmdInterfaces
     string? metodo,
     string? prestador,
     string? estudio,
-    string? estadoPractica,
+    int? estadoPrograma,
      string? estadoTurno,
     string? usuario,
     string? servicio,
     string? obrasocial,
-    string? ultimoContacto);
+    string? ultimoContacto,
+    string? inductor);
     }
 
 

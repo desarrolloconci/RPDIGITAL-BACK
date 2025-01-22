@@ -8,6 +8,6 @@ namespace ValorModels.Models.BhModels
 {
     public class RelSolPractBhMetodoModel
     {
-        public string METODOPRACTICA { get; set; }
+        public string METODOOK { get; set; }
     }
 }

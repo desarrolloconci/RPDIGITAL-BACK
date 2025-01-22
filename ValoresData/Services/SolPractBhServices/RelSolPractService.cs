@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,9 +23,20 @@ namespace ValoresData.Services.SolPractBhServices
             return await _cmd.GetRelSolPractAsync();
         }
 
-        public async Task<bool> InsertProgramasync(RelSolPractModel relSolPractModel)
+        public async Task<bool> InsertRelSolPractAsync(RelSolPractModel relSolPractModel)
         {
-            return await _cmd.InsertProgramasync(relSolPractModel);
+            try
+            {
+                if (relSolPractModel.metodoOK == "Laboratorio" || relSolPractModel.metodoOK == "Módulo Base"|| relSolPractModel.metodoOK == "Modulo Base")
+                {
+                    Console.WriteLine("ENTRE A LABO");
+                    return await _cmd.InsertRelSolPractAsyncVarios(relSolPractModel);
+                }
+                else
+                    return await _cmd.InsertRelSolPractAsync(relSolPractModel);
+            }
+            catch (Exception ex) { Console.WriteLine(ex); return false; }
+            
         }
 
         public async Task<bool> UpdateRelSolAsync(RelSolPractModel relSolPractModel)
@@ -49,5 +61,14 @@ namespace ValoresData.Services.SolPractBhServices
 
             return await _cmd.GetRelSolAsyncById(id);
         }
+        public async Task<bool> DeletRelSolPractTotalAsync(string idpedido, string metodoOK)
+        {
+            return await _cmd.DeletRelSolPractTotalAsync(idpedido, metodoOK);
+        }
+        public async Task<bool> DeletRelSolPractUnitarioAsync(string idEstudio, string idPedido)
+        {
+            return await _cmd.DeletRelSolPractUnitarioAsync(idEstudio, idPedido);
+        }
     }
+
 }

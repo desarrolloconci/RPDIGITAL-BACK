@@ -23,7 +23,7 @@ namespace ValoresData.Services
             {
                 if (practica.TotalConvenio == 0)
                 {
-                    
+                    practica.Coseguro = 0;
                     practica.ValorParticular = await _valorResultCmd.GetPracticaParticularAsyncById(practica.CodigoPractica);
 
                 }

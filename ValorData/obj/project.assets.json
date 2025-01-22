@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\CC_VALORES\\ValorData\\ValorModels.csproj",
+      "projectUniqueName": "C:\\Users\\ialvarez\\Documents\\api\\ValorData\\ValorModels.csproj",
       "projectName": "ValorModels",
-      "projectPath": "C:\\CC_VALORES\\ValorData\\ValorModels.csproj",
+      "projectPath": "C:\\Users\\ialvarez\\Documents\\api\\ValorData\\ValorModels.csproj",
       "packagesPath": "C:\\Users\\ialvarez\\.nuget\\packages\\",
-      "outputPath": "C:\\CC_VALORES\\ValorData\\obj\\",
+      "outputPath": "C:\\Users\\ialvarez\\Documents\\api\\ValorData\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ialvarez\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -19,13 +19,13 @@ namespace Valor.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+       // [Authorize]
         public async Task<IEnumerable<AuxPracticasModel>> GetAuxPracticasAsync()
         {
             return await _auxPracticasService.GetAuxPracticasAsync();
         }
         [HttpGet("{codnom}")]
-        [Authorize]
+      //  [Authorize]
         public async Task<ActionResult<AuxPracticasModel>> GetAuxPracticasByCodNomAsync(string codnom)
         {
             var practica = await _auxPracticasService.GetAuxPracticasByCodNomAsync(codnom);

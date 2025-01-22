@@ -37,28 +37,50 @@ namespace Valor.Controllers
 
             return relSolPractModel;
         }
-
         [HttpPost]
-        //[Authorize(Roles = "Admin, Supervisor")]
-        public async Task<IActionResult> InsertProgramasync(RelSolPractModel relSolPractModel)
+        // [Authorize(Roles = "Admin, Supervisor")]
+        public async Task<IActionResult> InsertRelSolPractAsync([FromBody] List<RelSolPractModel> relSolPractModels)
         {
+            if (relSolPractModels == null || !relSolPractModels.Any())
+            {
+                return BadRequest(new { message = "El modelo está vacío o es inválido", success = false });
+            }
+
             if (!ModelState.IsValid)
             {
-                return BadRequest("Modelo inválido o ID no coincide");
+                return BadRequest(new
+                {
+                    message = "Uno o más modelos son inválidos",
+                    errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)),
+                    success = false
+                });
             }
-            try
-            {
-                await _solPractService.InsertProgramasync(relSolPractModel);
+             try
+           {
 
-                return CreatedAtAction("", new { message = "Registro Insertado", success = true });
+            foreach (var model in relSolPractModels)
+            {
+                await _solPractService.InsertRelSolPractAsync(model);
+            }
+
+            return Ok(new
+            {
+                message = "Registros insertados exitosamente",
+                insertedRecords = relSolPractModels,
+                success = true
+            });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Error al insertar la práctica", success = false, error = ex.Message });
+
+                return StatusCode(500, new
+                {
+                    message = "Ocurrió un error al procesar la solicitud",
+                    error = ex,
+                    success = false
+                });
             }
-
         }
-
         [HttpPut]
         // [Authorize(Roles = "Admin,Supervisor")]
         public async Task<IActionResult> UpdateRelSolAsync(RelSolPractModel relSolPractModel)
@@ -89,6 +111,36 @@ namespace Valor.Controllers
             }
         }
 
+
+        [HttpDelete]
+        // [Authorize(Roles = "Admin,Supervisor")]
+        public async Task<IActionResult> DeletRelSolPractTotalAsync(string idpedido, string metodoOK)
+        {
+       
+            var result = await _solPractService.DeletRelSolPractTotalAsync(idpedido, metodoOK);
+
+            if (!result)
+            {
+                return NotFound("Valor no encontrado o no pudo ser eliminado");
+            }
+
+            return NoContent();
+        }
+        [HttpDelete]
+        [Route("/Unitario")]
+        // [Authorize(Roles = "Admin,Supervisor")]
+        public async Task<IActionResult> DeletRelSolPractUnitarioAsync(string idEstudio, string idPedido)
+        {
+       
+            var result = await _solPractService.DeletRelSolPractUnitarioAsync(idEstudio, idPedido);
+
+            if (!result)
+            {
+                return NotFound("Valor no encontrado o no pudo ser eliminado");
+            }
+
+            return NoContent();
+        }
 
     }
 }

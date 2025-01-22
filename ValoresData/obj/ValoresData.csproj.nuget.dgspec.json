@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\CC_VALORES\\ValoresData\\ValoresData.csproj": {}
+    "C:\\Users\\ialvarez\\Documents\\api\\ValoresData\\ValoresData.csproj": {}
   },
   "projects": {
-    "C:\\CC_VALORES\\ValorData\\ValorModels.csproj": {
+    "C:\\Users\\ialvarez\\Documents\\api\\ValorData\\ValorModels.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\CC_VALORES\\ValorData\\ValorModels.csproj",
+        "projectUniqueName": "C:\\Users\\ialvarez\\Documents\\api\\ValorData\\ValorModels.csproj",
         "projectName": "ValorModels",
-        "projectPath": "C:\\CC_VALORES\\ValorData\\ValorModels.csproj",
+        "projectPath": "C:\\Users\\ialvarez\\Documents\\api\\ValorData\\ValorModels.csproj",
         "packagesPath": "C:\\Users\\ialvarez\\.nuget\\packages\\",
-        "outputPath": "C:\\CC_VALORES\\ValorData\\obj\\",
+        "outputPath": "C:\\Users\\ialvarez\\Documents\\api\\ValorData\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ialvarez\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -65,14 +65,14 @@
         }
       }
     },
-    "C:\\CC_VALORES\\ValoresData\\ValoresData.csproj": {
+    "C:\\Users\\ialvarez\\Documents\\api\\ValoresData\\ValoresData.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\CC_VALORES\\ValoresData\\ValoresData.csproj",
+        "projectUniqueName": "C:\\Users\\ialvarez\\Documents\\api\\ValoresData\\ValoresData.csproj",
         "projectName": "ValoresData",
-        "projectPath": "C:\\CC_VALORES\\ValoresData\\ValoresData.csproj",
+        "projectPath": "C:\\Users\\ialvarez\\Documents\\api\\ValoresData\\ValoresData.csproj",
         "packagesPath": "C:\\Users\\ialvarez\\.nuget\\packages\\",
-        "outputPath": "C:\\CC_VALORES\\ValoresData\\obj\\",
+        "outputPath": "C:\\Users\\ialvarez\\Documents\\api\\ValoresData\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ialvarez\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -90,8 +90,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\CC_VALORES\\ValorData\\ValorModels.csproj": {
-                "projectPath": "C:\\CC_VALORES\\ValorData\\ValorModels.csproj"
+              "C:\\Users\\ialvarez\\Documents\\api\\ValorData\\ValorModels.csproj": {
+                "projectPath": "C:\\Users\\ialvarez\\Documents\\api\\ValorData\\ValorModels.csproj"
               }
             }
           }

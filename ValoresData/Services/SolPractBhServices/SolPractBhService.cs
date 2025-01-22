@@ -19,15 +19,15 @@ namespace ValoresData.Services.SolPractBhServices
         }
 
 
-        public async Task<IEnumerable<SolPractBhDto>> GetSolPractAsync(DateTime? fechaCreacionRP, string? startFechaRP, string? endFechaRP, string? unidad, string? dni, string? metodo, string? prestador, string? estudio, string? estadoPractica,string? estadoTurno , string? usuario, string? servicio, string? obrasocial, string? ultimoContacto)
+        public async Task<IEnumerable<SolPractBhDto>> GetSolPractAsync(DateTime? fechaCreacionRP, string? startFechaRP, string? endFechaRP, string? unidad, string? dni, string? metodo, string? prestador, string? estudio, int? estadoPrograma, string? estadoTurno , string? usuario, string? servicio, string? obrasocial, string? ultimoContacto, string? inductor)
         {
-            return await _solPractBhCmd.GetSolPractAsync(fechaCreacionRP, startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPractica,estadoTurno, usuario, servicio, obrasocial, ultimoContacto);
+            return await _solPractBhCmd.GetSolPractAsync(fechaCreacionRP, startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto,inductor);
         }
 
 
-        public async Task<IEnumerable<SolPractBhDto>> GetSolPractAsyncDistinct(DateTime? fechaCreacionRP, string? startFechaRP, string? endFechaRP, string? unidad, string? dni, string? metodo, string? prestador, string? estudio, string? estadoPractica, string? estadoTurno, string? usuario, string? servicio, string? obrasocial, string? ultimoContacto)
+        public async Task<IEnumerable<SolPractBhDto>> GetSolPractAsyncDistinct(DateTime? fechaCreacionRP, string? startFechaRP, string? endFechaRP, string? unidad, string? dni, string? metodo, string? prestador, string? estudio, int? estadoPrograma, string? estadoTurno, string? usuario, string? servicio, string? obrasocial, string? ultimoContacto, string? inductor)
         {
-            return await _solPractBhCmd.GetSolPractAsyncDistinct(fechaCreacionRP, startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPractica,estadoTurno, usuario, servicio, obrasocial, ultimoContacto);
+            return await _solPractBhCmd.GetSolPractAsyncDistinct(fechaCreacionRP, startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto, inductor);
         }
     }
 }

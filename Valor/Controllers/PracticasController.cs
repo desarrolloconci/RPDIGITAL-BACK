@@ -21,7 +21,7 @@ namespace Valor.Controllers
         }
 
         [HttpGet]
-       // [Authorize]
+        //[Authorize]
         public async Task<IEnumerable<PracticasModel>> GetPracticasAsync()
         {
             return await _practicasService.GetPracticaAsync();
@@ -67,7 +67,7 @@ namespace Valor.Controllers
         }
 
         [HttpPost]
-      //  [Authorize(Roles = "Admin, Supervisor")]
+        //[Authorize(Roles = "Admin, Supervisor")]
         public async Task<IActionResult> InsertPracticaAsync(PracticasModel practicas)
         {
             if (!ModelState.IsValid)
@@ -86,7 +86,7 @@ namespace Valor.Controllers
             }
     }
         [HttpPut]
-      //  [Authorize(Roles = "Admin, Supervisor")]
+        //[Authorize(Roles = "Admin, Supervisor")]
         public async Task<IActionResult> UpdatePracticAsync(PracticasModel practicas)
         {
             if (!ModelState.IsValid)

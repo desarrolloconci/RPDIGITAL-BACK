@@ -10,9 +10,11 @@ namespace ValoresData.Services.SolPractBhInterfaces
     public interface IRelSolPractService
     {
         public Task<IEnumerable<RelSolPractModel>> GetRelSolPractAsync();
-        public Task<bool> InsertProgramasync(RelSolPractModel relSolPractModel);
+        public Task<bool> InsertRelSolPractAsync(RelSolPractModel relSolPractModel);
         public Task<bool> UpdateRelSolAsync(RelSolPractModel relSolPractModel);
-        public  Task<RelSolPractModel> GetRelSolAsyncById(int id);
+        public Task<RelSolPractModel> GetRelSolAsyncById(int id);
+        public Task<bool> DeletRelSolPractTotalAsync(string idpedido, string metodoOK);
+        public Task<bool> DeletRelSolPractUnitarioAsync(string idEstudio, string idPedido);
 
     }
 }

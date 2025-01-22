@@ -30,7 +30,7 @@ namespace ValorModels.Models.BhModels
             public string DIAGNÓSTICO { get; set; }
 
            
-            public string? METODOPRACTICA { get; set; }
+            public string? METODOOK { get; set; }
 
            
             public string IDESTUDIO { get; set; }
@@ -114,6 +114,13 @@ namespace ValorModels.Models.BhModels
             public string USUARIO { get; set; }
             public  string? UNIDAD { get; set; }
             public int? UNIDAD_ID { get; set; }
+            public int CONFESPECIAL { get; set; }
+            public string Estado_pedido { get; set; }
+            public int ATENDIDO { get; set; }
+            public string? INDUCTOR { get; set; }
+            public int? estado_Programa { get; set; }
+
+
 
     }
 }

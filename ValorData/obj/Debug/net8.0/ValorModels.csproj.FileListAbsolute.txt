@@ -21,3 +21,15 @@ C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\obj\Debug\net8.0\refint\ValorMode
 C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\obj\Debug\net8.0\ValorModels.pdb
 C:\Users\ialvarez\Desktop\CC_VALORES\ValorData\obj\Debug\net8.0\ref\ValorModels.dll
 C:\CC_VALORES\ValorData\obj\Debug\net8.0\ValorModels.sourcelink.json
+C:\Users\ialvarez\Documents\api\ValorData\bin\Debug\net8.0\ValorModels.deps.json
+C:\Users\ialvarez\Documents\api\ValorData\bin\Debug\net8.0\ValorModels.dll
+C:\Users\ialvarez\Documents\api\ValorData\bin\Debug\net8.0\ValorModels.pdb
+C:\Users\ialvarez\Documents\api\ValorData\obj\Debug\net8.0\ValorModels.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ialvarez\Documents\api\ValorData\obj\Debug\net8.0\ValorModels.AssemblyInfoInputs.cache
+C:\Users\ialvarez\Documents\api\ValorData\obj\Debug\net8.0\ValorModels.AssemblyInfo.cs
+C:\Users\ialvarez\Documents\api\ValorData\obj\Debug\net8.0\ValorModels.csproj.CoreCompileInputs.cache
+C:\Users\ialvarez\Documents\api\ValorData\obj\Debug\net8.0\ValorModels.sourcelink.json
+C:\Users\ialvarez\Documents\api\ValorData\obj\Debug\net8.0\ValorModels.dll
+C:\Users\ialvarez\Documents\api\ValorData\obj\Debug\net8.0\refint\ValorModels.dll
+C:\Users\ialvarez\Documents\api\ValorData\obj\Debug\net8.0\ValorModels.pdb
+C:\Users\ialvarez\Documents\api\ValorData\obj\Debug\net8.0\ref\ValorModels.dll

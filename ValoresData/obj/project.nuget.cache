@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "TGPJ34eVGuY=",
+  "dgSpecHash": "YTJz2V8VUGY=",
   "success": true,
-  "projectFilePath": "C:\\CC_VALORES\\ValoresData\\ValoresData.csproj",
+  "projectFilePath": "C:\\Users\\ialvarez\\Documents\\api\\ValoresData\\ValoresData.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ialvarez\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\ialvarez\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",

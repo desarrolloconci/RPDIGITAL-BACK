@@ -37,12 +37,19 @@ namespace ValoresData.Context
         public DbSet<RelSolPractBhEstadoProgramaModel> Bh_Estado_Programa { get; set; }
         public DbSet<RelSolPractBhEstadoTurnoModel> Bh_Estado_Turno { get; set; }
         public DbSet<RolUserModel> RolUsers { get; set; }
+        public DbSet<EstadoPedidoManualModel> ESTADO_PEDIDO_MANUAL { get; set; }
+        public DbSet<ObservacionesPacientesBhModel> OBSERVACIONES_PACIENTES_BH { get; set; }
+        public DbSet<SolPractBhPedidoManualModel> BEALTH_SOLPRACT_P_MANUAL { get; set; }
+        public DbSet<BhEstudiosModel> V_BH_ESTUDIOS { get; set; }
+        public DbSet<AsignacionInductoresModel> ASIGNACION_INDUCTORES { get; set; }
+        public DbSet<AsignacionEstadoProgramaModel> ASIGNACION_ESTADO_PROGRAMA { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RelSolPractBhMetodoModel>().HasNoKey();
             modelBuilder.Entity<RelSolPractBhUnidadModel>().HasNoKey();
             modelBuilder.Entity<RelSolPractBhServicioSolModel>().HasNoKey();
             modelBuilder.Entity<RelSolPractBhOsModel>().HasNoKey();
+            modelBuilder.Entity<BhEstudiosModel>().HasNoKey();
         }
 
     }
@@ -65,5 +72,13 @@ namespace ValoresData.Context
 
 
         }
+    }
+    public class DataBase3Context : DbContext
+    {
+        public DataBase3Context(DbContextOptions<DataBase3Context> options) : base(options)
+        {
+        }
+        public DbSet<InstructivoModel> V_BH_DESCRIPCIONES { get; set; }
+
     }
 }

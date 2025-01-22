@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ValoresData.Services;
 using ValoresData.Services.ServicesInterfaces;
+using ValorModels.Dtos;
 using ValorModels.Dtos.BhDto;
 using ValorModels.Models;
 
@@ -31,6 +32,22 @@ namespace Valor.Controllers
         public async Task<ActionResult<ListadoTurnosModel>> GetListadoTurnosByDni(string dni, DateOnly fecha)
         {
             var excepcion = await _listadoturnoService.GetListadoTurnoByDni(dni, fecha);
+
+            if (excepcion == null)
+            {
+                return NotFound("Valor no encontrado");
+            }
+
+            return Ok(excepcion);
+
+        }
+
+        [HttpGet("Servicios/{dni}/{fecha}")]
+        
+
+        public async Task<ActionResult<ListadoServicioTurnoDto>> GetListadoserviciosByDni(string dni, DateOnly fecha)
+        {
+            var excepcion = await _listadoturnoService.GetListadoserviciosByDni(dni, fecha);
 
             if (excepcion == null)
             {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ValoresData.Commands.CmdInterfaces;
 using ValoresData.Services.ServicesInterfaces;
+using ValorModels.Dtos;
 using ValorModels.Models;
 
 namespace ValoresData.Services
@@ -24,8 +25,13 @@ namespace ValoresData.Services
 
         public async Task<IEnumerable<ListadoTurnosModel>> GetListadoTurnoByDni(string dni, DateOnly fecha)
         {
-            return await _listadoTurnoCmd.GetListadoTurnoByDni(dni,fecha);
+            return await _listadoTurnoCmd.GetListadoTurnoByDni(dni, fecha);
 
+        }
+
+        public async Task<IEnumerable<ListadoServicioTurnoDto>> GetListadoserviciosByDni(string dni, DateOnly fecha)
+        {
+            return await _listadoTurnoCmd.GetListadoserviciosByDni(dni, fecha);
         }
     }
 }

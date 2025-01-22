@@ -22,7 +22,7 @@ namespace ValoresData.Commands.CmdSolPract
         }
 
         public async Task<IEnumerable<SolPractBhDto>> GetSolPractAsyncDistinct(
-    DateTime? fechaCreacionRP = null,
+     DateTime? fechaCreacionRP = null,
      string? startFechaRP = null,
      string? endFechaRP = null,
      string? unidad = null,
@@ -30,12 +30,13 @@ namespace ValoresData.Commands.CmdSolPract
      string? metodo = null,
      string? prestador = null,
      string? estudio = null,
-     string? estadoPractica = null,
+     int? estadoPrograma = null,
      string? estadoTurno = null,
      string? usuario = null,
      string? servicio = null,
      string? obrasocial = null,
-     string? ultimoContacto = null)
+     string? ultimoContacto = null,
+     string? inductor = null)
         {
             // Crear la consulta base
             var query =
@@ -56,7 +57,6 @@ namespace ValoresData.Commands.CmdSolPract
                     idrelsol = e != null ? e.id : (int?)null,
                     idPedido = v.IDPEDIDO,
                     idEstudio = v.IDESTUDIO,
-                    estadoPrograma = e.estadoPrograma,
                     estadoTurno = e.estadoPrograma,
                     fechaGestion = e.fechaGestion,
                     observaciones = e.observaciones,
@@ -64,9 +64,15 @@ namespace ValoresData.Commands.CmdSolPract
                     usuario = e.usuario,
                     ESTUDIO = v.ESTUDIO,
                     turno_id = e.turno_id,
-                    METODOPRACTICA = v.METODOPRACTICA,
-                    unidad = v.UNIDAD_ID
-                    
+                    METODOOK = v.METODOOK,
+                    unidad = v.UNIDAD_ID,
+                    CONFESPECIAL= v.CONFESPECIAL,
+                    INDUCTOR= v.INDUCTOR,
+                    Estado_pedido= v.Estado_pedido,
+                    ATENDIDO = v.ATENDIDO,
+                    UNIDAD_NOMBRE= v.UNIDAD,
+                    estado_Programa= v.estado_Programa,
+                    tur_fecha=e.tur_fecha,
                 };
 
             // Aplicar filtros 
@@ -81,7 +87,7 @@ namespace ValoresData.Commands.CmdSolPract
 
             if (!string.IsNullOrEmpty(metodo))
             {
-                query = query.Where(v => v.METODOPRACTICA == metodo);
+                query = query.Where(v => v.METODOOK == metodo);
             }
 
             if (!string.IsNullOrEmpty(unidad))
@@ -94,9 +100,9 @@ namespace ValoresData.Commands.CmdSolPract
                 query = query.Where(v => v.ESTUDIO == estudio);
             }
 
-            if (!string.IsNullOrEmpty(estadoPractica))
+            if (estadoPrograma.HasValue)
             {
-                query = query.Where(e => e.estadoPrograma == estadoPractica);
+                query = query.Where(v => v.estado_Programa == estadoPrograma);
             }
             if (!string.IsNullOrEmpty(estadoTurno))
             {
@@ -118,17 +124,19 @@ namespace ValoresData.Commands.CmdSolPract
             {
                 query = query.Where(e => e.fechaGestion == DateOnly.Parse(ultimoContacto));
             }
+            if (!string.IsNullOrEmpty(inductor))
+            {
+                query = query.Where(v => v.INDUCTOR == inductor);
+            }
 
 
             var resultados = await query.ToListAsync();
 
 
             var resultadosFiltrados = resultados
-                .GroupBy(v => new { v.DNI })
-                .SelectMany(g =>
-                    g.Key.DNI.Trim() != null
-                    ? g.Take(1)
-                    : g)
+                .Where(v => !string.IsNullOrWhiteSpace(v.DNI) && v.unidad != null) 
+                .GroupBy(v => new { v.DNI, v.unidad }) 
+                .SelectMany(g => g.Take(1)) 
                 .Take(100);
 
             return resultadosFiltrados;
@@ -143,12 +151,13 @@ namespace ValoresData.Commands.CmdSolPract
      string? metodo = null,
      string? prestador = null,
      string? estudio = null,
-     string? estadoPractica = null,
+     int? estadoPrograma = null,
      string? estadoTurno = null,
      string? usuario= null,
      string? servicio = null,
      string? obrasocial= null,
-     string? ultimoContacto = null
+     string? ultimoContacto = null,
+     string? inductor = null
      )
 
 
@@ -172,7 +181,6 @@ namespace ValoresData.Commands.CmdSolPract
                     idrelsol = e != null ? e.id : (int?)null,
                     idPedido = v.IDPEDIDO,
                     idEstudio = v.IDESTUDIO,
-                    estadoPrograma = e.estadoPrograma,
                     estadoTurno= e.estadoPrograma,
                     fechaGestion = e.fechaGestion,
                     observaciones = e.observaciones,
@@ -180,9 +188,16 @@ namespace ValoresData.Commands.CmdSolPract
                     usuario = e.usuario,
                     ESTUDIO = v.ESTUDIO,
                     turno_id = e.turno_id,
-                    METODOPRACTICA = v.METODOPRACTICA,
+                    METODOOK = v.METODOOK,
                     unidad = v.UNIDAD_ID,
                     servicio = v.IDSERVICIOSOLICITUD,
+                    CONFESPECIAL = v.CONFESPECIAL,
+                    INDUCTOR = v.INDUCTOR,
+                    Estado_pedido = v.Estado_pedido,
+                    ATENDIDO = v.ATENDIDO,
+                    UNIDAD_NOMBRE = v.UNIDAD,
+                    estado_Programa = v.estado_Programa,
+                     tur_fecha = e.tur_fecha,
                 };
 
             // Aplicar filtros 
@@ -197,7 +212,7 @@ namespace ValoresData.Commands.CmdSolPract
 
             if (!string.IsNullOrEmpty(metodo))
             {
-                query = query.Where(v => v.METODOPRACTICA == metodo);
+                query = query.Where(v => v.METODOOK == metodo);
             }
 
             if (!string.IsNullOrEmpty(unidad))
@@ -210,9 +225,9 @@ namespace ValoresData.Commands.CmdSolPract
                 query = query.Where(v => v.ESTUDIO == estudio);
             }
 
-            if (!string.IsNullOrEmpty(estadoPractica))
+            if (estadoPrograma.HasValue)
             {
-                query = query.Where(e => e.estadoPrograma == estadoPractica);
+                query = query.Where(v => v.estado_Programa == estadoPrograma);
             }
             if (!string.IsNullOrEmpty(estadoTurno))
             {
@@ -234,13 +249,30 @@ namespace ValoresData.Commands.CmdSolPract
             {
                 query = query.Where(e => e.fechaGestion == DateOnly.Parse(ultimoContacto));
             }
+            if (!string.IsNullOrEmpty(inductor))
+            {
+                query = query.Where(V => V.INDUCTOR == inductor);
+            }
+            var allResults = await query.ToListAsync();
 
-            var resultados = await query.Take(100).ToListAsync();
+            // Aplicar lógica para "Laboratorio"
+            var groupedResults = allResults
+                .GroupBy(r => r.METODOOK)
+                .SelectMany(group =>
+                {
+                    if (group.Key == "Laboratorio")
+                    {
+                        // Traer solo un registro si el método es "Laboratorio"
+                        return group.Take(1);
+                    }
+                    else
+                    {
+                        // Traer todos los registros para otros métodos
+                        return group.Take(100);
+                    }
+                });
 
-
-       
-
-            return resultados;
+            return groupedResults;
         }
     }
 }

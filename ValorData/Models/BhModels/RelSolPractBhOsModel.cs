@@ -8,7 +8,7 @@ namespace ValorModels.Models.BhModels
 {
     public class RelSolPractBhOsModel
     {
-        public int OSCOD { get; set; }
+        public string OSCOD { get; set; }
         public string OSNOMBRE { get; set; }
     }
 }
