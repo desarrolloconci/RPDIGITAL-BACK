@@ -44,8 +44,10 @@ namespace ValoresData.Services.LoginService
                 string token = _tokenBuilder.BuildToken(loginTokenDto);
                 return new LoginResponseDto()
                 {
-                    UserName = userCredentials.Username,
-                    Token = token
+                    ID=userData.ID,
+                    UserName = userData.UserName,
+                    Token = token,
+                    FIRMA=userData.FIRMA,
                 };
             }
             else

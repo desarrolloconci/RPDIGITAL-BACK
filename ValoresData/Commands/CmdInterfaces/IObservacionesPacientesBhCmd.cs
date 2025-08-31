@@ -11,10 +11,10 @@ namespace ValoresData.Commands.CmdInterfaces
     public interface IObservacionesPacientesBhCmd
     {
         public Task<IEnumerable<ObservacionesPacientesBhModel>> GetObservacionesPacientesBhAsync();
-        public Task<ObservacionesPacientesBhModel> GetObservacionesPacientesBhADetailAsync(int id);
+        public Task<ObservacionesPacientesBhModel> GetObservacionesPacientesBhADetailAsync(string dni, string unidad);
         public Task<bool> InsertObservacionesPacientesBhsync(ObservacionesPacientesBhModel Observacion);
         public Task<bool> UpdatObservacionesPacientesBhAsync(ObservacionesPacientesBhModel Observacion);
-        public Task<bool> DeleteObservacionesPacientesBhAsync(int id);
+        public Task<bool> DeleteObservacionesPacientesBhAsync(string dni, string unidad);
         public Task<ObservacionesPacientesBhModel> GetObservacionesPacientesBhAByDniDetailAsync(string dni);
     }
 }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ValorModels.Models;
 using ValorModels.Models.BhModels;
+using ValorModels.Models.RpModels;
 using ValorModels.Models.UsersModels;
 
 namespace ValoresData.Context
@@ -22,7 +23,7 @@ namespace ValoresData.Context
         public DbSet<ProgramasModel> programas { get; set; }
         public DbSet<OsPlanModel> OSPlanConCodOs { get; set; }
         public DbSet<AuxPracticasModel> V_AUX_PRACTICAS { get; set; }
-        public DbSet<UserModel> Users { get; set; }
+        public DbSet<UserModel> BH_USERS { get; set; }
         public DbSet<MontoMinimoProgramaModel> Importe_Minimo_Programa { get; set; }
         public DbSet<ExcepcionesModel> excepciones { get; set; }
         public DbSet<InteresesTarjetasModel> Intereses_tarjetas { get; set; }
@@ -40,9 +41,31 @@ namespace ValoresData.Context
         public DbSet<EstadoPedidoManualModel> ESTADO_PEDIDO_MANUAL { get; set; }
         public DbSet<ObservacionesPacientesBhModel> OBSERVACIONES_PACIENTES_BH { get; set; }
         public DbSet<SolPractBhPedidoManualModel> BEALTH_SOLPRACT_P_MANUAL { get; set; }
+       // public DbSet<SolPractBhPedidoManualModel> BEALTH_SOLPRACT_P_MANUAL_OK { get; set; }
+      
         public DbSet<BhEstudiosModel> V_BH_ESTUDIOS { get; set; }
         public DbSet<AsignacionInductoresModel> ASIGNACION_INDUCTORES { get; set; }
         public DbSet<AsignacionEstadoProgramaModel> ASIGNACION_ESTADO_PROGRAMA { get; set; }
+        public DbSet<BhBateriasEstudiosModel> V_BH_BATERIAS_ESTUDIOS { get; set; }
+        public DbSet<BhBateriasModel> v_BH_BATERIAS { get; set; }
+        public DbSet<RelBateriasEspModel> Rel_esp_baterias { get; set; }
+        public DbSet<FichaPacienteModel> FICHA_PACIENTES_BH { get; set; }
+        public DbSet<BhUltimoContactoModel> BH_ULTIMO_CONTACTO { get; set; }
+        public DbSet<RelEspServiciosModel> V_Rel_esp_servicios { get; set; }
+        public DbSet<RelEspMatriculasModel> Rel_esp_matriculas { get; set; }
+        public DbSet<PrestadoresRpModel> V_PRESTADORES_RP { get; set; }
+        public DbSet<RelEspBateriasModel> V_Rel_esp_baterias { get; set; }
+        public DbSet<NnMotivoNoTurnoModel> NN_MOTIVO_NO_TURNO { get; set; }
+        public DbSet<NnRelMotivoNoTurnoModel> NN_REL_MOTIVO_NO_TURNO { get; set; }
+        public DbSet<UnionSolPractModel> V_UNION_BEHEALTH_SOLPRACT { get; set; }
+        public DbSet<SolPractModel> BEALTH_SOLPRACT { get; set; }
+        public DbSet<InstructivoModel> V_BH_DESCRIPCIONES { get; set; }
+        public DbSet<GrupoEstudiosModel> GRUPOESTUDIOS { get; set; }
+        public DbSet<BhBateriasPublicasModel> V_BATERIAS_UNIVERSALES { get; set; }
+        public DbSet<SegMotivoNoTurnoModel> SEG_MOTIVO_NO_TURNO { get; set; }
+        public DbSet<RelSegMotivoNoTurnoModel> SEG_REL_MOTIVO_NO_TURNO { get; set; }
+        public DbSet<SegCantContactosModel> SEG_CANT_CONTACTOS { get; set; }
+        public DbSet<SegUsuarioGestionModel> SEG_USUARIO_GESTION { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RelSolPractBhMetodoModel>().HasNoKey();
@@ -50,6 +73,8 @@ namespace ValoresData.Context
             modelBuilder.Entity<RelSolPractBhServicioSolModel>().HasNoKey();
             modelBuilder.Entity<RelSolPractBhOsModel>().HasNoKey();
             modelBuilder.Entity<BhEstudiosModel>().HasNoKey();
+            modelBuilder.Entity<GrupoEstudiosModel>().HasNoKey();
+            //modelBuilder.Entity<SolPractBhPedidoManualModel>().HasNoKey();
         }
 
     }
@@ -64,12 +89,13 @@ namespace ValoresData.Context
         }
 
         public DbSet<ListadoTurnosModel> vListadoTurnos { get; set; }
+        public DbSet <AtencionesDiaModel> vMultiConsultaNatanet {  get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ListadoTurnosModel>()
                 .HasNoKey();
-
+            modelBuilder.Entity<AtencionesDiaModel>().HasNoKey();
 
         }
     }
@@ -79,6 +105,7 @@ namespace ValoresData.Context
         {
         }
         public DbSet<InstructivoModel> V_BH_DESCRIPCIONES { get; set; }
+        public DbSet<GrupoEstudiosModel> GRUPOESTUDIOS { get; set; }
 
     }
 }

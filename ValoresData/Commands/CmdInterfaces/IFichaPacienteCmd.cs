@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ValorModels.Models.BhModels;
+using ValorModels.Models.RpModels;
+
+namespace ValoresData.Commands.CmdInterfaces
+{
+    public interface IFichaPacienteCmd
+    {
+        public Task<IEnumerable<FichaPacienteModel>> GetFichaPacienteAsync();
+        public Task<FichaPacienteModel> GetFichaPacienteDetailAsync(int dni);
+    }
+}

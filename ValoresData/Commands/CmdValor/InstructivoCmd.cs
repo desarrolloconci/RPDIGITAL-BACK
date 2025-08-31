@@ -12,8 +12,8 @@ using ValorModels.Models;
 namespace ValoresData.Commands.CmdValor
 {
     public class InstructivoCmd : IInstructivoCmd
-    {   private readonly DataBase3Context _dbContext;
-        public InstructivoCmd(DataBase3Context dbContext)
+    {   private readonly DataBaseContext _dbContext;
+        public InstructivoCmd(DataBaseContext dbContext)
         {
             _dbContext = dbContext;  
         }

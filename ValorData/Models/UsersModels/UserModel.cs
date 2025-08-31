@@ -8,7 +8,7 @@ namespace ValorModels.Models.UsersModels
 {
     public class UserModel
     {
-        public int Id { get; set; }
+        public int ID { get; set; }
         public string Name { get; set; }
         public string Last_name { get; set; }
         public string Email { get; set; }
@@ -16,5 +16,6 @@ namespace ValorModels.Models.UsersModels
         public string Password { get; set; }
         public string Role { get; set; }
         public string Salt { get; set; }
+        public string? FIRMA { get; set; }
     }
 }

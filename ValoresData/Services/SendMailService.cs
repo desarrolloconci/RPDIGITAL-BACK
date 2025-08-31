@@ -17,8 +17,9 @@ namespace ValoresData.Services
         {
             _gmailsettings= gmailsettings.Value;
         }
-        public void sendEmail(string subject, string body, string to)
+        public void sendEmail(string subject, string to, string body)
         {
+           
             try
             {
 

@@ -17,34 +17,47 @@ namespace ValoresData.Commands.CmdSolPract
         {
             _dbContext = dbContext;
         }
+       
         public async Task<IEnumerable<RelSolPractBhMetodoModel>> GetRelSolPractBhMetodoAsync()
         {
+            _dbContext.Database.SetCommandTimeout(120);
             return await _dbContext.V_SolPractBhMetodo.ToListAsync();
         }
 
         public async Task<IEnumerable<RelSolPractBhUnidadModel>> GetRelSolPractBhUnidadAsync()
         {
+            _dbContext.Database.SetCommandTimeout(120);
             return await _dbContext.V_SolPractBhUnidad.ToListAsync();
         }
         public async Task<IEnumerable<RelSolPractBhServicioSolModel>> GetRelSolPractBhServicioSolAsync()
         {
+            _dbContext.Database.SetCommandTimeout(120);
             return await _dbContext.V_SolPractBhEspecialidad.ToListAsync();
         }
         public async Task<IEnumerable<RelSolPractBhOsModel>> GetRelSolPractBhOsAsync()
         {
+            _dbContext.Database.SetCommandTimeout(120);
             return await _dbContext.V_SolPractBhOs.ToListAsync();
         }
         public async Task<IEnumerable<RelSolPractBhInductoresModel>> GetRelSolPractBhInductoresAsync()
         {
+            _dbContext.Database.SetCommandTimeout(120);
             return await _dbContext.V_SolPractBhInductores.ToListAsync();
         }
         public async Task<IEnumerable<RelSolPractBhEstadoProgramaModel>> GetRelSolPractBhEstadoProgramaAsync()
         {
+            _dbContext.Database.SetCommandTimeout(120);
             return await _dbContext.Bh_Estado_Programa.ToListAsync();
         }
         public async Task<IEnumerable<RelSolPractBhEstadoTurnoModel>> GetRelSolPractBhEstadoTurnoAsync()
         {
+            _dbContext.Database.SetCommandTimeout(120);
             return await _dbContext.Bh_Estado_Turno.ToListAsync();
+        }
+        public async Task<IEnumerable<NnMotivoNoTurnoModel>> GetMotivoNoTurnoAsync()
+        {
+            _dbContext.Database.SetCommandTimeout(120);
+            return await _dbContext.NN_MOTIVO_NO_TURNO.ToListAsync();
         }
     }
 }

@@ -57,7 +57,7 @@ namespace Valor.Controllers
             }
              try
            {
-
+            
             foreach (var model in relSolPractModels)
             {
                 await _solPractService.InsertRelSolPractAsync(model);

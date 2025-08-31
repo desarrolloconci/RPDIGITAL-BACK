@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ValoresData.Commands.CdmRp;
 using ValoresData.Commands.CmdInterfaces;
 using ValoresData.Commands.CmdLogin.CmdLogin;
 using ValoresData.Commands.CmdLogin.CmdLoginInterfaces;
@@ -11,11 +13,14 @@ using ValoresData.Context;
 using ValoresData.Services;
 using ValoresData.Services.LoginInterfaces;
 using ValoresData.Services.LoginService;
+using ValoresData.Services.RpInterfaces;
+using ValoresData.Services.RpServices;
 using ValoresData.Services.ServicesInterfaces;
 using ValoresData.Services.SolPractBhInterfaces;
 using ValoresData.Services.SolPractBhServices;
 using ValorModels.Dtos;
 using ValorModels.Models;
+using SegCantContactosCmd = ValoresData.Commands.CdmRp.SegCantContactosCmd;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,10 +28,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("sql");
 var connectionString2 = builder.Configuration.GetConnectionString("sql2");
-var connectionString3 = builder.Configuration.GetConnectionString("sql3");
+//var connectionString3 = builder.Configuration.GetConnectionString("sql3");
 builder.Services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDbContext<DataBase2Context>(options => options.UseSqlServer(connectionString2));
-builder.Services.AddDbContext<DataBase3Context>(options => options.UseSqlServer(connectionString3));
+//builder.Services.AddDbContext<DataBase3Context>(options => options.UseSqlServer(connectionString3));
 builder.Services.Configure<GmailSettingModel>(builder.Configuration.GetSection("GmailSettings"));
 builder.Services.AddScoped<IValorService, ValorService>();
 builder.Services.AddScoped<IValorCmd, ValorCmd>();
@@ -75,7 +80,33 @@ builder.Services.AddScoped<IBhEstudiosCmd, BhEstudiosCmd>();
 builder.Services.AddScoped<IAsignacionInductoresService, AsignacionInductoresService>();
 builder.Services.AddScoped<IAsignacionInductoresCmd, AsignacionInductoresCmd>();
 builder.Services.AddScoped<IAsignacionEstadoProgramaCmd, AsignacionEstadoProgramaCmd>();
-builder.Services.AddScoped<IAsignacionEstadoProgramaService,AsignacionEstadoProgramaService>();
+builder.Services.AddScoped<IAsignacionEstadoProgramaService, AsignacionEstadoProgramaService>();
+builder.Services.AddScoped<IGrupoEstudiosService, GrupoEstudiosService>();
+builder.Services.AddScoped<IGrupoEstudiosCmd, GrupoEstudiosCmd>();
+builder.Services.AddScoped<IBhBateriasEstudiosService, BhBateriasEstudiosService>();
+builder.Services.AddScoped<IBhBateriasEstudiosCmd, BhBateriasEstudiosCmd>();
+builder.Services.AddScoped<IFichaPacienteCmd, FichaPacienteCmd>();
+builder.Services.AddScoped<IFichaPacienteServicio, FichaPacienteServicio>();
+builder.Services.AddScoped<IBhUltimoContactoService, UltimoContactoService>();
+builder.Services.AddScoped<IBhUltimoContactoCmd, BhUltimoContactoCmd>();
+builder.Services.AddScoped<IAtencionesDiaService, AtencionesDiaServices>();
+builder.Services.AddScoped<IAtencionesDialCmd, AtencionesDiaCmd>();
+builder.Services.AddScoped<IPrestadoresRpService, PrestadoresRpSerivce>();
+builder.Services.AddScoped<IPrestadoresRpCmd, PrestadoresRpCmd>();
+builder.Services.AddScoped<IRelEspeServiciosServices, RelEspServiciosServices>();
+builder.Services.AddScoped<IRelEspServiciosCmd, RelEspServiciosCmd>();
+builder.Services.AddScoped<IRelEspBateriaService, RelEspBateriaService>();
+builder.Services.AddScoped<IRelEspBateriaCmd, RelEspBateriaCmd>();
+builder.Services.AddScoped<INnRelMotivoNoTurnoCmd,NnRelMotivoNoturnoCmd>();
+builder.Services.AddScoped<ISegMotivoNoTurnoService, SegMotivoNoturnoService>();
+builder.Services.AddScoped<ISegMotivoNoTurnoCmd, SegMotivoNoTurnoCmd>();
+builder.Services.AddScoped<INnRelMotivoNoTurnoService, NnRelMotivoNoTurnoService>();
+builder.Services.AddScoped<IRelSegMotivoNoTurnoService, RelSegMotivoNoTurnoService>();
+builder.Services.AddScoped<IRelSegMotivoNoTurnoCmd, RelSegMotivoNoTurnoCmd>();
+builder.Services.AddScoped<ISegCantContactosCmd, SegCantContactosCmd>();
+builder.Services.AddScoped<ISegCantContactosService, SegCantContactosService>();
+builder.Services.AddScoped<ISegUsarioGestionService, SegUsuarioGestionService>();
+builder.Services.AddScoped<ISegUsuarioGestionCmd, SegUsuarioGestionCmd>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -100,7 +131,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("NuevaPolitica", app =>
     {
-        app.WithOrigins("http://localhost:3001", "http://localhost:3000", "http://192.168.9.211:3000", "http://192.168.9.211:3001", "http://192.168.9.211:85", "http://192.168.9.211", "http://localhost:3002")
+        app.WithOrigins("http://localhost:3001", "http://localhost:3000", "http://192.168.9.211:3000", "http://192.168.9.211:3001", "http://192.168.9.211:85", "http://192.168.9.211", "http://localhost:3002", "http://192.168.9.210:3000", "http://192.168.9.210:85", "http://192.168.9.5:3000", "http://192.168.9.5:85", "http://localhost:85")
         .AllowAnyHeader()
         .AllowAnyMethod();
     });

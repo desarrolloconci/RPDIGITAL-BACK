@@ -65,5 +65,12 @@ namespace Valor.Controllers
         {
             return await _solPractBhMetodoService.GetRelSolPractBhEstadoTurnoAsync();
         }
+        [HttpGet]
+        [Route("/motivoNoTurno")]
+        // [Authorize]
+        public async Task<IEnumerable<NnMotivoNoTurnoModel>> GetMotivoNoTurnoAsync()
+        {
+            return await _solPractBhMetodoService.GetMotivoNoTurnoAsync();
+        }
     }
 }

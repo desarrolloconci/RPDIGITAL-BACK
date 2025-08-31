@@ -17,5 +17,6 @@ namespace ValoresData.Commands.CmdInterfaces
         public Task<IEnumerable<RelSolPractBhInductoresModel>> GetRelSolPractBhInductoresAsync();
         public Task<IEnumerable<RelSolPractBhEstadoProgramaModel>> GetRelSolPractBhEstadoProgramaAsync();
         public Task<IEnumerable<RelSolPractBhEstadoTurnoModel>> GetRelSolPractBhEstadoTurnoAsync();
+        public Task<IEnumerable<NnMotivoNoTurnoModel>> GetMotivoNoTurnoAsync();
     }
 }

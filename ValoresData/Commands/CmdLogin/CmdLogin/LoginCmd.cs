@@ -28,7 +28,7 @@ namespace ValoresData.Commands.CmdLogin.CmdLogin
             userModel.Password = hashedPassword;
            
             // Agrega el usuario al contexto
-            _context.Users.Add(new UserModel
+            _context.BH_USERS.Add(new UserModel
             {
                 Name = userModel.Name,
                 Last_name = userModel.Last_name,
@@ -52,13 +52,15 @@ namespace ValoresData.Commands.CmdLogin.CmdLogin
 
         public async Task<ValidateLoginDto> GetLoginValidationData(string username)
         {
-            var result = await _context.Users.Where(e => e.User_name == username)
+            var result = await _context.BH_USERS.Where(e => e.User_name == username)
                          .Select(e => new ValidateLoginDto
-                         {
+                         {   ID=e.ID,
                              Password = e.Password,
                              Salt = e.Salt,
-                             UserName = e.User_name,
-                             Role=e.Role
+                             UserName = e.Last_name +" "+ e.Name,
+                             //UserName=e.User_name,
+                             Role=e.Role,
+                             FIRMA=e.FIRMA
                          }).FirstOrDefaultAsync();
 
 
@@ -67,7 +69,8 @@ namespace ValoresData.Commands.CmdLogin.CmdLogin
 
         public async Task<IEnumerable<UserResultDto>> GetUsersAsync()
         {
-            var result = await (from v in _context.Users select new UserResultDto {
+            var result = await (from v in _context.BH_USERS
+                                select new UserResultDto {
 
                 Email = v.Email,
                 User_name =v.User_name,
@@ -82,7 +85,7 @@ namespace ValoresData.Commands.CmdLogin.CmdLogin
 
         public async Task<UserModel> GetUserAsyncByUsername(string userName)
         {
-            var result = await _context.Users.Where(e => e.User_name.Equals(userName)).FirstOrDefaultAsync();
+            var result = await _context.BH_USERS.Where(e => e.User_name.Equals(userName)).FirstOrDefaultAsync();
             return result;
         }
         public async Task<bool> DeleteUserAsync(string userName)
@@ -93,7 +96,7 @@ namespace ValoresData.Commands.CmdLogin.CmdLogin
             {
                 return false;
             }
-            _context.Users.Remove(dbExcepcion);
+            _context.BH_USERS.Remove(dbExcepcion);
             await _context.SaveChangesAsync();
             return true;
 

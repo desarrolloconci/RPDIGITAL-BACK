@@ -55,7 +55,10 @@ namespace ValoresData.Commands.CmdSolPract
                 relsol.usuario = relSolPractModel.usuario;
                 relsol.turno_id = relSolPractModel.turno_id;
                 relsol.metodoOK = relSolPractModel.metodoOK;
-                relsol.inductor= relSolPractModel.inductor;
+                relsol.inductor = relSolPractModel.inductor;
+                relsol.tur_fecha = relSolPractModel.tur_fecha;
+                relsol.servicio_id= relSolPractModel.servicio_id;
+                relsol.serv_nombre= relSolPractModel.serv_nombre;
 
                 await _context.SaveChangesAsync();
                 return true;
@@ -84,8 +87,11 @@ namespace ValoresData.Commands.CmdSolPract
                     creado = relSolPractModel.creado,
                     usuario = relSolPractModel.usuario,
                     turno_id = relSolPractModel.turno_id,
+                    tur_fecha= relSolPractModel.tur_fecha,
                     metodoOK = relSolPractModel.metodoOK,
                     inductor=relSolPractModel.inductor,
+                    serv_nombre=relSolPractModel.serv_nombre,
+                    servicio_id=relSolPractModel.servicio_id,
                 });
             }
             await _context.SaveChangesAsync();

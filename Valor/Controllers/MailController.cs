@@ -25,7 +25,7 @@ namespace Valor.Controllers
             }
 
 
-            _sendMailService.sendEmail(requestDto.Subject,requestDto.Body,requestDto.To);
+            _sendMailService.sendEmail(requestDto.Subject,requestDto.To,requestDto.Body);
            
 
             return Ok();

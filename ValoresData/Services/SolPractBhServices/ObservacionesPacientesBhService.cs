@@ -18,14 +18,14 @@ namespace ValoresData.Services.SolPractBhServices
         {
             _IObservacionesPacientesBhCmd = IObservacionesPacientesBhCmd;
         }
-        public async Task<bool> DeleteObservacionesPacientesBhAsync(int id)
+        public async Task<bool> DeleteObservacionesPacientesBhAsync(string dni, string unidad)
         {
-            return await _IObservacionesPacientesBhCmd.DeleteObservacionesPacientesBhAsync(id);
+            return await _IObservacionesPacientesBhCmd.DeleteObservacionesPacientesBhAsync(dni,unidad);
         }
 
-        public async Task<ObservacionesPacientesBhModel> GetObservacionesPacientesBhADetailAsync(int id)
+        public async Task<ObservacionesPacientesBhModel> GetObservacionesPacientesBhADetailAsync(string dni, string unidad)
         {
-            return await _IObservacionesPacientesBhCmd.GetObservacionesPacientesBhADetailAsync(id);
+            return await _IObservacionesPacientesBhCmd.GetObservacionesPacientesBhADetailAsync(dni,unidad);
         }
 
         public async Task<IEnumerable<ObservacionesPacientesBhModel>> GetObservacionesPacientesBhAsync()
@@ -35,7 +35,7 @@ namespace ValoresData.Services.SolPractBhServices
 
         public async Task<bool> ManageObservacionesPacientesBhsync(ObservacionesPacientesBhModel Observacion)
         {
-            var obs = await _IObservacionesPacientesBhCmd.GetObservacionesPacientesBhAByDniDetailAsync(Observacion.dni);
+            var obs = await _IObservacionesPacientesBhCmd.GetObservacionesPacientesBhADetailAsync(Observacion.dni, Observacion.unidad);
 
 
             if (obs == null)

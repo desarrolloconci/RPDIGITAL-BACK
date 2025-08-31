@@ -33,7 +33,7 @@ namespace ValoresData.Services
 
         public async Task<bool> InsertSolPractBhPedidoManualAsync(SolPractBhPedidoManualModel pedidomanual)
         {
-            pedidomanual.IDPEDIDO =Guid.NewGuid().ToString();
+            pedidomanual.DNI = pedidomanual.DNI.TrimStart('0');
             return await _solPractBhPedidoManualCmd.InsertSolPractBhPedidoManualAsync(pedidomanual);
         }
 

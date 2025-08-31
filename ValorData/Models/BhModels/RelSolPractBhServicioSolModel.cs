@@ -8,7 +8,7 @@ namespace ValorModels.Models.BhModels
 {
     public class RelSolPractBhServicioSolModel
     {
-        public int IDSERVICIOSOLICITUD { get; set; }
+        public string IDSERVICIOSOLICITUD { get; set; }
         public string SERVICIOSOLICITUD { get; set; }
     }
 }

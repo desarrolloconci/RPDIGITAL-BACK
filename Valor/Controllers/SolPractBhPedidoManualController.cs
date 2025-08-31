@@ -37,7 +37,7 @@ namespace Valor.Controllers
         }
         [HttpPost]
         // [Authorize(Roles = "Admin, Supervisor")]
-        public async Task<IActionResult> InsertSolPractBhPedidoManualAsync([FromBody] SolPractBhPedidoManualModel SolPractBhPedidoManualModel)
+        public async Task<IActionResult> InsertSolPractBhPedidoManualAsync([FromBody] List<SolPractBhPedidoManualModel> SolPractBhPedidoManualModel)
         {
             if (SolPractBhPedidoManualModel == null)
             {
@@ -55,8 +55,28 @@ namespace Valor.Controllers
             }
             try
             {
+                
+                SolPractBhPedidoManualModel = SolPractBhPedidoManualModel
+                    .GroupBy(m => new { m.IDESTUDIO, m.DIAGNÓSTICO, m.METODOPRACTICA })
+                    .Select(g => g.First())
+                    .ToList();
 
-                await _solPractBhPedidoManualService.InsertSolPractBhPedidoManualAsync(SolPractBhPedidoManualModel);
+                string idPedido = Guid.NewGuid().ToString();
+
+                foreach (var model in SolPractBhPedidoManualModel)
+                {
+                    model.IDPEDIDO = idPedido;
+                }
+
+                foreach (var model in SolPractBhPedidoManualModel)
+                {
+                    model.IDPEDIDO = idPedido;
+                }
+
+                foreach (var model in SolPractBhPedidoManualModel)
+                {
+                    await _solPractBhPedidoManualService.InsertSolPractBhPedidoManualAsync(model);
+                }
 
                 return Ok(new
                 {

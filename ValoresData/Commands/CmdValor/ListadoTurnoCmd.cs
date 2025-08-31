@@ -37,6 +37,16 @@ namespace ValoresData.Commands.CmdValor
             var result = await _dbContext.vListadoTurnos.Where(e => e.fic_nrodoc == dni && e.tur_fecha.Value >= fechaDateTime && e.cancelado == "NO").ToListAsync();
             return result;
             //&& !_context.REL_SOL_PRACT.Any(o => o.turno_id == e.turno_id)
+            //var fechaInicio = fecha.ToDateTime(TimeOnly.MinValue);
+            //var fechaFin = fecha.ToDateTime(TimeOnly.MaxValue);
+
+            //var result = await _dbContext.vListadoTurnos
+            //    .Where(e => e.fic_nrodoc == dni
+            //                && e.tur_fecha >= fechaInicio
+            //                && e.tur_fecha <= fechaFin
+            //                && e.cancelado == "NO")
+            //    .ToListAsync();
+            //return result;
         }
 
         public async Task<IEnumerable<ListadoServicioTurnoDto>> GetListadoserviciosByDni(string dni, DateOnly fecha)

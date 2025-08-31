@@ -17,9 +17,9 @@ namespace ValoresData.Commands.CmdSolPract
         {
             _dbcontext = dataBaseContext;
         }
-        public async Task<bool> DeleteObservacionesPacientesBhAsync(int id)
+        public async Task<bool> DeleteObservacionesPacientesBhAsync(string dni, string unidad)
         {
-            var obs = await GetObservacionesPacientesBhADetailAsync(id);
+            var obs = await GetObservacionesPacientesBhADetailAsync(dni,unidad);
             if (obs is null)
             {
                 return false;
@@ -29,9 +29,9 @@ namespace ValoresData.Commands.CmdSolPract
             return true;
         }
 
-        public async Task<ObservacionesPacientesBhModel> GetObservacionesPacientesBhADetailAsync(int id)
+        public async Task<ObservacionesPacientesBhModel> GetObservacionesPacientesBhADetailAsync(string dni, string unidad)
         {
-            return await _dbcontext.OBSERVACIONES_PACIENTES_BH.FindAsync(id); ;
+            return await _dbcontext.OBSERVACIONES_PACIENTES_BH.Where(e=>e.dni==dni && e.unidad==unidad).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<ObservacionesPacientesBhModel>> GetObservacionesPacientesBhAsync()
@@ -52,11 +52,12 @@ namespace ValoresData.Commands.CmdSolPract
 
         public async Task<bool> UpdatObservacionesPacientesBhAsync(ObservacionesPacientesBhModel Observacion)
         {
-            var obs = await GetObservacionesPacientesBhAByDniDetailAsync(Observacion.dni);
+            var obs = await GetObservacionesPacientesBhADetailAsync(Observacion.dni, Observacion.unidad);
             if (obs != null)
             {
                 obs.Observacion = Observacion.Observacion;
-                obs.dni= Observacion.dni;
+                obs.dni = Observacion.dni;
+                obs.unidad = Observacion.unidad;
                 obs.usuario = Observacion.usuario;
                 obs.creado = Observacion.creado;
                 await _dbcontext.SaveChangesAsync();

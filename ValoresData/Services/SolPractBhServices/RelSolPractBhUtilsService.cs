@@ -46,5 +46,9 @@ namespace ValoresData.Services.SolPractBhServices
         {
             return await _relSolPractBhMetodoCmd.GetRelSolPractBhEstadoTurnoAsync();
         }
+        public async Task<IEnumerable<NnMotivoNoTurnoModel>> GetMotivoNoTurnoAsync()
+        {
+            return await _relSolPractBhMetodoCmd.GetMotivoNoTurnoAsync();
+        }
     }
 }

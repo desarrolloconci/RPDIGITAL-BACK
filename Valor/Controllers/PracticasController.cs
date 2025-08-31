@@ -84,7 +84,7 @@ namespace Valor.Controllers
             {
                 return StatusCode(500, new { message = "Error al insertar la práctica", success = false, error = ex.Message });
             }
-    }
+        }
         [HttpPut]
         //[Authorize(Roles = "Admin, Supervisor")]
         public async Task<IActionResult> UpdatePracticAsync(PracticasModel practicas)

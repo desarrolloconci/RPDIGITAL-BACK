@@ -10,6 +10,7 @@ namespace ValorModels.Models.BhModels
     {
         public int id { get; set; }
         public string dni {  get; set; }
+        public string unidad { get; set; }
         public string Observacion { get; set; }
         public string usuario { get; set; }
         public DateOnly creado { get; set; }

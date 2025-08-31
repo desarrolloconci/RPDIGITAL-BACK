@@ -24,12 +24,14 @@ namespace ValoresData.Services.SolPractBhServices
         }
 
         public async Task<bool> InsertRelSolPractAsync(RelSolPractModel relSolPractModel)
-        {
+        {       if (relSolPractModel.turno_id == 1) {
+                relSolPractModel.turno_id = (int)(DateTime.UtcNow.Ticks % 1_000_000_000);
+                  }
             try
             {
                 if (relSolPractModel.metodoOK == "Laboratorio" || relSolPractModel.metodoOK == "Módulo Base"|| relSolPractModel.metodoOK == "Modulo Base")
                 {
-                    Console.WriteLine("ENTRE A LABO");
+                   
                     return await _cmd.InsertRelSolPractAsyncVarios(relSolPractModel);
                 }
                 else
@@ -43,7 +45,7 @@ namespace ValoresData.Services.SolPractBhServices
         {
             if (relSolPractModel == null)
             {
-                throw new ArgumentNullException(nameof(relSolPractModel), "The model cannot be null.");
+                throw new ArgumentNullException(nameof(relSolPractModel), "El Modelo no puede ser nulo.");
             }
 
             try
@@ -53,7 +55,7 @@ namespace ValoresData.Services.SolPractBhServices
             catch (Exception ex)
             {
 
-                throw new InvalidOperationException("An error occurred while updating the record.", ex);
+                throw new InvalidOperationException("Ocurrio un error.", ex);
             }
         }
         public async Task<RelSolPractModel> GetRelSolAsyncById(int id)

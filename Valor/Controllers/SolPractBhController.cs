@@ -18,45 +18,125 @@ namespace Valor.Controllers
 
         [HttpGet]
 
-        public async Task<IEnumerable<SolPractBhDto>> GetSolPract(
-                   DateTime? fechaCreacionRP,
-    string? startFechaRP,
-    string? endFechaRP,
-    string? unidad,
-    string? dni,
-    string? metodo,
-    string? prestador,
-    string? estudio,
-    int? estadoPrograma,
-    string? estadoTurno,
-    string? usuario,
-    string? servicio,
-    string? obrasocial,
-    string? ultimoContacto, string? inductor)
+        public async Task<IEnumerable<SolPractBhMetodoDto>> GetSolPract(
+            DateTime? fechaCreacionRP,
+            string? startFechaRP,
+            string? endFechaRP,
+            [FromQuery] List<string>? unidad,
+            string? dni,
+            string? metodo,
+            string? prestador,
+            string? estudio,
+            int? estadoPrograma,
+            [FromQuery] List<int>? estadoTurno,
+            string? usuario,
+            string? servicio,
+            string? obrasocial,
+            string? ultimoContacto,
+            int? inductor)
         {
             return await _solPractBhService.GetSolPractAsync(fechaCreacionRP, startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto, inductor);
         }
 
+
         [HttpGet]
         [Route("/Ds")]
         public async Task<IEnumerable<SolPractBhDto>> GetSolPractDistinct(
-                    DateTime? fechaCreacionRP,
-    string? startFechaRP,
-    string? endFechaRP,
-    string? unidad,
-    string? dni,
-    string? metodo,
-    string? prestador,
-    string? estudio,
-    int? estadoPrograma,
-    string? estadoTurno,
-    string? usuario,
-    string? servicio,
-    string? obrasocial,
-    string? ultimoContacto, string? inductor)
+            DateTime? fechaCreacionRP,
+            string? startFechaRP,
+            string? endFechaRP,
+            [FromQuery(Name = "unidad[]")] List<string>? unidad,
+            string? dni,
+            string? metodo,
+            string? prestador,
+            string? estudio,
+            int? estadoPrograma,
+            [FromQuery(Name = "estadoTurno[]")] List<int>? estadoTurno,
+            string? usuario,
+            string? servicio,
+            string? obrasocial,
+            string? ultimoContacto,
+            int? inductor)
         {
             return await _solPractBhService.GetSolPractAsyncDistinct(fechaCreacionRP, startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto, inductor);
         }
+        [HttpGet]
+        [Route("/Rp")]
+        public async Task<IEnumerable<SolPractBhDto>> GetSolPractRpAsync(
+          DateTime? fechaCreacionRP,
+          string? startFechaRP,
+          string? endFechaRP,
+          [FromQuery(Name = "unidad[]")] List<string>? unidad,
+          string? dni,
+          string? metodo,
+          string? prestador,
+          string? estudio,
+          int? estadoPrograma,
+          int? estadoTurno,
+          string? usuario,
+          string? servicio,
+          string? obrasocial,
+          string? ultimoContacto,
+          int? inductor)
+        {
+            return await _solPractBhService.GetSolPractRpAsync(startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto, inductor);
+        }
 
+        [HttpGet]
+        [Route("/RpPdf")]
+        public async Task<IEnumerable<SolPractBhRpDto>> GetSolPractRpPdfAsync(string IDPEDIDO, string metodo)
+        {
+            return await _solPractBhService.GetSolPractRpPdfAsync(IDPEDIDO, metodo);
+        }
+        [HttpPut]
+        // [Authorize(Roles = "Admin,Supervisor")]
+        public async Task<IActionResult> UpdateSolPractRpAsync(SolPractBhPedidoManualModel SolPract)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Modelo Invalido");
+            }
+
+            try
+            {
+                bool updateSuccessful = await _solPractBhService.UpdateSolPractRpAsync(SolPract);
+
+                if (updateSuccessful)
+                {
+                    return Ok(new { message = "Registro Actualizado", SolPract, success = true });
+
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Un error ocurrio durante la actualizacion.");
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error Inesperado: {ex.Message}");
+            }
+        }
+        [HttpGet]
+        [Route("/Rpseguimiento")]
+        public async Task<IEnumerable<SolPractBhMetodoDto>> GetSolPractSeguimientoAsync(
+            DateTime? fechaCreacionRP,
+            string? startFechaRP,
+            string? endFechaRP,
+            [FromQuery] List<string>? unidad,
+            string? dni,
+            string? metodo,
+            string? prestador,
+            string? estudio,
+            int? estadoPrograma,
+            [FromQuery] List<int>? estadoTurno,
+            string? usuario,
+            string? servicio,
+            string? obrasocial,
+            string? ultimoContacto,
+            int? inductor)
+        {
+            return await _solPractBhService.GetSolPractSeguimientoAsync(fechaCreacionRP, startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto, inductor);
+        }
     }
 }

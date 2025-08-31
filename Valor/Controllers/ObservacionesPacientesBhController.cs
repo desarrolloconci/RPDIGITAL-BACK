@@ -41,13 +41,13 @@ namespace Valor.Controllers
 
         }
         [HttpDelete]
-        public async Task<IActionResult> DeleteObservacionesPacientesBhAsync(int id)
+        public async Task<IActionResult> DeleteObservacionesPacientesBhAsync(string dni,string unidad)
         {
-            if (id <= 0)
+            if (dni is null )
             {
                 return BadRequest("id invalido");
             }
-            var result = await _iobservaciones.DeleteObservacionesPacientesBhAsync(id);
+            var result = await _iobservaciones.DeleteObservacionesPacientesBhAsync(dni, unidad);
 
             if (!result)
             {
@@ -84,10 +84,10 @@ namespace Valor.Controllers
           
 
         }
-        [HttpGet("{dni}")]
-        public async Task<ActionResult<ObservacionesPacientesBhModel>> GetObservacionesPacientesBhAByDniDetailAsync(string dni)
+        [HttpGet("{dni}/{unidad}")]
+        public async Task<ActionResult<ObservacionesPacientesBhModel>> GetObservacionesPacientesBhADetailAsync(string dni,string unidad)
         {
-            var obs = await _iobservaciones.GetObservacionesPacientesBhAByDniDetailAsync(dni);
+            var obs = await _iobservaciones.GetObservacionesPacientesBhADetailAsync(dni,unidad);
             if (obs == null)
             {
                 return NotFound("valor no encontrado");
