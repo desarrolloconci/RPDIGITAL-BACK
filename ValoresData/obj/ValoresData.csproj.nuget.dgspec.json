@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\api\\ValoresData\\ValoresData.csproj": {}
+    "C:\\ApiRpDigital\\ValoresData\\ValoresData.csproj": {}
   },
   "projects": {
-    "C:\\api\\ValorData\\ValorModels.csproj": {
+    "C:\\ApiRpDigital\\ValorData\\ValorModels.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\api\\ValorData\\ValorModels.csproj",
+        "projectUniqueName": "C:\\ApiRpDigital\\ValorData\\ValorModels.csproj",
         "projectName": "ValorModels",
-        "projectPath": "C:\\api\\ValorData\\ValorModels.csproj",
+        "projectPath": "C:\\ApiRpDigital\\ValorData\\ValorModels.csproj",
         "packagesPath": "C:\\Users\\ialvarez\\.nuget\\packages\\",
-        "outputPath": "C:\\api\\ValorData\\obj\\",
+        "outputPath": "C:\\ApiRpDigital\\ValorData\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -69,14 +69,14 @@
         }
       }
     },
-    "C:\\api\\ValoresData\\ValoresData.csproj": {
+    "C:\\ApiRpDigital\\ValoresData\\ValoresData.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\api\\ValoresData\\ValoresData.csproj",
+        "projectUniqueName": "C:\\ApiRpDigital\\ValoresData\\ValoresData.csproj",
         "projectName": "ValoresData",
-        "projectPath": "C:\\api\\ValoresData\\ValoresData.csproj",
+        "projectPath": "C:\\ApiRpDigital\\ValoresData\\ValoresData.csproj",
         "packagesPath": "C:\\Users\\ialvarez\\.nuget\\packages\\",
-        "outputPath": "C:\\api\\ValoresData\\obj\\",
+        "outputPath": "C:\\ApiRpDigital\\ValoresData\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -97,8 +97,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\api\\ValorData\\ValorModels.csproj": {
-                "projectPath": "C:\\api\\ValorData\\ValorModels.csproj"
+              "C:\\ApiRpDigital\\ValorData\\ValorModels.csproj": {
+                "projectPath": "C:\\ApiRpDigital\\ValorData\\ValorModels.csproj"
               }
             }
           }

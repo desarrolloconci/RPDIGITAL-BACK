@@ -322,7 +322,7 @@ namespace ValoresData.Commands.CmdSolPract
                     string? ultimoContacto = null,
                     int? inductor = null)
         {
-
+            _context.Database.SetCommandTimeout(60);
             var baseQuery =
                 from v in _context.V_BEALTH_SOLPRAC
                 join e in _context.REL_SOL_PRACT
@@ -366,7 +366,8 @@ namespace ValoresData.Commands.CmdSolPract
                     motivo_no_turno = v.motivo_no_turno,
                     seguimiento_estado_turno = v.seguimiento_estado_turno,
                     seguimiento_cantidad_contactos =v.seguimiento_cantidad_contactos,
-                    DIAGNÓSTICO=v.DIAGNÓSTICO
+                    seg_usuario_gestion = v.seg_usuario_gestion,
+                    DIAGNÓSTICO =v.DIAGNÓSTICO
 
                 };
 
@@ -487,8 +488,9 @@ namespace ValoresData.Commands.CmdSolPract
                 Estado_Turno_id = item.Estado_Turno_id,
                 No_gestion = item.No_gestion,
                 motivo_no_turno=item.motivo_no_turno,
-                seguimiento_estado_turno=item.seguimiento_estado_turno,
-                seguimiento_cantidad_contactos=item.seguimiento_cantidad_contactos,
+               // seguimiento_estado_turno=item.seguimiento_estado_turno,
+               // seguimiento_cantidad_contactos=item.seguimiento_cantidad_contactos,
+               // seg_usuario_gestion=item.seg_usuario_gestion,
                 FIRMA = firma
 
 
@@ -589,7 +591,7 @@ namespace ValoresData.Commands.CmdSolPract
 
 
         {
-
+            _context.Database.SetCommandTimeout(60);
             //Crear la consulta base
             var query =
                 from v in _context.V_BEALTH_SOLPRAC

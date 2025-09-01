@@ -45,3 +45,15 @@ C:\api\ValorData\obj\Debug\net8.0\ValorModels.dll
 C:\api\ValorData\obj\Debug\net8.0\refint\ValorModels.dll
 C:\api\ValorData\obj\Debug\net8.0\ValorModels.pdb
 C:\api\ValorData\obj\Debug\net8.0\ref\ValorModels.dll
+C:\ApiRpDigital\ValorData\bin\Debug\net8.0\ValorModels.deps.json
+C:\ApiRpDigital\ValorData\bin\Debug\net8.0\ValorModels.dll
+C:\ApiRpDigital\ValorData\bin\Debug\net8.0\ValorModels.pdb
+C:\ApiRpDigital\ValorData\obj\Debug\net8.0\ValorModels.GeneratedMSBuildEditorConfig.editorconfig
+C:\ApiRpDigital\ValorData\obj\Debug\net8.0\ValorModels.AssemblyInfoInputs.cache
+C:\ApiRpDigital\ValorData\obj\Debug\net8.0\ValorModels.AssemblyInfo.cs
+C:\ApiRpDigital\ValorData\obj\Debug\net8.0\ValorModels.csproj.CoreCompileInputs.cache
+C:\ApiRpDigital\ValorData\obj\Debug\net8.0\ValorModels.sourcelink.json
+C:\ApiRpDigital\ValorData\obj\Debug\net8.0\ValorModels.dll
+C:\ApiRpDigital\ValorData\obj\Debug\net8.0\refint\ValorModels.dll
+C:\ApiRpDigital\ValorData\obj\Debug\net8.0\ValorModels.pdb
+C:\ApiRpDigital\ValorData\obj\Debug\net8.0\ref\ValorModels.dll

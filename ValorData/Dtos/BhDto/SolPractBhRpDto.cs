@@ -61,7 +61,7 @@ namespace ValorModels.Dtos.BhDto
         public string? motivo_no_turno { get; set; }
         public string? seguimiento_estado_turno { get; set; }
         public int? seguimiento_cantidad_contactos { get; set; }
-   
+        public string? seg_usuario_gestion { get; set; }
         public bool? No_gestion { get; set; }
         public string? FIRMA { get; set; }
     }

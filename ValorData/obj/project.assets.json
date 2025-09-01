@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\api\\ValorData\\ValorModels.csproj",
+      "projectUniqueName": "C:\\ApiRpDigital\\ValorData\\ValorModels.csproj",
       "projectName": "ValorModels",
-      "projectPath": "C:\\api\\ValorData\\ValorModels.csproj",
+      "projectPath": "C:\\ApiRpDigital\\ValorData\\ValorModels.csproj",
       "packagesPath": "C:\\Users\\ialvarez\\.nuget\\packages\\",
-      "outputPath": "C:\\api\\ValorData\\obj\\",
+      "outputPath": "C:\\ApiRpDigital\\ValorData\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

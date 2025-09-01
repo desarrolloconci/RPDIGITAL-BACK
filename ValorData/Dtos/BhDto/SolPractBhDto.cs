@@ -47,5 +47,6 @@ namespace ValorModels.Dtos.BhDto
         public int? seguimiento_cantidad_contactos { get; set; }
         public string? METODOOK2 { get; set; }
         public string DIAGNÓSTICO { get; set; }
+        public string? seg_usuario_gestion { get; set; }
     }
 }
