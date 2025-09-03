@@ -77,9 +77,10 @@ namespace Valor.Controllers
           string? servicio,
           string? obrasocial,
           string? ultimoContacto,
-          int? inductor)
+          int? inductor,
+          int? grupoGestionId)
         {
-            return await _solPractBhService.GetSolPractRpAsync(startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto, inductor);
+            return await _solPractBhService.GetSolPractRpAsync(startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto, inductor, grupoGestionId);
         }
 
         [HttpGet]

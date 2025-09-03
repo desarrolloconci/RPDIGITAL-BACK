@@ -59,5 +59,7 @@
         public string? seguimiento_estado_turno { get; set; }
         public int? seguimiento_cantidad_contactos { get; set; }
         public string? seg_usuario_gestion { get; set; }
+        public string? grupo_gestion { get; set; }
+        public int? seg_grupoDeGestionId { get; set; }
     }
 }

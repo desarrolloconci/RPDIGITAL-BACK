@@ -48,5 +48,7 @@ namespace ValorModels.Dtos.BhDto
         public string? METODOOK2 { get; set; }
         public string DIAGNÓSTICO { get; set; }
         public string? seg_usuario_gestion { get; set; }
+        public string? grupo_gestion { get; set; }
+        public int? seg_grupoDeGestionId { get; set; }
     }
 }
