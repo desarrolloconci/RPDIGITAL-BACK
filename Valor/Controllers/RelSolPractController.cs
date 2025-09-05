@@ -141,6 +141,20 @@ namespace Valor.Controllers
 
             return NoContent();
         }
+        [HttpDelete]
+        [Route("/segumientoRp")]
+        // [Authorize(Roles = "Admin,Supervisor")]
+        public async Task<IActionResult> DeleteUnificadoRelSolPractAsync(RelSolPractModel model)
+        {
 
+            var result = await _solPractService.DeleteUnificadoRelSolPractAsync(model);
+
+            if (!result)
+            {
+                return NotFound("Valor no encontrado o no pudo ser eliminado");
+            }
+
+            return NoContent();
+        }
     }
 }

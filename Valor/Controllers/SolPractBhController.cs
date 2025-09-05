@@ -72,7 +72,7 @@ namespace Valor.Controllers
           string? prestador,
           string? estudio,
           int? estadoPrograma,
-          int? estadoTurno,
+          string? estadoTurno,
           string? usuario,
           string? servicio,
           string? obrasocial,

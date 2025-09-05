@@ -109,6 +109,8 @@ builder.Services.AddScoped<ISegUsarioGestionService, SegUsuarioGestionService>()
 builder.Services.AddScoped<ISegUsuarioGestionCmd, SegUsuarioGestionCmd>();
 builder.Services.AddScoped<ISegGrupoGestionCmd, SegGrupoGestionCmd>();
 builder.Services.AddScoped<ISegGrupoGestionService, SegGrupoGestionService>();
+builder.Services.AddScoped<ISegUsuariosService, SegUsuariosService>();
+builder.Services.AddScoped<ISegUsuariosCmd, SegUsuariosCmd>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
