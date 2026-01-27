@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ValoresData.Services.SolPractBhInterfaces;
 using ValoresData.Services.SolPractBhServices;
+using ValorModels.Dtos;
 using ValorModels.Models;
 using ValorModels.Models.BhModels;
 
@@ -141,6 +142,20 @@ namespace Valor.Controllers
 
             return NoContent();
         }
+        [HttpDelete]
+        [Route("/segumientoRp")]
+        // [Authorize(Roles = "Admin,Supervisor")]
+        public async Task<IActionResult> DeleteUnificadoRelSolPractAsync(SEG_DESASOCIOARTURNO_DTO model)
+        {
 
+            var result = await _solPractService.DeleteUnificadoRelSolPractAsync(model);
+
+            if (!result)
+            {
+                return NotFound("Valor no encontrado o no pudo ser eliminado");
+            }
+
+            return NoContent();
+        }
     }
 }

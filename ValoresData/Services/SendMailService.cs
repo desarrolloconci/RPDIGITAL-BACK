@@ -27,7 +27,7 @@ namespace ValoresData.Services
                 var password = _gmailsettings.Password;
 
                 var message = new MailMessage();
-                message.From = new MailAddress(fromEmail);
+                message.From = new MailAddress(fromEmail,"CONCI CARPINELLA");
                 message.Subject = subject;
                 message.To.Add(new MailAddress(to));
                 message.Body = body;

@@ -51,7 +51,7 @@ namespace ValorModels.Models.BhModels
             public int? Nro_Atencion { get; set; }
             public bool? No_gestion { get; set; }
             public int? Id_servicio_atencion { get; set; }
-
+            public string? OBSERVACION_INTERNA { get; set; }
 
     }
 }

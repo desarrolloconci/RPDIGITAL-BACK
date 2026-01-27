@@ -58,5 +58,18 @@
         public string? motivo_no_turno { get; set; }
         public string? seguimiento_estado_turno { get; set; }
         public int? seguimiento_cantidad_contactos { get; set; }
+        public string? seg_usuario_gestion { get; set; }
+        public string? grupo_gestion { get; set; }
+        public int? seg_grupoDeGestionId { get; set; }
+        public string? METODOPRACTICA { get; set; }
+        public string? SEG_OBSERVACION { get; set; }
+        public int? idrelsol { get; set; }
+        public int? turno_id { get; set; }
+        public DateOnly? relsol_fechaGestion { get; set; }
+        public string? relsol_observaciones { get; set; }
+        public DateOnly? relsol_creado { get; set; }
+        public string? relsol_usuario { get; set; }
+        public DateTime? tur_fecha { get; set; }
+        public string? OBSERVACION_INTERNA { get; set; }
     }
 }

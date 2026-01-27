@@ -69,7 +69,8 @@ namespace ValoresData.Commands.CdmRp
                 idEstudio = idestudio,
                 cantidad = model.cantidad,
                 fecha = model.fecha,
-                id_usuario = model.id_usuario
+                id_usuario = model.id_usuario,
+                MetodoOK=model.MetodoOK
             }).ToList();
 
             _context.SEG_CANT_CONTACTOS.AddRange(entidades);
@@ -88,7 +89,8 @@ namespace ValoresData.Commands.CdmRp
                 idEstudio = model.idEstudio,
                 cantidad = model.cantidad,
                 fecha = model.fecha,
-                id_usuario = model.id_usuario
+                id_usuario = model.id_usuario,
+                MetodoOK = model.MetodoOK
             };
 
             _context.SEG_CANT_CONTACTOS.Add(entity);
@@ -148,7 +150,7 @@ namespace ValoresData.Commands.CdmRp
 
         public async Task<IEnumerable<SegCantContactosModel>> GetSegCantidadContactos(SegCantContactosModel model)
         {
-            var resul = await _context.SEG_CANT_CONTACTOS.Where(e => e.idEstudio == model.idEstudio && e.idPedido == e.idPedido).ToListAsync();
+            var resul = await _context.SEG_CANT_CONTACTOS.Where(e => e.idEstudio == model.idEstudio && e.idPedido == model.idPedido).ToListAsync();
             return resul;
         }
     }

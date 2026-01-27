@@ -66,6 +66,11 @@ namespace ValoresData.Context
         public DbSet<RelSegMotivoNoTurnoModel> SEG_REL_MOTIVO_NO_TURNO { get; set; }
         public DbSet<SegCantContactosModel> SEG_CANT_CONTACTOS { get; set; }
         public DbSet<SegUsuarioGestionModel> SEG_USUARIO_GESTION { get; set; }
+        public DbSet<SegGrupoGestionModel> SEG_GRUPO_GESTION { get; set; }
+        public DbSet<SegUsuariosModel> V_Seg_Usuarios { get; set; }
+        public DbSet<SegMetodoModel> V_SEG_METODO { get; set; }
+        public DbSet<SegObservacionesModel> SEG_OBSERVACIONES { get; set; }
+        public DbSet<UltimoPedidoPorDniModel> V_UltimoPedidoPorDni { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RelSolPractBhMetodoModel>().HasNoKey();
@@ -74,6 +79,7 @@ namespace ValoresData.Context
             modelBuilder.Entity<RelSolPractBhOsModel>().HasNoKey();
             modelBuilder.Entity<BhEstudiosModel>().HasNoKey();
             modelBuilder.Entity<GrupoEstudiosModel>().HasNoKey();
+            modelBuilder.Entity<UltimoPedidoPorDniModel>().HasNoKey();
             //modelBuilder.Entity<SolPractBhPedidoManualModel>().HasNoKey();
         }
 
@@ -106,6 +112,13 @@ namespace ValoresData.Context
         }
         public DbSet<InstructivoModel> V_BH_DESCRIPCIONES { get; set; }
         public DbSet<GrupoEstudiosModel> GRUPOESTUDIOS { get; set; }
+        public DbSet<ObrasSocialesLaboModel> V_LABO_OS_MOSTRAR { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ObrasSocialesLaboModel>()
+                .HasNoKey();
+            
 
+        }
     }
 }

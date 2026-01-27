@@ -21,7 +21,7 @@ namespace ValoresData.Commands.CdmRp
        
         public async Task<IEnumerable<SegMotivoNoTurnoModel>> GetSegMotivoNoTurnoAsync()
         {
-            return await _context.SEG_MOTIVO_NO_TURNO.ToListAsync();
+            return await _context.SEG_MOTIVO_NO_TURNO.Where(e=> e.baja == false).ToListAsync();
         }
     }
 }

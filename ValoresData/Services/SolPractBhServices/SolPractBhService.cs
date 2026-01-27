@@ -29,9 +29,9 @@ namespace ValoresData.Services.SolPractBhServices
             return await _solPractBhCmd.GetSolPractAsyncDistinct(fechaCreacionRP, startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto, inductor);
         }
 
-        public async Task<IEnumerable<SolPractBhDto>> GetSolPractRpAsync(string? startFechaRP = null, string? endFechaRP = null, List<string>? unidad = null, string? dni = null, string? metodo = null, string? prestador = null, string? estudio = null, int? estadoPrograma = null, int? estadoTurno = null, string? usuario = null, string? servicio = null, string? obrasocial = null, string? ultimoContacto = null, int? inductor = null)
+        public async Task<IEnumerable<SolPractBhDto>> GetSolPractRpAsync(string? startFechaRP = null, string? endFechaRP = null, List<string>? unidad = null, string? dni = null, string? metodo = null, string? prestador = null, string? estudio = null, int? estadoPrograma = null, List<string>? estadoTurno = null, string? usuario = null, string? servicio = null, string? obrasocial = null, string? ultimoContacto = null, int? inductor = null, int? grupoGestionId = null)
         {
-            return await _solPractBhCmd.GetSolPractRpAsync(startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto, inductor);
+            return await _solPractBhCmd.GetSolPractRpAsync(startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto, inductor, grupoGestionId);
         }
         public async Task<IEnumerable<SolPractBhRpDto>> GetSolPractRpPdfAsync(string IDPEDIDO, string metodo)
         {
@@ -64,6 +64,11 @@ namespace ValoresData.Services.SolPractBhServices
          int? inductor = null
         )
         { return await _solPractBhCmd.GetSolPractSeguimientoAsync(fechaCreacionRP, startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto, inductor);
+        }
+
+        public async Task<bool> DeleteSolPractTotalAsync(string idpedido)
+        {
+            return await _solPractBhCmd.DeleteSolPractTotalAsync(idpedido);
         }
     }
 }

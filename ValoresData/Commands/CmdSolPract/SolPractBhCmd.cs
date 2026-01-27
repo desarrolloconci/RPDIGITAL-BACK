@@ -87,6 +87,7 @@ namespace ValoresData.Commands.CmdSolPract
                     OSCOD = v.OSCOD,
                     INDUCTOR_ID = v.INDUCTOR_ID,
                     Estado_Turno_id = v.Estado_Turno_id
+                    
                 };
 
             // Aplicar filtros 
@@ -307,29 +308,27 @@ namespace ValoresData.Commands.CmdSolPract
             return groupedResults;
         }
         public async Task<IEnumerable<SolPractBhDto>> GetSolPractRpAsync(
-                    string? startFechaRP = null,
-                    string? endFechaRP = null,
-                    List<string>? unidad = null,
-                    string? dni = null,
-                    string? metodo = null,
-                    string? prestador = null,
-                    string? estudio = null,
-                    int? estadoPrograma = null,
-                    int? estadoTurno = null,
-                    string? usuario = null,
-                    string? servicio = null,
-                    string? obrasocial = null,
-                    string? ultimoContacto = null,
-                    int? inductor = null)
+   string? startFechaRP = null,
+   string? endFechaRP = null,
+   List<string>? unidad = null,
+   string? dni = null,
+   string? metodo = null,
+   string? prestador = null,
+   string? estudio = null,
+   int? estadoPrograma = null,
+   List<string>? estadoTurno = null,
+   string? usuario = null,
+   string? servicio = null,
+   string? obrasocial = null,
+   string? ultimoContacto = null,
+   int? inductor = null,
+   int? grupoGestionId = null
+)
         {
-
+            
+            _context.Database.SetCommandTimeout(300);
             var baseQuery =
-                from v in _context.V_BEALTH_SOLPRAC
-                join e in _context.REL_SOL_PRACT
-                on new { IDPEDIDO = v.IDPEDIDO, IDESTUDIO = v.IDESTUDIO }
-                equals new { IDPEDIDO = e.idPedido, IDESTUDIO = e.idEstudio }
-                into joinedData
-                from e in joinedData.DefaultIfEmpty()
+                from v in _context.V_BEALTH_SOLPRAC.AsNoTracking()
                 select new SolPractBhDto
                 {
                     id = v.ID,
@@ -338,16 +337,16 @@ namespace ValoresData.Commands.CmdSolPract
                     OBRASOCIAL = v.OBRASOCIAL,
                     PRESTADORQUEGENERASOLICITUD = v.PRESTADORQUEGENERASOLICITUD,
                     FECHA = v.FECHA,
-                    idrelsol = e != null ? e.id : (int?)null,
+                    idrelsol = v.idrelsol,
                     idPedido = v.IDPEDIDO,
                     idEstudio = v.IDESTUDIO,
-                    fechaGestion = e.fechaGestion,
-                    observaciones = e.observaciones,
-                    creado = e.creado,
-                    usuario = e.usuario,
+                    fechaGestion = v.relsol_fechaGestion,
+                    observaciones = v.relsol_observaciones,
+                    creado = v.relsol_creado,
+                    usuario = v.relsol_usuario,
                     ESTUDIO = v.ESTUDIO,
-                    turno_id = e.turno_id,
-                    METODOOK = v.METODOOK,
+                    turno_id = v.turno_id,
+                    METODOPRACTICA = v.METODOPRACTICA,
                     unidad = v.UNIDAD,
                     servicio = v.SERVICIOSOLICITUD,
                     CONFESPECIAL = v.CONFESPECIAL,
@@ -356,7 +355,7 @@ namespace ValoresData.Commands.CmdSolPract
                     ATENDIDO = v.ATENDIDO,
                     UNIDAD_NOMBRE = v.UNIDAD,
                     estado_Programa = v.estado_Programa,
-                    tur_fecha = e.tur_fecha,
+                    tur_fecha = v.tur_fecha,
                     OSCOD = v.OSCOD,
                     INDUCTOR_ID = v.INDUCTOR_ID,
                     Estado_Turno_id = v.Estado_Turno_id,
@@ -365,57 +364,128 @@ namespace ValoresData.Commands.CmdSolPract
                     NUMEROAFILIADO = v.NUMEROAFILIADO,
                     motivo_no_turno = v.motivo_no_turno,
                     seguimiento_estado_turno = v.seguimiento_estado_turno,
-                    seguimiento_cantidad_contactos =v.seguimiento_cantidad_contactos,
-                    DIAGNÓSTICO=v.DIAGNÓSTICO
-
+                    seguimiento_cantidad_contactos = v.seguimiento_cantidad_contactos,
+                    seg_grupoDeGestionId = v.seg_grupoDeGestionId,
+                    seg_usuario_gestion = v.seg_usuario_gestion,
+                    grupo_gestion = v.grupo_gestion,
+                    DIAGNÓSTICO = v.DIAGNÓSTICO,
+                    SEG_OBSERVACION = v.SEG_OBSERVACION,
+                    OBSERVACION_INTERNA=v.OBSERVACION_INTERNA
                 };
 
-    
+            // 2. Aplicación de todos los Filtros
+
+            // Filtro de Fechas
+            //if (!string.IsNullOrEmpty(startFechaRP) &&
+            //    DateTime.TryParseExact(startFechaRP, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime startDate) &&
+            //    DateTime.TryParseExact(endFechaRP, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime endDate))
+            //{
+            //    baseQuery = baseQuery.Where(v => v.FECHA >= startDate && v.FECHA <= endDate);
+            //}
             if (!string.IsNullOrEmpty(startFechaRP))
             {
-                if (DateTime.TryParseExact(startFechaRP, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime fechaExacta))
+                if (DateTime.TryParseExact(startFechaRP, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime startDate))
                 {
-                    baseQuery = baseQuery.Where(v => v.FECHA.Date == fechaExacta.Date);
+                    if (!string.IsNullOrEmpty(endFechaRP) &&
+                        DateTime.TryParseExact(endFechaRP, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime endDate))
+                    {
+                        // Caso: ambas fechas -> rango
+                        baseQuery = baseQuery.Where(v => v.FECHA >= startDate && v.FECHA <= endDate);
+                    }
+                    else
+                    {
+                        // Caso: solo startFechaRP -> mismo día
+                        baseQuery = baseQuery.Where(v => v.FECHA.Date == startDate.Date);
+                    }
                 }
             }
 
+            // Filtros Simples
             if (!string.IsNullOrEmpty(dni)) baseQuery = baseQuery.Where(v => v.DNI == dni);
-            if (!string.IsNullOrEmpty(metodo)) baseQuery = baseQuery.Where(v => v.METODOOK == metodo);
-            if (unidad != null && unidad.Any())
-            {
-                baseQuery = baseQuery.Where(v => unidad.Contains(v.UNIDAD_NOMBRE));
-            }
+
+            // Filtro METODO: Aplicado primero para reducir la carga de datos.
+            if (!string.IsNullOrEmpty(metodo)) baseQuery = baseQuery.Where(v => v.METODOPRACTICA == metodo);
+
+            if (unidad != null && unidad.Any()) baseQuery = baseQuery.Where(v => unidad.Contains(v.UNIDAD_NOMBRE));
             if (!string.IsNullOrEmpty(estudio)) baseQuery = baseQuery.Where(v => v.ESTUDIO == estudio);
             if (estadoPrograma.HasValue) baseQuery = baseQuery.Where(v => v.estado_Programa == estadoPrograma);
-            if (estadoTurno.HasValue) baseQuery = baseQuery.Where(v => v.Estado_Turno_id == estadoTurno);
-            if (!string.IsNullOrEmpty(usuario)) baseQuery = baseQuery.Where(e => e.usuario == usuario);
 
+            // Filtro Estado Turno
+            if (estadoTurno != null && estadoTurno.Any())
+            {
+                baseQuery = baseQuery.Where(v => estadoTurno.Contains(v.seguimiento_estado_turno));
+            }
+
+            if (!string.IsNullOrEmpty(usuario)) baseQuery = baseQuery.Where(v => v.seg_usuario_gestion == usuario);
             if (!string.IsNullOrEmpty(prestador)) baseQuery = baseQuery.Where(v => v.PRESTADORQUEGENERASOLICITUD == prestador);
             if (!string.IsNullOrEmpty(obrasocial)) baseQuery = baseQuery.Where(v => v.OSCOD == obrasocial);
+
+            // Filtro Último Contacto
             if (!string.IsNullOrEmpty(ultimoContacto))
             {
                 if (DateOnly.TryParse(ultimoContacto, out var fechaContacto))
                 {
-                    baseQuery = baseQuery.Where(e => e.fechaGestion == fechaContacto);
+                    baseQuery = baseQuery.Where(v => v.fechaGestion == fechaContacto);
                 }
             }
+
             if (inductor.HasValue) baseQuery = baseQuery.Where(v => v.INDUCTOR_ID == inductor);
-            if (!string.IsNullOrEmpty(servicio))
+            if (!string.IsNullOrEmpty(servicio)) baseQuery = baseQuery.Where(v => v.servicio == servicio);
+            if (grupoGestionId.HasValue) baseQuery = baseQuery.Where(v => v.seg_grupoDeGestionId == grupoGestionId);
+
+
+            // 3. Lógica Condicional de Agrupamiento y Ejecución (OPTIMIZADA)
+
+            // Caso 1: Se especificó un método DIFERENTE de "Laboratorio"
+            if (!string.IsNullOrEmpty(metodo) && metodo != "Laboratorio")
             {
-                baseQuery = baseQuery.Where(v => v.servicio == servicio);
+                // El 'baseQuery' ya está filtrado. No se necesita agrupación.
+                return await baseQuery
+                    .OrderBy(v => v.FECHA)
+                    .ThenBy(v => v.DNI)
+                    .ToListAsync();
             }
-          
-            var laboratorioItems = await baseQuery
-                .Where(v => v.METODOOK == "Laboratorio")
+
+            // --- Lógica para Laboratorio (Agrupación forzada en C#) ---
+
+            // Definimos la query para Laboratorio, usando los filtros de baseQuery
+            var laboratorioQuery = baseQuery
+                .Where(v => v.METODOPRACTICA == "Laboratorio");
+
+            // Ejecutamos la consulta en la DB y cargamos los resultados filtrados en MEMORIA (C#)
+            var laboratorioList = await laboratorioQuery.ToListAsync();
+
+            // Aplicamos el agrupamiento y la selección del primer elemento en C# (LINQ to Objects)
+            var laboratorioItems = laboratorioList
                 .GroupBy(v => v.idPedido)
                 .Select(g => g.First())
-                .ToListAsync();
+                .ToList();
 
+
+            // Caso 2: Se especificó 'metodo == "Laboratorio"' 
+            if (metodo == "Laboratorio")
+            {
+                // Ya tenemos el resultado agrupado y filtrado.
+                return laboratorioItems
+                    .OrderBy(v => v.FECHA)
+                    .ThenBy(v => v.DNI)
+                    .ToList();
+            }
+
+            // Caso 3: NO se especificó el método (metodo == null), debe cargar TODO.
+
+            // Parte B: Otros (No requiere Agrupación)
+            // Cargamos todos los registros que NO son Laboratorio con el resto de los filtros aplicados.
             var otrosItems = await baseQuery
-                .Where(v => v.METODOOK != "Laboratorio")
+                .Where(v => v.METODOPRACTICA != "Laboratorio")
                 .ToListAsync();
 
-            var finalResult = laboratorioItems.Concat(otrosItems);
+            // Parte C: Unir, Ordenar y Retornar
+            var finalResult = laboratorioItems.Concat(otrosItems)
+                .OrderBy(v => v.FECHA)
+                .ThenBy(v => v.DNI)
+                .ToList();
+
             return finalResult;
         }
         public async Task<IEnumerable<SolPractBhRpDto>> GetSolPractRpPdfAsync(string IDPEDIDO, string metodo)
@@ -446,7 +516,7 @@ namespace ValoresData.Commands.CmdSolPract
                 METODOOK = item.METODOOK,
                 IDESTUDIO = item.IDESTUDIO,
                 ESTUDIO = item.ESTUDIO,
-                DNI = item.DNI,
+                DNI = item.DNI.Trim(),
                 NOMBRE = item.NOMBRE,
                 IDOBRASOCIAL = item.IDOBRASOCIAL,
                 OBRASOCIAL = item.OBRASOCIAL,
@@ -486,9 +556,11 @@ namespace ValoresData.Commands.CmdSolPract
                 INDUCTOR_ID = item.INDUCTOR_ID,
                 Estado_Turno_id = item.Estado_Turno_id,
                 No_gestion = item.No_gestion,
-                motivo_no_turno=item.motivo_no_turno,
-                seguimiento_estado_turno=item.seguimiento_estado_turno,
-                seguimiento_cantidad_contactos=item.seguimiento_cantidad_contactos,
+                motivo_no_turno = item.motivo_no_turno,
+                METODOPRACTICA = item.METODOPRACTICA,
+                // seguimiento_estado_turno=item.seguimiento_estado_turno,
+                // seguimiento_cantidad_contactos=item.seguimiento_cantidad_contactos,
+                // seg_usuario_gestion=item.seg_usuario_gestion,
                 FIRMA = firma
 
 
@@ -589,7 +661,7 @@ namespace ValoresData.Commands.CmdSolPract
 
 
         {
-
+            _context.Database.SetCommandTimeout(60);
             //Crear la consulta base
             var query =
                 from v in _context.V_BEALTH_SOLPRAC
@@ -718,5 +790,19 @@ namespace ValoresData.Commands.CmdSolPract
 
             return groupedResults;
         }
+
+        public async Task<bool> DeleteSolPractTotalAsync(string idpedido)
+        {
+            var rp = await _context.BEALTH_SOLPRACT_P_MANUAL.Where(e => e.IDPEDIDO == idpedido).ToListAsync();
+            if (rp == null || !rp.Any())
+            {
+                return false;
+            }
+            _context.BEALTH_SOLPRACT_P_MANUAL.RemoveRange(rp);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
-}
+  }
+

@@ -13,7 +13,7 @@ namespace ValorModels.Models.RpModels
         public string idEstudio { get; set; }
         public int id_motivo_no_turno { get; set; }
         public int id_usuario { get; set; }
-        public string MetodoOK { get; set; }
+        public string Metodo { get; set; }
         public DateOnly fecha { get; set; }
     }
 }

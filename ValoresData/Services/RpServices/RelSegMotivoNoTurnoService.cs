@@ -29,7 +29,7 @@ namespace ValoresData.Services.RpServices
             {
                 if (exist.Any())
                 {
-                    if (model.MetodoOK == "Laboratorio" || model.MetodoOK == "Módulo Base" || model.MetodoOK == "Modulo Base")
+                    if (model.Metodo == "Laboratorio" || model.Metodo == "Módulo Base" || model.Metodo == "Modulo Base")
                     {
 
                         return await _cmd.UpdateRelSegMotivoNoVarios(model);
@@ -39,7 +39,7 @@ namespace ValoresData.Services.RpServices
                 }
                 else
                 {
-                    if (model.MetodoOK == "Laboratorio" || model.MetodoOK == "Módulo Base" || model.MetodoOK == "Modulo Base")
+                    if (model.Metodo == "Laboratorio" || model.Metodo == "Módulo Base" || model.Metodo == "Modulo Base")
                     {
                         return await _cmd.InsertRelSegMotivoNoVarios(model);
                     }

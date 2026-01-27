@@ -26,7 +26,7 @@ namespace ValoresData.Commands.CdmRp
 
         public async Task<IEnumerable<RelSegMotivoNoTurnoModel>> GetRelSegMotivoById(RelSegMotivoNoTurnoModel model)
         {
-            var resul = await _context.SEG_REL_MOTIVO_NO_TURNO.Where(e => e.idEstudio == model.idEstudio && e.idPedido == e.idPedido).ToListAsync();
+            var resul = await _context.SEG_REL_MOTIVO_NO_TURNO.Where(e => e.idEstudio == model.idEstudio && e.idPedido == model.idPedido).ToListAsync();
             return resul;
         }
 
@@ -47,7 +47,7 @@ namespace ValoresData.Commands.CdmRp
                 return false;
 
             var estudios = await _context.V_BEALTH_SOLPRAC
-                .Where(x => x.IDPEDIDO == model.idPedido && x.METODOOK == model.MetodoOK)
+                .Where(x => x.IDPEDIDO == model.idPedido && x.METODOOK == model.Metodo)
                 .Select(x => x.IDESTUDIO)
                 .ToListAsync();
 
@@ -60,7 +60,7 @@ namespace ValoresData.Commands.CdmRp
                idEstudio = idestudio,
                id_motivo_no_turno =model.id_motivo_no_turno,
                id_usuario=model.id_usuario,
-               MetodoOK = model.MetodoOK,
+                Metodo = model.Metodo,
                fecha= model.fecha
             }).ToList();
 
@@ -76,7 +76,7 @@ namespace ValoresData.Commands.CdmRp
             {
                 entity.idPedido = model.idPedido;
                 entity.idEstudio = model.idEstudio;
-                entity.MetodoOK = model.MetodoOK;
+                entity.Metodo = model.Metodo;
                 entity.id_motivo_no_turno = model.id_motivo_no_turno;
                 entity.id_usuario = model.id_usuario;
                 entity.fecha = model.fecha;
@@ -92,7 +92,7 @@ namespace ValoresData.Commands.CdmRp
                 return false;
 
             var estudios = await _context.V_BEALTH_SOLPRAC
-                .Where(x => x.IDPEDIDO == model.idPedido && x.METODOOK == model.MetodoOK)
+                .Where(x => x.IDPEDIDO == model.idPedido && x.METODOOK == model.Metodo)
                 .Select(x => x.IDESTUDIO)
                 .ToListAsync();
 
@@ -109,7 +109,7 @@ namespace ValoresData.Commands.CdmRp
 
             foreach (var entity in entidades)
             {
-                entity.MetodoOK = model.MetodoOK;
+                entity.Metodo = model.Metodo;
                 entity.id_usuario = model.id_usuario;
                 entity.id_motivo_no_turno = model.id_motivo_no_turno;
                 entity.fecha = model.fecha;

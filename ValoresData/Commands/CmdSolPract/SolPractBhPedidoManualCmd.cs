@@ -68,7 +68,7 @@ namespace ValoresData.Commands.CmdSolPract
                 relsol.PRESTADORQUEGENERASOLICITUD = pedidomanual.PRESTADORQUEGENERASOLICITUD;
                 relsol.IDTURNO = pedidomanual.IDTURNO;
                 relsol.FECHAHORA = pedidomanual.FECHAHORA;
-                relsol.FECHAHORAALTA = pedidomanual.FECHAHORAALTA;
+                //relsol.FECHAHORAALTA = pedidomanual.FECHAHORAALTA;
                 relsol.FECHAHORAGESTIONDEESTADO = pedidomanual.FECHAHORAGESTIONDEESTADO;
                 relsol.USUARIOALTA = pedidomanual.USUARIOALTA;
                 relsol.IDSERVICIOTURNO = pedidomanual.IDSERVICIOTURNO;
@@ -85,7 +85,7 @@ namespace ValoresData.Commands.CmdSolPract
                 relsol.MOTIVONOTURNO = pedidomanual.MOTIVONOTURNO;
                 relsol.OBSERVACIONES = pedidomanual.OBSERVACIONES;
                 relsol.CREADO = pedidomanual.CREADO;
-
+                relsol.OBSERVACION_INTERNA = pedidomanual.OBSERVACION_INTERNA;
                 await _context.SaveChangesAsync();
                 return true;
             }

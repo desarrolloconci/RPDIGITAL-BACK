@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ValoresData.Commands.CmdInterfaces;
 using ValoresData.Services.SolPractBhInterfaces;
+using ValorModels.Models;
 using ValorModels.Models.BhModels;
 
 namespace ValoresData.Services.SolPractBhServices
@@ -49,6 +50,11 @@ namespace ValoresData.Services.SolPractBhServices
         public async Task<IEnumerable<NnMotivoNoTurnoModel>> GetMotivoNoTurnoAsync()
         {
             return await _relSolPractBhMetodoCmd.GetMotivoNoTurnoAsync();
+        }
+
+        public async Task<IEnumerable<ObrasSocialesLaboModel>> GeOsLaboAsync()
+        {
+            return await _relSolPractBhMetodoCmd.GeOsLaboAsync();
         }
     }
 }
