@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ValoresData.Commands.CmdInterfaces;
 using ValoresData.Context;
+using ValorModels.Models;
 using ValorModels.Models.BhModels;
 
 namespace ValoresData.Commands.CmdSolPract
@@ -13,11 +14,13 @@ namespace ValoresData.Commands.CmdSolPract
     public class RelSolPractBhUtilsCmd : IRelSolPractBhUtilsCmd
     {
         private readonly DataBaseContext _dbContext;
-        public RelSolPractBhUtilsCmd(DataBaseContext dbContext)
+        private readonly DataBase3Context _dbContext3;
+        public RelSolPractBhUtilsCmd(DataBaseContext dbContext, DataBase3Context dbContext3)
         {
             _dbContext = dbContext;
+            _dbContext3 = dbContext3;
         }
-       
+
         public async Task<IEnumerable<RelSolPractBhMetodoModel>> GetRelSolPractBhMetodoAsync()
         {
             _dbContext.Database.SetCommandTimeout(120);
@@ -58,6 +61,11 @@ namespace ValoresData.Commands.CmdSolPract
         {
             _dbContext.Database.SetCommandTimeout(120);
             return await _dbContext.NN_MOTIVO_NO_TURNO.ToListAsync();
+        }
+
+        public async Task<IEnumerable<ObrasSocialesLaboModel>> GeOsLaboAsync()
+        {
+            return await _dbContext3.V_LABO_OS_MOSTRAR.ToListAsync();
         }
     }
 }

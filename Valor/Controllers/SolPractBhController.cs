@@ -72,7 +72,8 @@ namespace Valor.Controllers
           string? prestador,
           string? estudio,
           int? estadoPrograma,
-          string? estadoTurno,
+          [FromQuery(Name = "estadoTurno[]")] List<string>? estadoTurno,
+        //  string? estadoTurno,
           string? usuario,
           string? servicio,
           string? obrasocial,
@@ -138,6 +139,20 @@ namespace Valor.Controllers
             int? inductor)
         {
             return await _solPractBhService.GetSolPractSeguimientoAsync(fechaCreacionRP, startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto, inductor);
+        }
+        [HttpDelete]
+        // [Authorize(Roles = "Admin,Supervisor")]
+        public async Task<IActionResult> DeleteSolPractTotalAsync(string idpedido)
+        {
+
+            var result = await _solPractBhService.DeleteSolPractTotalAsync(idpedido);
+
+            if (!result)
+            {
+                return NotFound("Valor no encontrado o no pudo ser eliminado");
+            }
+
+            return NoContent();
         }
     }
 }

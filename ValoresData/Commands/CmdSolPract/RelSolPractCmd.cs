@@ -40,6 +40,10 @@ namespace ValoresData.Commands.CmdSolPract
             return await _context.REL_SOL_PRACT.FindAsync(id);
         }
 
+        public async Task<IEnumerable<RelSolPractModel>>GetRelSolVariosAsync(string idPedido,string idEstudio)
+        {
+            return await _context.REL_SOL_PRACT.Where(e=> e.idPedido ==idPedido && e.idEstudio==idEstudio).ToListAsync();
+        }
         public async Task<bool> UpdateRelSolAsync(RelSolPractModel relSolPractModel)
         {
             var relsol = await _context.REL_SOL_PRACT.FindAsync(relSolPractModel.id);

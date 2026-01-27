@@ -50,6 +50,8 @@ namespace ValorModels.Dtos.BhDto
         public string? seg_usuario_gestion { get; set; }
         public string? grupo_gestion { get; set; }
         public int? seg_grupoDeGestionId { get; set; }
-        
+        public string? METODOPRACTICA { get; set; }
+        public string? SEG_OBSERVACION { get; set; }
+        public string? OBSERVACION_INTERNA { get; set; }
     }
 }

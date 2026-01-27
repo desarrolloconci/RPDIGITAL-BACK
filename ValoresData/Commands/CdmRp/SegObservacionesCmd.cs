@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,92 +6,91 @@ using System.Text;
 using System.Threading.Tasks;
 using ValoresData.Commands.CmdInterfaces;
 using ValoresData.Context;
-using ValorModels.Models.BhModels;
 using ValorModels.Models.RpModels;
 
 namespace ValoresData.Commands.CdmRp
 {
-    public class RelSegMotivoNoTurnoCmd : IRelSegMotivoNoTurnoCmd
+    public class SegObservacionesCmd : ISegObservacionesCmd
     {
         private readonly DataBaseContext _context;
-        public RelSegMotivoNoTurnoCmd(DataBaseContext context)
+        public SegObservacionesCmd(DataBaseContext context)
         {
             _context = context;
         }
-        public async Task<IEnumerable<RelSegMotivoNoTurnoModel>> GetRelSegMotivoNoTurnoAsync()
+        public async Task<IEnumerable<SegObservacionesModel>> GetSegObservacionesAsync()
         {
-            return await _context.SEG_REL_MOTIVO_NO_TURNO.ToListAsync();
+            return await _context.SEG_OBSERVACIONES.ToListAsync();
         }
 
-        public async Task<IEnumerable<RelSegMotivoNoTurnoModel>> GetRelSegMotivoById(RelSegMotivoNoTurnoModel model)
+        public async Task<IEnumerable<SegObservacionesModel>> GetSegObservacionesById(SegObservacionesModel model)
         {
-            var resul = await _context.SEG_REL_MOTIVO_NO_TURNO.Where(e => e.idEstudio == model.idEstudio && e.idPedido == model.idPedido).ToListAsync();
-            return resul;
+            return await _context.SEG_OBSERVACIONES.Where(e => e.idEstudio == model.idEstudio && e.idPedido == model.idPedido).ToListAsync();
         }
 
-        public async Task<bool> InsertRelSegMotivoNoTurnoAsync(RelSegMotivoNoTurnoModel model)
+        public async Task<bool> InsertSegObservacionesAsync(SegObservacionesModel model)
         {
-
             if (model is null)
                 return false;
 
-            _context.SEG_REL_MOTIVO_NO_TURNO.Add(model);
+            _context.SEG_OBSERVACIONES.Add(model);
             var result = await _context.SaveChangesAsync();
 
             return result > 0;
         }
-        public async Task<bool> InsertRelSegMotivoNoVarios(RelSegMotivoNoTurnoModel model)
+
+        public async Task<bool> InsertSegObservacionesVarios(SegObservacionesModel model)
         {
             if (model == null)
                 return false;
 
             var estudios = await _context.V_BEALTH_SOLPRAC
-                .Where(x => x.IDPEDIDO == model.idPedido && x.METODOOK == model.Metodo)
+                .Where(x => x.IDPEDIDO == model.idPedido && x.METODOPRACTICA == model.Metodo)
                 .Select(x => x.IDESTUDIO)
                 .ToListAsync();
 
             if (!estudios.Any())
                 return false;
 
-            var entidades = estudios.Select(idestudio => new RelSegMotivoNoTurnoModel
+            var entidades = estudios.Select(idestudio => new SegObservacionesModel
             {
-               idPedido=model.idPedido,
-               idEstudio = idestudio,
-               id_motivo_no_turno =model.id_motivo_no_turno,
-               id_usuario=model.id_usuario,
+                idPedido = model.idPedido,
+                idEstudio = idestudio,
+                idUsuario = model.idUsuario,
+                observacion=model.observacion,
                 Metodo = model.Metodo,
-               fecha= model.fecha
+                Fecha = model.Fecha
             }).ToList();
 
-            _context.SEG_REL_MOTIVO_NO_TURNO.AddRange(entidades);
+            _context.SEG_OBSERVACIONES.AddRange(entidades);
 
             return await _context.SaveChangesAsync() > 0;
         }
-        public async Task<bool> UpdateRelSegMotivoNoAsync(RelSegMotivoNoTurnoModel model)
+
+        public async Task<bool> UpdateSegObservacionesAsync(SegObservacionesModel model)
         {
-            var entity = await _context.SEG_REL_MOTIVO_NO_TURNO
+            var entity = await _context.SEG_OBSERVACIONES
                 .FirstOrDefaultAsync(e => e.idPedido == model.idPedido && e.idEstudio == model.idEstudio);
             if (entity != null)
             {
                 entity.idPedido = model.idPedido;
                 entity.idEstudio = model.idEstudio;
                 entity.Metodo = model.Metodo;
-                entity.id_motivo_no_turno = model.id_motivo_no_turno;
-                entity.id_usuario = model.id_usuario;
-                entity.fecha = model.fecha;
+                entity.observacion = model.observacion;
+                entity.idUsuario = model.idUsuario;
+                entity.Fecha = model.Fecha;
                 await _context.SaveChangesAsync();
                 return true;
             }
             return false;
         }
 
-        public async Task<bool> UpdateRelSegMotivoNoVarios(RelSegMotivoNoTurnoModel model)
+        public async Task<bool> UpdateSegObservacionesVarios(SegObservacionesModel model)
         {
             if (model == null)
                 return false;
 
             var estudios = await _context.V_BEALTH_SOLPRAC
-                .Where(x => x.IDPEDIDO == model.idPedido && x.METODOOK == model.Metodo)
+                .Where(x => x.IDPEDIDO == model.idPedido && x.METODOPRACTICA == model.Metodo)
                 .Select(x => x.IDESTUDIO)
                 .ToListAsync();
 
@@ -100,7 +98,7 @@ namespace ValoresData.Commands.CdmRp
                 return false;
 
 
-            var entidades = await _context.SEG_REL_MOTIVO_NO_TURNO
+            var entidades = await _context.SEG_OBSERVACIONES
                 .Where(e => e.idPedido == model.idPedido && estudios.Contains(e.idEstudio))
                 .ToListAsync();
 
@@ -110,9 +108,9 @@ namespace ValoresData.Commands.CdmRp
             foreach (var entity in entidades)
             {
                 entity.Metodo = model.Metodo;
-                entity.id_usuario = model.id_usuario;
-                entity.id_motivo_no_turno = model.id_motivo_no_turno;
-                entity.fecha = model.fecha;
+                entity.idUsuario = model.idUsuario;
+                entity.observacion = model.observacion;
+                entity.Fecha = model.Fecha;
             }
 
             return await _context.SaveChangesAsync() > 0;

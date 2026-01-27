@@ -72,5 +72,12 @@ namespace Valor.Controllers
         {
             return await _solPractBhMetodoService.GetMotivoNoTurnoAsync();
         }
+        [HttpGet]
+        [Route("/osLabo")]
+        // [Authorize]
+        public async Task<IEnumerable<ObrasSocialesLaboModel>> GetOsLaboAsync()
+        {
+            return await _solPractBhMetodoService.GeOsLaboAsync();
+        }
     }
 }

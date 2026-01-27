@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ValorModels.Dtos;
 using ValorModels.Models.BhModels;
 
 namespace ValoresData.Services.SolPractBhInterfaces
@@ -15,6 +16,8 @@ namespace ValoresData.Services.SolPractBhInterfaces
         public Task<RelSolPractModel> GetRelSolAsyncById(int id);
         public Task<bool> DeletRelSolPractTotalAsync(string idpedido, string metodoOK);
         public Task<bool> DeletRelSolPractUnitarioAsync(string idEstudio, string idPedido);
+        public Task<bool> DeleteUnificadoRelSolPractAsync(SEG_DESASOCIOARTURNO_DTO model);
+        
 
     }
 }

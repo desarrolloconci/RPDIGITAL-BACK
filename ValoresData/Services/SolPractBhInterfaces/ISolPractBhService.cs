@@ -54,12 +54,14 @@ namespace ValoresData.Services.SolPractBhInterfaces
           string? prestador = null,
           string? estudio = null,
           int? estadoPrograma = null,
-          int? estadoTurno = null,
+          List<string>? estadoTurno = null,
           string? usuario = null,
           string? servicio = null,
           string? obrasocial = null,
           string? ultimoContacto = null,
-          int? inductor = null);
+          int? inductor = null,
+          int? grupoGestionId = null);
+
 
         public Task<IEnumerable<SolPractBhRpDto>> GetSolPractRpPdfAsync(string IDPEDIDO, string metodo);
         public Task<bool> UpdateSolPractRpAsync(SolPractBhPedidoManualModel SolPract);
@@ -80,6 +82,6 @@ namespace ValoresData.Services.SolPractBhInterfaces
                string? ultimoContacto = null,
                int? inductor = null
               );
-
+        public Task<bool> DeleteSolPractTotalAsync(string idpedido);
     }
 }

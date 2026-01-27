@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ValoresData.Services.SolPractBhInterfaces;
 using ValoresData.Services.SolPractBhServices;
+using ValorModels.Dtos;
 using ValorModels.Models;
 using ValorModels.Models.BhModels;
 
@@ -144,7 +145,7 @@ namespace Valor.Controllers
         [HttpDelete]
         [Route("/segumientoRp")]
         // [Authorize(Roles = "Admin,Supervisor")]
-        public async Task<IActionResult> DeleteUnificadoRelSolPractAsync(RelSolPractModel model)
+        public async Task<IActionResult> DeleteUnificadoRelSolPractAsync(SEG_DESASOCIOARTURNO_DTO model)
         {
 
             var result = await _solPractService.DeleteUnificadoRelSolPractAsync(model);

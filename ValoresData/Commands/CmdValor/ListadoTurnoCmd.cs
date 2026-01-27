@@ -33,8 +33,11 @@ namespace ValoresData.Commands.CmdValor
 
         public async Task<IEnumerable<ListadoTurnosModel>> GetListadoTurnoByDni(string dni, DateOnly fecha)
         {
+            string dnisinceros = dni.TrimStart('0');
+            string dniFormateado = dnisinceros.PadLeft(9, '0');
+
             var fechaDateTime = fecha.ToDateTime(TimeOnly.MinValue);
-            var result = await _dbContext.vListadoTurnos.Where(e => e.fic_nrodoc == dni && e.tur_fecha.Value >= fechaDateTime && e.cancelado == "NO").ToListAsync();
+            var result = await _dbContext.vListadoTurnos.Where(e => e.fic_nrodoc == dniFormateado && e.tur_fecha.Value >= fechaDateTime && e.cancelado == "NO").ToListAsync();
             return result;
             //&& !_context.REL_SOL_PRACT.Any(o => o.turno_id == e.turno_id)
             //var fechaInicio = fecha.ToDateTime(TimeOnly.MinValue);
@@ -52,9 +55,11 @@ namespace ValoresData.Commands.CmdValor
         public async Task<IEnumerable<ListadoServicioTurnoDto>> GetListadoserviciosByDni(string dni, DateOnly fecha)
         {
             var fechaDateTime = fecha.ToDateTime(TimeOnly.MinValue);
+            string dnisinceros = dni.TrimStart('0');
+            string dniFormateado = dnisinceros.PadLeft(9, '0');
             // var result = await _dbContext.vListadoTurnos.Where(e => e.fic_nrodoc == dni && e.tur_fecha.Value >= fechaDateTime && e.cancelado == "NO").GroupBy(e=>e.Serv_nombre).ToListAsync();
             var result = await _dbContext.vListadoTurnos
-          .Where(e => e.fic_nrodoc == dni &&
+          .Where(e => e.fic_nrodoc == dniFormateado &&
                       e.tur_fecha >= fechaDateTime &&
                       e.cancelado == "NO")
           .GroupBy(e => e.Serv_nombre) 

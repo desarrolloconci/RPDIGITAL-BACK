@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ValoresData.Commands;
 using ValoresData.Commands.CdmRp;
 using ValoresData.Commands.CmdInterfaces;
 using ValoresData.Commands.CmdLogin.CmdLogin;
@@ -28,10 +29,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("sql");
 var connectionString2 = builder.Configuration.GetConnectionString("sql2");
-//var connectionString3 = builder.Configuration.GetConnectionString("sql3");
+var connectionString3 = builder.Configuration.GetConnectionString("sql3");
 builder.Services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDbContext<DataBase2Context>(options => options.UseSqlServer(connectionString2));
-//builder.Services.AddDbContext<DataBase3Context>(options => options.UseSqlServer(connectionString3));
+builder.Services.AddDbContext<DataBase3Context>(options => options.UseSqlServer(connectionString3));
 builder.Services.Configure<GmailSettingModel>(builder.Configuration.GetSection("GmailSettings"));
 builder.Services.AddScoped<IValorService, ValorService>();
 builder.Services.AddScoped<IValorCmd, ValorCmd>();
@@ -111,6 +112,14 @@ builder.Services.AddScoped<ISegGrupoGestionCmd, SegGrupoGestionCmd>();
 builder.Services.AddScoped<ISegGrupoGestionService, SegGrupoGestionService>();
 builder.Services.AddScoped<ISegUsuariosService, SegUsuariosService>();
 builder.Services.AddScoped<ISegUsuariosCmd, SegUsuariosCmd>();
+builder.Services.AddScoped<ISegMetodoService, SegMetodoService>();
+builder.Services.AddScoped<ISegMetodoCmd, SegMetodoCmd>();
+builder.Services.AddScoped<ISegObservacionesServices, SegObservacionesServices>();
+builder.Services.AddScoped<ISegObservacionesCmd, SegObservacionesCmd>();
+builder.Services.AddScoped<IDatosPacientesCargaManualService, DatosPacientesCargaManualService>();
+builder.Services.AddScoped<IDatosPacientesCargaManualCmd, DatosPacientesCargaManualCmd>();
+builder.Services.AddScoped<IUsuariosCmd, UsuariosCmd>();
+builder.Services.AddScoped<IUsusarioService, UsuariosService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -135,7 +144,20 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("NuevaPolitica", app =>
     {
-        app.WithOrigins("http://localhost:3001", "http://localhost:3000", "http://192.168.9.211:3000", "http://192.168.9.211:3001", "http://192.168.9.211:85", "http://192.168.9.211", "http://localhost:3002", "http://192.168.9.210:3000", "http://192.168.9.210:85", "http://192.168.9.5:3000", "http://192.168.9.5:85", "http://localhost:85")
+        app.WithOrigins("http://localhost:3001",
+            "http://localhost:3000",
+            "http://localhost:3003",
+            "http://localhost:3004",
+            "http://192.168.9.211:3000", 
+            "http://192.168.9.211:3001",
+            "http://192.168.9.211:85",
+            "http://192.168.9.211", 
+            "http://localhost:3002",
+            "http://192.168.9.210:3000", 
+            "http://192.168.9.210:85",
+            "http://192.168.9.5:3000", 
+            "http://192.168.9.5:85", 
+            "http://localhost:85")
         .AllowAnyHeader()
         .AllowAnyMethod();
     });

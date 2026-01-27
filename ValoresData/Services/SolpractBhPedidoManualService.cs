@@ -34,6 +34,8 @@ namespace ValoresData.Services
         public async Task<bool> InsertSolPractBhPedidoManualAsync(SolPractBhPedidoManualModel pedidomanual)
         {
             pedidomanual.DNI = pedidomanual.DNI.TrimStart('0');
+            var argentinaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
+            pedidomanual.FECHAHORAALTA = TimeZoneInfo.ConvertTime(DateTime.UtcNow, argentinaTimeZone);
             return await _solPractBhPedidoManualCmd.InsertSolPractBhPedidoManualAsync(pedidomanual);
         }
 

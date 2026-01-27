@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,17 +10,16 @@ using ValorModels.Models.RpModels;
 
 namespace ValoresData.Commands.CdmRp
 {
-    public class SegMotivoNoTurnoCmd : ISegMotivoNoTurnoCmd
+    public class SegMetodoCmd : ISegMetodoCmd
     {
         private readonly DataBaseContext _context;
-        public SegMotivoNoTurnoCmd(DataBaseContext context)
+        public SegMetodoCmd(DataBaseContext context)
         {
             _context = context;
         }
-       
-        public async Task<IEnumerable<SegMotivoNoTurnoModel>> GetSegMotivoNoTurnoAsync()
+        public async Task<IEnumerable<SegMetodoModel>> GetMetodosAsync()
         {
-            return await _context.SEG_MOTIVO_NO_TURNO.Where(e=> e.baja == false).ToListAsync();
+            return await _context.V_SEG_METODO.ToListAsync();
         }
     }
 }

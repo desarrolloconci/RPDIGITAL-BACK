@@ -25,7 +25,7 @@ namespace ValoresData.Services.RpServices
             try
             {
                 if (exist.Any()) { 
-                    if (model.metodoOk == "Laboratorio"|| model.metodoOk == "Módulo Base" || model.metodoOk == "Modulo Base")
+                    if (model.Metodo == "Laboratorio"|| model.Metodo == "Módulo Base" || model.Metodo == "Modulo Base")
                      {
                      
                     return await _cmd.UpdateSegUsuarioGestionVarios(model);
@@ -35,7 +35,7 @@ namespace ValoresData.Services.RpServices
                 }
                 else
                 {
-                    if (model.metodoOk == "Laboratorio" || model.metodoOk == "Módulo Base" || model.metodoOk == "Modulo Base")
+                    if (model.Metodo == "Laboratorio" || model.Metodo == "Módulo Base" || model.Metodo == "Modulo Base")
                     {
                         return await _cmd.InsertSegUsuarioGestionVarios(model);
                     }

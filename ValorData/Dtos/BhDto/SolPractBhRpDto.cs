@@ -64,5 +64,6 @@ namespace ValorModels.Dtos.BhDto
         public string? seg_usuario_gestion { get; set; }
         public bool? No_gestion { get; set; }
         public string? FIRMA { get; set; }
+        public string? METODOPRACTICA { get; set; }
     }
 }

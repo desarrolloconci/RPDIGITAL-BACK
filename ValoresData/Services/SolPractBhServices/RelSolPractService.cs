@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ValoresData.Commands.CmdInterfaces;
 using ValoresData.Services.SolPractBhInterfaces;
+using ValorModels.Dtos;
 using ValorModels.Models.BhModels;
 
 namespace ValoresData.Services.SolPractBhServices
@@ -24,7 +25,10 @@ namespace ValoresData.Services.SolPractBhServices
         }
 
         public async Task<bool> InsertRelSolPractAsync(RelSolPractModel relSolPractModel)
-        {       if (relSolPractModel.turno_id == 1) {
+        {
+            var turno = await _cmd.GetRelSolVariosAsync(relSolPractModel.idPedido, relSolPractModel.idEstudio);
+            if (turno != null && turno.Any()) { return true; }
+            if (relSolPractModel.turno_id == 1) {
                 relSolPractModel.turno_id = (int)(DateTime.UtcNow.Ticks % 1_000_000_000);
                   }
             try
@@ -62,6 +66,20 @@ namespace ValoresData.Services.SolPractBhServices
         {
 
             return await _cmd.GetRelSolAsyncById(id);
+        }
+        public async Task <bool> DeleteUnificadoRelSolPractAsync(SEG_DESASOCIOARTURNO_DTO model)
+        {
+            try
+            {
+                if (model.metodoOK == "Laboratorio" || model.metodoOK == "Módulo Base" || model.metodoOK == "Modulo Base")
+                {
+
+                    return await _cmd.DeletRelSolPractTotalAsync(model.idPedido,model.metodoOK);
+                }
+                else
+                    return await _cmd.DeletRelSolPractUnitarioAsync(model.idEstudio,model.idPedido);
+            }
+            catch (Exception ex) { Console.WriteLine(ex); return false; }
         }
         public async Task<bool> DeletRelSolPractTotalAsync(string idpedido, string metodoOK)
         {

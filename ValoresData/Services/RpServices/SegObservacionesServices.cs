@@ -9,21 +9,21 @@ using ValorModels.Models.RpModels;
 
 namespace ValoresData.Services.RpServices
 {
-    public class RelSegMotivoNoTurnoService : IRelSegMotivoNoTurnoService
+    public class SegObservacionesServices : ISegObservacionesServices
     {
-        private readonly IRelSegMotivoNoTurnoCmd _cmd;
-        public RelSegMotivoNoTurnoService(IRelSegMotivoNoTurnoCmd cmd)
+        private readonly ISegObservacionesCmd _cmd;
+        public SegObservacionesServices(ISegObservacionesCmd cmd)
         {
             _cmd = cmd;
         }
-        public async Task<IEnumerable<RelSegMotivoNoTurnoModel>> GetRelSegMotivoNoTurnoAsync()
+        public async Task<IEnumerable<SegObservacionesModel>> GetSegObservacionesAsync()
         {
-            return await _cmd.GetRelSegMotivoNoTurnoAsync();
+            return await _cmd.GetSegObservacionesAsync();
         }
 
-        public async Task<bool> InsertRelSegMotivoNoTurnoAsync(RelSegMotivoNoTurnoModel model)
+        public async Task<bool> ManageSegObservacionesAsyncAsync(SegObservacionesModel model)
         {
-            var exist = await _cmd.GetRelSegMotivoById(model);
+            var exist = await _cmd.GetSegObservacionesById(model);
 
             try
             {
@@ -32,19 +32,21 @@ namespace ValoresData.Services.RpServices
                     if (model.Metodo == "Laboratorio" || model.Metodo == "Módulo Base" || model.Metodo == "Modulo Base")
                     {
 
-                        return await _cmd.UpdateRelSegMotivoNoVarios(model);
+                        
+                        return await _cmd.UpdateSegObservacionesVarios(model);
                     }
                     else
-                        return await _cmd.UpdateRelSegMotivoNoAsync(model);
+                        return await _cmd.UpdateSegObservacionesAsync(model);
                 }
                 else
                 {
                     if (model.Metodo == "Laboratorio" || model.Metodo == "Módulo Base" || model.Metodo == "Modulo Base")
                     {
-                        return await _cmd.InsertRelSegMotivoNoVarios(model);
+                        
+                        return await _cmd.InsertSegObservacionesVarios(model);
                     }
                     else
-                        return await _cmd.InsertRelSegMotivoNoTurnoAsync(model);
+                        return await _cmd.InsertSegObservacionesAsync(model);
                 }
             }
             catch (Exception ex) { return false; }

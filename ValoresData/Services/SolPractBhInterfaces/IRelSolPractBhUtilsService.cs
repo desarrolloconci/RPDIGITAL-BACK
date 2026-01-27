@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ValorModels.Models;
 using ValorModels.Models.BhModels;
 
 namespace ValoresData.Services.SolPractBhInterfaces
@@ -17,5 +18,6 @@ namespace ValoresData.Services.SolPractBhInterfaces
         public Task<IEnumerable<RelSolPractBhEstadoProgramaModel>> GetRelSolPractBhEstadoProgramaAsync();
         public Task<IEnumerable<RelSolPractBhEstadoTurnoModel>> GetRelSolPractBhEstadoTurnoAsync();
         public Task<IEnumerable<NnMotivoNoTurnoModel>> GetMotivoNoTurnoAsync();
+        public Task<IEnumerable<ObrasSocialesLaboModel>> GeOsLaboAsync();
     }
 }
