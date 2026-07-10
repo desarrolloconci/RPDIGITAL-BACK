@@ -9,6 +9,6 @@ namespace ValoresData.Commands.CmdInterfaces
 {
     public interface IBhEstudiosCmd
     {
-        public Task<IEnumerable<BhEstudiosModel>> GetBhEstudiosAsync();
+        public Task<IEnumerable<BhEstudiosModel>> GetBhEstudiosAsync(string? search);
     }
 }

@@ -15,10 +15,9 @@ namespace Valor.Controllers
         }
         [HttpGet]
         // [Authorize]
-        public async Task<IEnumerable<BhEstudiosModel>> GetBhEstudiosAsync()
+        public async Task<IEnumerable<BhEstudiosModel>> GetBhEstudiosAsync([FromQuery] string? search)
         {
-            return await _bhEstudiosService.GetBhEstudiosAsync();
-            
+            return await _bhEstudiosService.GetBhEstudiosAsync(search);
         }
     }
 }

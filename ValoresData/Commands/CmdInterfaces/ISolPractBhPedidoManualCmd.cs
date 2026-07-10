@@ -10,6 +10,7 @@ namespace ValoresData.Commands.CmdInterfaces
     public interface ISolPractBhPedidoManualCmd
     {
         public Task<IEnumerable<SolPractBhPedidoManualModel>> GetSolPractBhPedidoManualAsync();
+        public Task<IEnumerable<SolPractBhPedidoManualModel>> GetSolPractBhPedidoManualEnvMasivoBroAsync(DateOnly desde, DateOnly hasta);
 
         public Task<bool> InsertSolPractBhPedidoManualAsync(SolPractBhPedidoManualModel pedidomanual);
         public Task<SolPractBhPedidoManualModel> GetSolPractBhPedidoManuallAsyncById(int id);

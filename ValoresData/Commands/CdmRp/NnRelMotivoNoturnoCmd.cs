@@ -61,7 +61,7 @@ namespace ValoresData.Commands.CdmRp
         }
         public async Task<bool> InsertMotivoNoTurnoAsyncVarios(NnRelMotivoNoTurnoModel motivoNoTurnoModel)
         {
-            var estudios = await _dataBaseContext.BEALTH_SOLPRACT_P_MANUAL
+            var estudios = await _dataBaseContext.BEALTH_SOLPRACT_P_MANUAL_OK
                            .Where(e => e.IDPEDIDO == motivoNoTurnoModel.idPedido && e.METODOPRACTICA == motivoNoTurnoModel.metodo)
                            .Select(e => e.IDESTUDIO).ToListAsync();
             foreach (var estudio in estudios)

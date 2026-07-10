@@ -40,8 +40,8 @@ namespace ValoresData.Context
         public DbSet<RolUserModel> RolUsers { get; set; }
         public DbSet<EstadoPedidoManualModel> ESTADO_PEDIDO_MANUAL { get; set; }
         public DbSet<ObservacionesPacientesBhModel> OBSERVACIONES_PACIENTES_BH { get; set; }
-        public DbSet<SolPractBhPedidoManualModel> BEALTH_SOLPRACT_P_MANUAL { get; set; }
-       // public DbSet<SolPractBhPedidoManualModel> BEALTH_SOLPRACT_P_MANUAL_OK { get; set; }
+       // public DbSet<SolPractBhPedidoManualModel> BEALTH_SOLPRACT_P_MANUAL { get; set; }
+        public DbSet<SolPractBhPedidoManualModel> BEALTH_SOLPRACT_P_MANUAL_OK { get; set; }
       
         public DbSet<BhEstudiosModel> V_BH_ESTUDIOS { get; set; }
         public DbSet<AsignacionInductoresModel> ASIGNACION_INDUCTORES { get; set; }
@@ -61,6 +61,8 @@ namespace ValoresData.Context
         public DbSet<SolPractModel> BEALTH_SOLPRACT { get; set; }
         public DbSet<InstructivoModel> V_BH_DESCRIPCIONES { get; set; }
         public DbSet<GrupoEstudiosModel> GRUPOESTUDIOS { get; set; }
+        public DbSet<GrupoEstudiosDetModel> GRUPOESTUDIOSDET { get; set; }
+        public DbSet<GrupoEstudiosCreadorModel> GRUPOESTUDIOS_CREADOR { get; set; }
         public DbSet<BhBateriasPublicasModel> V_BATERIAS_UNIVERSALES { get; set; }
         public DbSet<SegMotivoNoTurnoModel> SEG_MOTIVO_NO_TURNO { get; set; }
         public DbSet<RelSegMotivoNoTurnoModel> SEG_REL_MOTIVO_NO_TURNO { get; set; }
@@ -78,7 +80,6 @@ namespace ValoresData.Context
             modelBuilder.Entity<RelSolPractBhServicioSolModel>().HasNoKey();
             modelBuilder.Entity<RelSolPractBhOsModel>().HasNoKey();
             modelBuilder.Entity<BhEstudiosModel>().HasNoKey();
-            modelBuilder.Entity<GrupoEstudiosModel>().HasNoKey();
             modelBuilder.Entity<UltimoPedidoPorDniModel>().HasNoKey();
             //modelBuilder.Entity<SolPractBhPedidoManualModel>().HasNoKey();
         }

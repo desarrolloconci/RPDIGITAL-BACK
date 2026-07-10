@@ -24,17 +24,22 @@ namespace ValoresData.Commands.CmdSolPract
 
         public async Task<IEnumerable<SolPractBhPedidoManualModel>> GetSolPractBhPedidoManualAsync()
         {
-            return await _context.BEALTH_SOLPRACT_P_MANUAL.ToListAsync();
+            return await _context.BEALTH_SOLPRACT_P_MANUAL_OK.ToListAsync();
+        }
+
+        public async Task<IEnumerable<SolPractBhPedidoManualModel>> GetSolPractBhPedidoManualEnvMasivoBroAsync(DateOnly desde, DateOnly hasta)
+        {
+            return await _context.BEALTH_SOLPRACT_P_MANUAL_OK.ToListAsync();
         }
 
         public async Task<SolPractBhPedidoManualModel> GetSolPractBhPedidoManuallAsyncById(int id)
         {
-            return await _context.BEALTH_SOLPRACT_P_MANUAL.FindAsync(id);
+            return await _context.BEALTH_SOLPRACT_P_MANUAL_OK.FindAsync(id);
         }
 
         public async Task<bool> InsertSolPractBhPedidoManualAsync(SolPractBhPedidoManualModel pedidomanual)
         {
-            _context.BEALTH_SOLPRACT_P_MANUAL.Add(pedidomanual);
+            _context.BEALTH_SOLPRACT_P_MANUAL_OK.Add(pedidomanual);
             await _context.SaveChangesAsync();
             if (pedidomanual != null)
             {
@@ -45,7 +50,7 @@ namespace ValoresData.Commands.CmdSolPract
 
         public async Task<bool> UpdateSolPractBhPedidoManualAsync(SolPractBhPedidoManualModel pedidomanual)
         {
-            var relsol = await _context.BEALTH_SOLPRACT_P_MANUAL.FindAsync(pedidomanual.ID);
+            var relsol = await _context.BEALTH_SOLPRACT_P_MANUAL_OK.FindAsync(pedidomanual.ID);
             if (relsol != null)
             {
                 relsol.IDPEDIDO=pedidomanual.IDPEDIDO;

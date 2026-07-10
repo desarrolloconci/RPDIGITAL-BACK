@@ -161,6 +161,49 @@ namespace ValoresData.Commands.CmdSolPract
             return resultadosFiltrados;
         }
 
+        public async Task<IEnumerable<SolPractBhDto>> GetPedidosAnterioresPorDniAsync(string dni)
+        {
+            // El DNI puede venir guardado con o sin ceros a la izquierda según el origen del dato
+            // (turnero vs. solicitudes viejas/manuales). En vez de comparar por sufijo (LIKE '%valor',
+            // que no puede usar índice y escanea toda la vista), armamos un set acotado de variantes
+            // exactas (sin ceros, y con padding a 7/8/9 dígitos, los largos reales de DNI en la tabla)
+            // y comparamos con IN, que sí puede resolverse con búsquedas puntuales.
+            var dniSinCeros = string.IsNullOrEmpty(dni) ? dni : dni.TrimStart('0');
+            var candidatosDni = new List<string> { dni, dniSinCeros };
+            if (!string.IsNullOrEmpty(dniSinCeros))
+            {
+                candidatosDni.Add(dniSinCeros.PadLeft(7, '0'));
+                candidatosDni.Add(dniSinCeros.PadLeft(8, '0'));
+                candidatosDni.Add(dniSinCeros.PadLeft(9, '0'));
+            }
+            candidatosDni = candidatosDni.Distinct().ToList();
+
+            // Usamos V_UNION_BEHEALTH_SOLPRACT (solo la unión de las dos tablas de pedidos) en vez de
+            // V_BEALTH_SOLPRAC, que suma más de una decena de joins (turnos, inductores, seguimiento,
+            // obra social, etc.) que no hacen falta para listar los pedidos anteriores de un paciente.
+            var query =
+                from v in _context.V_UNION_BEHEALTH_SOLPRACT
+                where candidatosDni.Contains(v.DNI)
+                orderby v.FECHA descending
+                select new SolPractBhDto
+                {
+                    id = v.ID,
+                    DNI = v.DNI,
+                    NOMBRE = v.NOMBRE,
+                    OBRASOCIAL = v.OBRASOCIAL,
+                    PRESTADORQUEGENERASOLICITUD = v.PRESTADORQUEGENERASOLICITUD,
+                    FECHA = v.FECHA ?? DateTime.MinValue,
+                    idPedido = v.IDPEDIDO,
+                    idEstudio = v.IDESTUDIO,
+                    ESTUDIO = v.ESTUDIO,
+                    METODOOK = v.METODOPRACTICA,
+                    Estado_pedido = v.ESTADO,
+                    DIAGNÓSTICO = v.DIAGNÓSTICO
+                };
+
+            return await query.Take(200).ToListAsync();
+        }
+
         public async Task<IEnumerable<SolPractBhMetodoDto>> GetSolPractAsync(
                  DateTime? fechaCreacionRP = null,
                  string? startFechaRP = null,
@@ -577,7 +620,7 @@ namespace ValoresData.Commands.CmdSolPract
 
         public async Task<bool> UpdateSolPractRpAsync(SolPractBhPedidoManualModel SolPract)
         {
-            var update = await _context.BEALTH_SOLPRACT_P_MANUAL.Where(e => e.IDPEDIDO == SolPract.IDPEDIDO).ToListAsync();
+            var update = await _context.BEALTH_SOLPRACT_P_MANUAL_OK.Where(e => e.IDPEDIDO == SolPract.IDPEDIDO).ToListAsync();
             if (update.Any())
             {
                 foreach (var item in update)
@@ -793,12 +836,12 @@ namespace ValoresData.Commands.CmdSolPract
 
         public async Task<bool> DeleteSolPractTotalAsync(string idpedido)
         {
-            var rp = await _context.BEALTH_SOLPRACT_P_MANUAL.Where(e => e.IDPEDIDO == idpedido).ToListAsync();
+            var rp = await _context.BEALTH_SOLPRACT_P_MANUAL_OK.Where(e => e.IDPEDIDO == idpedido).ToListAsync();
             if (rp == null || !rp.Any())
             {
                 return false;
             }
-            _context.BEALTH_SOLPRACT_P_MANUAL.RemoveRange(rp);
+            _context.BEALTH_SOLPRACT_P_MANUAL_OK.RemoveRange(rp);
             await _context.SaveChangesAsync();
 
             return true;

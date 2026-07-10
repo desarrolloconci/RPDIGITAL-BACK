@@ -140,6 +140,13 @@ namespace Valor.Controllers
         {
             return await _solPractBhService.GetSolPractSeguimientoAsync(fechaCreacionRP, startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto, inductor);
         }
+        [HttpGet]
+        [Route("/PedidosAnteriores")]
+        public async Task<IEnumerable<SolPractBhDto>> GetPedidosAnterioresPorDniAsync(string dni)
+        {
+            return await _solPractBhService.GetPedidosAnterioresPorDniAsync(dni);
+        }
+
         [HttpDelete]
         // [Authorize(Roles = "Admin,Supervisor")]
         public async Task<IActionResult> DeleteSolPractTotalAsync(string idpedido)

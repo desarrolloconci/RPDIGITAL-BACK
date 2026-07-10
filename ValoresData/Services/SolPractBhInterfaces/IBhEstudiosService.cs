@@ -9,6 +9,6 @@ namespace ValoresData.Services.SolPractBhInterfaces
 {
     public interface IBhEstudiosService
     {
-        public Task<IEnumerable<BhEstudiosModel>> GetBhEstudiosAsync();
+        public Task<IEnumerable<BhEstudiosModel>> GetBhEstudiosAsync(string? search);
     }
 }

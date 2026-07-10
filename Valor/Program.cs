@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
+using Serilog.Events;
 using System.Text;
 using ValoresData.Commands;
 using ValoresData.Commands.CdmRp;
@@ -23,7 +25,24 @@ using ValorModels.Dtos;
 using ValorModels.Models;
 using SegCantContactosCmd = ValoresData.Commands.CdmRp.SegCantContactosCmd;
 
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .Enrich.WithEnvironmentName()
+    .WriteTo.Console()
+    .WriteTo.File(
+        path: "Logs/api-.txt",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 30,
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .CreateLogger();
+
+try
+{
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog();
 
 // Add services to the container.
 
@@ -120,6 +139,7 @@ builder.Services.AddScoped<IDatosPacientesCargaManualService, DatosPacientesCarg
 builder.Services.AddScoped<IDatosPacientesCargaManualCmd, DatosPacientesCargaManualCmd>();
 builder.Services.AddScoped<IUsuariosCmd, UsuariosCmd>();
 builder.Services.AddScoped<IUsusarioService, UsuariosService>();
+builder.Services.AddScoped<ILogsService, LogsService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -146,23 +166,41 @@ builder.Services.AddCors(options =>
     {
         app.WithOrigins("http://localhost:3001",
             "http://localhost:3000",
+            "http://localhost:3002",
             "http://localhost:3003",
             "http://localhost:3004",
-            "http://192.168.9.211:3000", 
+            "http://localhost:3005",
+            "http://192.168.9.211:3000",
             "http://192.168.9.211:3001",
             "http://192.168.9.211:85",
-            "http://192.168.9.211", 
-            "http://localhost:3002",
-            "http://192.168.9.210:3000", 
+            "http://192.168.9.211",
+            "http://192.168.9.210:3000",
             "http://192.168.9.210:85",
-            "http://192.168.9.5:3000", 
-            "http://192.168.9.5:85", 
+            "http://192.168.9.5:3000",
+            "http://192.168.9.5:85",
+            "http://192.168.9.5:3007",
+            "http://192.168.9.5:3013",
+            "http://192.168.9.2:3005",
             "http://localhost:85")
         .AllowAnyHeader()
         .AllowAnyMethod();
     });
 });
 var app = builder.Build();
+
+app.UseSerilogRequestLogging(options =>
+{
+    options.MessageTemplate = "HTTP {RequestMethod} {RequestPath}{QueryString} respondió {StatusCode} en {Elapsed:0.0000} ms";
+    options.GetLevel = (httpContext, elapsedMs, ex) => ex != null
+        ? LogEventLevel.Error
+        : elapsedMs > 3000
+            ? LogEventLevel.Warning
+            : LogEventLevel.Information;
+    options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+    {
+        diagnosticContext.Set("QueryString", httpContext.Request.QueryString.Value);
+    };
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -183,3 +221,13 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run("http://0.0.0.0:7174");
+
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "La aplicación no pudo iniciar correctamente");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

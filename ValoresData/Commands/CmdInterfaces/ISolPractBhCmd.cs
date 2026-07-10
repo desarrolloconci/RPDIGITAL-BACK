@@ -81,6 +81,7 @@ namespace ValoresData.Commands.CmdInterfaces
                int? inductor = null
               );
         public  Task<bool> DeleteSolPractTotalAsync(string idpedido);
+        public Task<IEnumerable<SolPractBhDto>> GetPedidosAnterioresPorDniAsync(string dni);
     }
 
 

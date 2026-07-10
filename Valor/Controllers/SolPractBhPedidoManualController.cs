@@ -90,8 +90,7 @@ namespace Valor.Controllers
 
                 return StatusCode(500, new
                 {
-                    message = "Ocurrió un error al procesar la solicitud",
-                    error = ex,
+                    message = ex.Message,
                     success = false
                 });
             }

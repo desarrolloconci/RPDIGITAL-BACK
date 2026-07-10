@@ -16,9 +16,9 @@ namespace ValoresData.Services.SolPractBhServices
         {
             _bhEstudiosCmd = bhEstudiosCmd;
         }
-        public Task<IEnumerable<BhEstudiosModel>> GetBhEstudiosAsync()
+        public Task<IEnumerable<BhEstudiosModel>> GetBhEstudiosAsync(string? search)
         {
-            return _bhEstudiosCmd.GetBhEstudiosAsync();
+            return _bhEstudiosCmd.GetBhEstudiosAsync(search);
         }
     }
 }

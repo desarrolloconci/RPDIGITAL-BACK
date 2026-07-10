@@ -83,5 +83,6 @@ namespace ValoresData.Services.SolPractBhInterfaces
                int? inductor = null
               );
         public Task<bool> DeleteSolPractTotalAsync(string idpedido);
+        public Task<IEnumerable<SolPractBhDto>> GetPedidosAnterioresPorDniAsync(string dni);
     }
 }

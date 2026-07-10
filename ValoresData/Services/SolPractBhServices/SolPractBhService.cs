@@ -70,5 +70,10 @@ namespace ValoresData.Services.SolPractBhServices
         {
             return await _solPractBhCmd.DeleteSolPractTotalAsync(idpedido);
         }
+
+        public async Task<IEnumerable<SolPractBhDto>> GetPedidosAnterioresPorDniAsync(string dni)
+        {
+            return await _solPractBhCmd.GetPedidosAnterioresPorDniAsync(dni);
+        }
     }
 }

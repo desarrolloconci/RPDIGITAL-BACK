@@ -17,9 +17,16 @@ namespace ValoresData.Commands.CmdSolPract
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<BhEstudiosModel>> GetBhEstudiosAsync()
+        public async Task<IEnumerable<BhEstudiosModel>> GetBhEstudiosAsync(string? search)
         {
-           return await _dbContext.V_BH_ESTUDIOS.ToListAsync();
+            var query = _dbContext.V_BH_ESTUDIOS.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(e => e.ESTUDIO_NOMBRE.Contains(search) || e.ESTUDIO_CODIGO.Contains(search));
+            }
+
+            return await query.OrderBy(e => e.ESTUDIO_NOMBRE).ToListAsync();
         }
     }
 }
