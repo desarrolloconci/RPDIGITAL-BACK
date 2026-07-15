@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ValorModels.Dtos.BhDto;
 using ValorModels.Models;
 using ValorModels.Models.BhModels;
 using ValorModels.Models.RpModels;
@@ -30,7 +31,11 @@ namespace ValoresData.Context
         public DbSet<ExcepcionOsPlanCodModel> Excepciones_os_plan_cod { get; set; }
         public DbSet<RelSolPractModel> REL_SOL_PRACT { get; set; }
         public DbSet<SolPractBhModel> V_BEALTH_SOLPRAC { get; set; }
+        // Sin tabla/vista propia: solo se consulta via FromSqlRaw (GetSolPractRpAsync), para que
+        // la materialización use el shaper compilado de EF en vez del mecanismo generico de SqlQueryRaw.
+        public DbSet<SolPractBhDto> SolPractBhRpQuery { get; set; }
         public DbSet<RelSolPractBhMetodoModel> V_SolPractBhMetodo { get; set; }
+        public DbSet<CacheSolPractBhMetodoModel> CACHE_SolPractBhMetodo { get; set; }
         public DbSet<RelSolPractBhUnidadModel> V_SolPractBhUnidad { get; set; }
         public DbSet<RelSolPractBhServicioSolModel> V_SolPractBhEspecialidad { get; set; }
         public DbSet<RelSolPractBhOsModel> V_SolPractBhOs { get; set; }
@@ -52,6 +57,7 @@ namespace ValoresData.Context
         public DbSet<FichaPacienteModel> FICHA_PACIENTES_BH { get; set; }
         public DbSet<BhUltimoContactoModel> BH_ULTIMO_CONTACTO { get; set; }
         public DbSet<RelEspServiciosModel> V_Rel_esp_servicios { get; set; }
+        public DbSet<RelEspServicioModel> REL_ESP_SERVICIOS { get; set; }
         public DbSet<RelEspMatriculasModel> Rel_esp_matriculas { get; set; }
         public DbSet<PrestadoresRpModel> V_PRESTADORES_RP { get; set; }
         public DbSet<RelEspBateriasModel> V_Rel_esp_baterias { get; set; }
@@ -76,6 +82,8 @@ namespace ValoresData.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RelSolPractBhMetodoModel>().HasNoKey();
+            modelBuilder.Entity<SolPractBhDto>().HasNoKey();
+            modelBuilder.Entity<CacheSolPractBhMetodoModel>().HasNoKey();
             modelBuilder.Entity<RelSolPractBhUnidadModel>().HasNoKey();
             modelBuilder.Entity<RelSolPractBhServicioSolModel>().HasNoKey();
             modelBuilder.Entity<RelSolPractBhOsModel>().HasNoKey();

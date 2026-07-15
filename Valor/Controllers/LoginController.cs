@@ -49,6 +49,29 @@ namespace Valor.Controllers
             return data;
         }
 
+        [HttpPost]
+        [Route("register-medico")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<LoginResponseDto> RegisterMedico([FromBody] RegisterMedicoDto medicoModel)
+        {
+            LoginResponseDto data = await _loginService.RequestCreateMedicoAsync(medicoModel);
+            return data;
+        }
+
+        [HttpPut("{username}")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateUser(string username, [FromBody] UpdateUserDto userModel)
+        {
+            var result = await _loginService.RequestUpdateUserAsync(username, userModel);
+
+            if (!result)
+            {
+                return NotFound("Usuario no encontrado");
+            }
+
+            return Ok();
+        }
+
         [HttpGet]
         //[Authorize(Roles = "Admin")]
         public async Task<IEnumerable<UserResultDto>> GetUsersAsync()

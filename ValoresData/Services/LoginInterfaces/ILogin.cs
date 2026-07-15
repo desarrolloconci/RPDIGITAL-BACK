@@ -13,6 +13,8 @@ namespace ValoresData.Services.LoginInterfaces
         public Task<IEnumerable<UserResultDto>> GetUsersAsync();
         Task<LoginResponseDto> RequestLoginAsync(LoginDto userCredentials);
         Task<LoginResponseDto> RequestCreateUserAsync(UserDto userModel);
+        Task<LoginResponseDto> RequestCreateMedicoAsync(RegisterMedicoDto medicoModel);
+        Task<bool> RequestUpdateUserAsync(string userName, UpdateUserDto userModel);
         public Task<UserModel> GetUserAsyncByUsername(string userName);
         public Task<bool> DeleteUserAsync(string userName);
     }

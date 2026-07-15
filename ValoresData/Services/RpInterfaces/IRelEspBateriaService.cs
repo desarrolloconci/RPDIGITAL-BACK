@@ -13,6 +13,7 @@ namespace ValoresData.Services.RpInterfaces
         public Task<IEnumerable<RelEspBateriasModel>> GetRelEspServiciosAsync();
 
         public Task<IEnumerable<BhBateriasModel>> GetRelSolPractBhBateriaAsync(int usuario_id);
+        public Task<IEnumerable<BhBateriasPublicasModel>> BateriaPublicamodel();
         public Task<bool> InsertRelEspBaterias(RelBateriasEspModel model);
         public  Task<bool> DeleteRelEspBateriasAsync(int id);
     }

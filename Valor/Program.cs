@@ -89,6 +89,8 @@ builder.Services.AddScoped<IRolUserCmd, RolUserCmd>();
 builder.Services.AddScoped<IInstructivoService, InstructivoService>();
 builder.Services.AddScoped<IInstructivoCmd, InstructivoCmd>();
 builder.Services.AddTransient<ISendMailService,SendMailService>();
+builder.Services.AddSingleton<IMailQueue, MailQueue>();
+builder.Services.AddHostedService<MailQueueHostedService>();
 builder.Services.AddScoped<IEstadoPedidoManualCmd, EstadoPedidoManualCmd>();
 builder.Services.AddScoped<IEstadoPedidoManualService, EstadoPedidoManualService>();
 builder.Services.AddScoped<IObservacionesPacientesBhService, ObservacionesPacientesBhService>();

@@ -19,7 +19,9 @@ namespace ValoresData.Commands.CmdSolPract
         }
         public async Task<IEnumerable<BhBateriasModel>> GeBhBateriasEstudiosAsync()
         {
-            return await _context.v_BH_BATERIAS.ToListAsync();
+            return await _context.v_BH_BATERIAS
+                .Select(b => new BhBateriasModel { id = b.id, nombre = b.nombre })
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<BhBateriasEstudiosModel>> GetBhBateriasEstudiosGrupoAsync(int GrupoId)

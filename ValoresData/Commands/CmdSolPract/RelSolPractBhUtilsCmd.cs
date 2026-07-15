@@ -23,8 +23,9 @@ namespace ValoresData.Commands.CmdSolPract
 
         public async Task<IEnumerable<RelSolPractBhMetodoModel>> GetRelSolPractBhMetodoAsync()
         {
-            _dbContext.Database.SetCommandTimeout(120);
-            return await _dbContext.V_SolPractBhMetodo.ToListAsync();
+            return await _dbContext.CACHE_SolPractBhMetodo
+                .Select(v => new RelSolPractBhMetodoModel { METODOOK = v.METODOOK })
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<RelSolPractBhUnidadModel>> GetRelSolPractBhUnidadAsync()

@@ -9,10 +9,10 @@ namespace Valor.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class MailController : ControllerBase
-    { private readonly ISendMailService _sendMailService;
-        public MailController(ISendMailService sendMailService)
+    { private readonly IMailQueue _mailQueue;
+        public MailController(IMailQueue mailQueue)
         {
-            _sendMailService = sendMailService;
+            _mailQueue = mailQueue;
         }
 
         [HttpPost]
@@ -25,8 +25,8 @@ namespace Valor.Controllers
             }
 
 
-            _sendMailService.sendEmail(requestDto.Subject,requestDto.To,requestDto.Body);
-           
+            await _mailQueue.QueueEmailAsync(requestDto.Subject, requestDto.To, requestDto.Body);
+
 
             return Ok();
 

@@ -52,14 +52,13 @@ namespace ValoresData.Commands.CdmRp
             }
             else
             {
-                var todas = await _context.v_BH_BATERIAS
-                    .Select(b => new BhBateriasModel { id = b.id, nombre = b.nombre })
-                    .ToListAsync();
-                foreach (var bateria in todas)
+                var publicas = await BateriaPublicamodel();
+                resultadoFinal = publicas.Select(p => new BhBateriasModel
                 {
-                    bateria.esPropia = creadasPorUsuario.Contains(bateria.id);
-                }
-                resultadoFinal = todas;
+                    id = p.id,
+                    nombre = p.nombre,
+                    esPropia = creadasPorUsuario.Contains(p.id),
+                }).ToList();
             }
 
             var ids = resultadoFinal.Select(b => b.id).Distinct().ToList();

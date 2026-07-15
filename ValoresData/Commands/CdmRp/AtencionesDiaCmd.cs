@@ -47,7 +47,7 @@ namespace ValoresData.Commands.CdmRp
             var matriculasLista = matriculas.Select(m => m.matricula).ToList();
             var fechaHoy = ahoraArgentina.Date;
             var fechaMañana = fechaHoy.AddDays(1);
-            if (servicio == "vdee22sut")
+            if (servicio == "886")
             {
                 var atencionesCMPreconsulta = await _dbContext.vMultiConsultaNatanet
                                 .Where(e => matriculasLista.Contains(e.MPEFECTOR) && e.FECHATENCION >= fechaHoy && e.FECHATENCION < fechaMañana && e.Depto_id == 54)
@@ -56,7 +56,7 @@ namespace ValoresData.Commands.CdmRp
                                 .ToListAsync();
                 return atencionesCMPreconsulta;
             }
-            if (servicio == "vdee23sut")
+            if (servicio == "884")
             {
                 var circuitosMedicos = await _dbContext.vMultiConsultaNatanet
                 .Where(e => e.MPEFECTOR == 999994 && e.FECHATENCION >= fechaHoy && e.FECHATENCION < fechaMañana)

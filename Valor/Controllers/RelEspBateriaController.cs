@@ -26,6 +26,13 @@ namespace Valor.Controllers
 
             return Ok(atenciones);
         }
+
+        [HttpGet("publicas")]
+        public async Task<ActionResult<IEnumerable<BhBateriasPublicasModel>>> GetBateriasPublicasAsync()
+        {
+            var publicas = await _EspBateriaService.BateriaPublicamodel();
+            return Ok(publicas);
+        }
         [HttpPost]
         public async Task<IActionResult> InsertRelEspBaterias([FromBody] List<RelBateriasEspModel> model)
         {

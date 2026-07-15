@@ -26,6 +26,10 @@ namespace ValoresData.Services.RpServices
         {
             return await _relEspBateriaCmd.GetRelSolPractBhBateriaAsync(usuario_id);
         }
+        public async Task<IEnumerable<BhBateriasPublicasModel>> BateriaPublicamodel()
+        {
+            return await _relEspBateriaCmd.BateriaPublicamodel();
+        }
         public async Task<bool> InsertRelEspBaterias(RelBateriasEspModel model)
         {
             return await _relEspBateriaCmd.InsertRelEspBaterias(model);

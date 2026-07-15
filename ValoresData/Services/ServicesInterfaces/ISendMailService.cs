@@ -8,6 +8,6 @@ namespace ValoresData.Services.ServicesInterfaces
 {
     public interface ISendMailService
     {
-        void sendEmail(string subject, string body, string to);
+        Task SendEmailAsync(string subject, string to, string body);
     }
 }

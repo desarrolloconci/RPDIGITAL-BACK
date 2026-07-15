@@ -26,6 +26,17 @@ namespace ValoresData.Services.LoginService
             return result;
         }
 
+        public async Task<LoginResponseDto> RequestCreateMedicoAsync(RegisterMedicoDto medicoModel)
+        {
+            LoginResponseDto result = await _validationData.CreateMedicoAsync(medicoModel);
+            return result;
+        }
+
+        public async Task<bool> RequestUpdateUserAsync(string userName, UpdateUserDto userModel)
+        {
+            return await _validationData.UpdateUserAsync(userName, userModel);
+        }
+
         public async Task<LoginResponseDto> RequestLoginAsync(LoginDto userCredentials)
         {
             ValidateLoginDto userData = await _validationData.GetLoginValidationData(userCredentials.Username);

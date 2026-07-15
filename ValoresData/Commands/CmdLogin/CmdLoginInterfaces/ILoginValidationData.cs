@@ -15,6 +15,8 @@ namespace ValoresData.Commands.CmdLogin.CmdLoginInterfaces
         public Task<IEnumerable<UserResultDto>> GetUsersAsync();
         public Task<ValidateLoginDto> GetLoginValidationData(string userEmail);
         public Task<LoginResponseDto> CreateUserAsync(UserDto userModel);
+        public Task<LoginResponseDto> CreateMedicoAsync(RegisterMedicoDto medicoModel);
+        public Task<bool> UpdateUserAsync(string userName, UpdateUserDto userModel);
 
         public Task<UserModel> GetUserAsyncByUsername(string userName);
         public Task<bool> DeleteUserAsync(string userName);

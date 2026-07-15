@@ -17,9 +17,9 @@ namespace ValoresData.Services
         {
             _gmailsettings= gmailsettings.Value;
         }
-        public void sendEmail(string subject, string to, string body)
+        public async Task SendEmailAsync(string subject, string to, string body)
         {
-           
+
             try
             {
 
@@ -33,13 +33,13 @@ namespace ValoresData.Services
                 message.Body = body;
                 message.IsBodyHtml = true;
 
-                var smptClient = new SmtpClient("smtp.gmail.com")
+                using var smptClient = new SmtpClient("smtp.gmail.com")
                 {
                     Port = _gmailsettings.Port,
                     Credentials = new NetworkCredential(fromEmail, password),
                     EnableSsl = true
                 };
-                smptClient.Send(message);
+                await smptClient.SendMailAsync(message);
 
             }
             catch (Exception ex) {

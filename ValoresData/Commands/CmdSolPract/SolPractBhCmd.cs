@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection.Emit;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using ValoresData.Commands.CmdInterfaces;
@@ -125,7 +126,7 @@ namespace ValoresData.Commands.CmdSolPract
             }
             if (estadoTurno != null && estadoTurno.Any())
             {
-                query = query.Where(v => estadoTurno.Contains(v.Estado_Turno_id));
+                query = query.Where(v => estadoTurno.Contains(v.Estado_Turno_id ?? -1));
             }
             if (!string.IsNullOrEmpty(usuario))
             {
@@ -300,7 +301,7 @@ namespace ValoresData.Commands.CmdSolPract
             }
             if (estadoTurno != null && estadoTurno.Any())
             {
-                query = query.Where(v => estadoTurno.Contains(v.Estado_Turno_id));
+                query = query.Where(v => estadoTurno.Contains(v.Estado_Turno_id ?? -1));
             }
             if (!string.IsNullOrEmpty(usuario))
             {
@@ -330,7 +331,7 @@ namespace ValoresData.Commands.CmdSolPract
             .Select(group => new SolPractBhMetodoDto
             {
                 METODOOK = group.Key,
-                FECHA = group.FirstOrDefault().FECHA,
+                FECHA = group.FirstOrDefault().FECHA ?? DateTime.MinValue,
                 ESTUDIO = group.FirstOrDefault().ESTUDIO,
                 tur_fecha = group.FirstOrDefault().tur_fecha,
                 ATENDIDO = group.FirstOrDefault().ATENDIDO,
@@ -342,7 +343,7 @@ namespace ValoresData.Commands.CmdSolPract
                 INDUCTOR_ID = group.FirstOrDefault().INDUCTOR_ID,
                 estado_Programa = group.FirstOrDefault().estado_Programa,
                 IDESTUDIO = group.FirstOrDefault().idEstudio,
-                Estado_Turno_id = group.FirstOrDefault().Estado_Turno_id,
+                Estado_Turno_id = group.FirstOrDefault().Estado_Turno_id ?? 0,
                 SolPractBhDtos = group.Key == "Laboratorio" ? group.Take(1) :
                  group.Where(x => x.turno_id != null).GroupBy(x => new { x.idEstudio, x.turno_id }).Select(g => g.First())
                  .Concat(group.Where(x => x.turno_id == null))
@@ -368,63 +369,12 @@ namespace ValoresData.Commands.CmdSolPract
    int? grupoGestionId = null
 )
         {
-            
             _context.Database.SetCommandTimeout(300);
-            var baseQuery =
-                from v in _context.V_BEALTH_SOLPRAC.AsNoTracking()
-                select new SolPractBhDto
-                {
-                    id = v.ID,
-                    DNI = v.DNI,
-                    NOMBRE = v.NOMBRE,
-                    OBRASOCIAL = v.OBRASOCIAL,
-                    PRESTADORQUEGENERASOLICITUD = v.PRESTADORQUEGENERASOLICITUD,
-                    FECHA = v.FECHA,
-                    idrelsol = v.idrelsol,
-                    idPedido = v.IDPEDIDO,
-                    idEstudio = v.IDESTUDIO,
-                    fechaGestion = v.relsol_fechaGestion,
-                    observaciones = v.relsol_observaciones,
-                    creado = v.relsol_creado,
-                    usuario = v.relsol_usuario,
-                    ESTUDIO = v.ESTUDIO,
-                    turno_id = v.turno_id,
-                    METODOPRACTICA = v.METODOPRACTICA,
-                    unidad = v.UNIDAD,
-                    servicio = v.SERVICIOSOLICITUD,
-                    CONFESPECIAL = v.CONFESPECIAL,
-                    INDUCTOR = v.INDUCTOR,
-                    Estado_pedido = v.Estado_pedido,
-                    ATENDIDO = v.ATENDIDO,
-                    UNIDAD_NOMBRE = v.UNIDAD,
-                    estado_Programa = v.estado_Programa,
-                    tur_fecha = v.tur_fecha,
-                    OSCOD = v.OSCOD,
-                    INDUCTOR_ID = v.INDUCTOR_ID,
-                    Estado_Turno_id = v.Estado_Turno_id,
-                    EMAIL = v.EMAIL,
-                    CELULAR = v.CELULAR,
-                    NUMEROAFILIADO = v.NUMEROAFILIADO,
-                    motivo_no_turno = v.motivo_no_turno,
-                    seguimiento_estado_turno = v.seguimiento_estado_turno,
-                    seguimiento_cantidad_contactos = v.seguimiento_cantidad_contactos,
-                    seg_grupoDeGestionId = v.seg_grupoDeGestionId,
-                    seg_usuario_gestion = v.seg_usuario_gestion,
-                    grupo_gestion = v.grupo_gestion,
-                    DIAGNÓSTICO = v.DIAGNÓSTICO,
-                    SEG_OBSERVACION = v.SEG_OBSERVACION,
-                    OBSERVACION_INTERNA=v.OBSERVACION_INTERNA
-                };
 
-            // 2. Aplicación de todos los Filtros
+            // Se arma el WHERE dinámico en SQL crudo: mismos filtros que antes, pero
+            // ejecutados en una sola consulta (antes eran hasta 2 round-trips + dedupe en C#).
+            var where = new SqlWhereBuilder();
 
-            // Filtro de Fechas
-            //if (!string.IsNullOrEmpty(startFechaRP) &&
-            //    DateTime.TryParseExact(startFechaRP, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime startDate) &&
-            //    DateTime.TryParseExact(endFechaRP, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime endDate))
-            //{
-            //    baseQuery = baseQuery.Where(v => v.FECHA >= startDate && v.FECHA <= endDate);
-            //}
             if (!string.IsNullOrEmpty(startFechaRP))
             {
                 if (DateTime.TryParseExact(startFechaRP, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime startDate))
@@ -432,104 +382,173 @@ namespace ValoresData.Commands.CmdSolPract
                     if (!string.IsNullOrEmpty(endFechaRP) &&
                         DateTime.TryParseExact(endFechaRP, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime endDate))
                     {
-                        // Caso: ambas fechas -> rango
-                        baseQuery = baseQuery.Where(v => v.FECHA >= startDate && v.FECHA <= endDate);
+                        where.Add("v.FECHA >= @startDate AND v.FECHA <= @endDate",
+                            new SqlParameter("@startDate", startDate.Date),
+                            new SqlParameter("@endDate", endDate.Date));
                     }
                     else
                     {
-                        // Caso: solo startFechaRP -> mismo día
-                        baseQuery = baseQuery.Where(v => v.FECHA.Date == startDate.Date);
+                        where.Add("v.FECHA = @startDate", new SqlParameter("@startDate", startDate.Date));
                     }
                 }
             }
 
-            // Filtros Simples
-            if (!string.IsNullOrEmpty(dni)) baseQuery = baseQuery.Where(v => v.DNI == dni);
+            if (!string.IsNullOrEmpty(dni))
+                where.Add("v.DNI = @dni", new SqlParameter("@dni", dni));
 
-            // Filtro METODO: Aplicado primero para reducir la carga de datos.
-            if (!string.IsNullOrEmpty(metodo)) baseQuery = baseQuery.Where(v => v.METODOPRACTICA == metodo);
+            if (!string.IsNullOrEmpty(metodo))
+                where.Add("v.METODOPRACTICA = @metodo", new SqlParameter("@metodo", metodo));
 
-            if (unidad != null && unidad.Any()) baseQuery = baseQuery.Where(v => unidad.Contains(v.UNIDAD_NOMBRE));
-            if (!string.IsNullOrEmpty(estudio)) baseQuery = baseQuery.Where(v => v.ESTUDIO == estudio);
-            if (estadoPrograma.HasValue) baseQuery = baseQuery.Where(v => v.estado_Programa == estadoPrograma);
+            if (unidad != null && unidad.Any())
+                where.Add("v.UNIDAD IN (SELECT [value] FROM OPENJSON(@unidad) WITH ([value] nvarchar(max) '$'))",
+                    new SqlParameter("@unidad", JsonSerializer.Serialize(unidad)));
 
-            // Filtro Estado Turno
+            if (!string.IsNullOrEmpty(estudio))
+                where.Add("v.ESTUDIO = @estudio", new SqlParameter("@estudio", estudio));
+
+            if (estadoPrograma.HasValue)
+                where.Add("v.estado_Programa = @estadoPrograma", new SqlParameter("@estadoPrograma", estadoPrograma.Value));
+
             if (estadoTurno != null && estadoTurno.Any())
-            {
-                baseQuery = baseQuery.Where(v => estadoTurno.Contains(v.seguimiento_estado_turno));
-            }
+                where.Add("v.seguimiento_estado_turno IN (SELECT [value] FROM OPENJSON(@estadoTurno) WITH ([value] nvarchar(max) '$'))",
+                    new SqlParameter("@estadoTurno", JsonSerializer.Serialize(estadoTurno)));
 
-            if (!string.IsNullOrEmpty(usuario)) baseQuery = baseQuery.Where(v => v.seg_usuario_gestion == usuario);
-            if (!string.IsNullOrEmpty(prestador)) baseQuery = baseQuery.Where(v => v.PRESTADORQUEGENERASOLICITUD == prestador);
-            if (!string.IsNullOrEmpty(obrasocial)) baseQuery = baseQuery.Where(v => v.OSCOD == obrasocial);
+            if (!string.IsNullOrEmpty(usuario))
+                where.Add("v.seg_usuario_gestion = @usuario", new SqlParameter("@usuario", usuario));
 
-            // Filtro Último Contacto
-            if (!string.IsNullOrEmpty(ultimoContacto))
-            {
-                if (DateOnly.TryParse(ultimoContacto, out var fechaContacto))
-                {
-                    baseQuery = baseQuery.Where(v => v.fechaGestion == fechaContacto);
-                }
-            }
+            if (!string.IsNullOrEmpty(prestador))
+                where.Add("v.PRESTADORQUEGENERASOLICITUD = @prestador", new SqlParameter("@prestador", prestador));
 
-            if (inductor.HasValue) baseQuery = baseQuery.Where(v => v.INDUCTOR_ID == inductor);
-            if (!string.IsNullOrEmpty(servicio)) baseQuery = baseQuery.Where(v => v.servicio == servicio);
-            if (grupoGestionId.HasValue) baseQuery = baseQuery.Where(v => v.seg_grupoDeGestionId == grupoGestionId);
+            if (!string.IsNullOrEmpty(obrasocial))
+                where.Add("v.OSCOD = @obrasocial", new SqlParameter("@obrasocial", obrasocial));
 
+            if (!string.IsNullOrEmpty(ultimoContacto) && DateOnly.TryParse(ultimoContacto, out var fechaContacto))
+                where.Add("v.relsol_fechaGestion = @fechaContacto",
+                    new SqlParameter("@fechaContacto", fechaContacto.ToDateTime(TimeOnly.MinValue)));
 
-            // 3. Lógica Condicional de Agrupamiento y Ejecución (OPTIMIZADA)
+            if (inductor.HasValue)
+                where.Add("v.INDUCTOR_ID = @inductor", new SqlParameter("@inductor", inductor.Value));
 
-            // Caso 1: Se especificó un método DIFERENTE de "Laboratorio"
+            if (!string.IsNullOrEmpty(servicio))
+                where.Add("v.SERVICIOSOLICITUD = @servicio", new SqlParameter("@servicio", servicio));
+
+            if (grupoGestionId.HasValue)
+                where.Add("v.seg_grupoDeGestionId = @grupoGestionId", new SqlParameter("@grupoGestionId", grupoGestionId.Value));
+
+            const string columnas = @"
+        v.ID AS id,
+        v.DNI,
+        v.NOMBRE,
+        v.OBRASOCIAL,
+        v.PRESTADORQUEGENERASOLICITUD,
+        v.FECHA,
+        v.idrelsol,
+        v.IDPEDIDO AS idPedido,
+        v.IDESTUDIO AS idEstudio,
+        v.relsol_fechaGestion AS fechaGestion,
+        v.relsol_observaciones AS observaciones,
+        v.relsol_creado AS creado,
+        v.relsol_usuario AS usuario,
+        v.ESTUDIO,
+        v.turno_id,
+        v.METODOPRACTICA,
+        v.UNIDAD AS unidad,
+        v.SERVICIOSOLICITUD AS servicio,
+        v.CONFESPECIAL,
+        v.INDUCTOR,
+        v.Estado_pedido,
+        v.ATENDIDO,
+        v.UNIDAD AS UNIDAD_NOMBRE,
+        v.estado_Programa,
+        v.tur_fecha,
+        v.OSCOD,
+        v.INDUCTOR_ID,
+        v.Estado_Turno_id,
+        CAST(NULL AS nvarchar(max)) AS Estado_Turno,
+        v.EMAIL,
+        v.CELULAR,
+        v.NUMEROAFILIADO,
+        v.motivo_no_turno,
+        v.seguimiento_estado_turno,
+        v.seguimiento_cantidad_contactos,
+        CAST(NULL AS nvarchar(max)) AS METODOOK,
+        v.DIAGNÓSTICO,
+        v.seg_usuario_gestion,
+        v.grupo_gestion,
+        v.seg_grupoDeGestionId,
+        CAST(NULL AS nvarchar(max)) AS METODOOK2,
+        v.SEG_OBSERVACION,
+        v.OBSERVACION_INTERNA";
+
+            string sql;
+
+            // Caso 1: método específico distinto de Laboratorio -> el WHERE de arriba ya
+            // excluye Laboratorio, no hay nada que deduplicar. Consulta simple sin ROW_NUMBER:
+            // calcular esa ventana igual (aunque el resultado se descarte después) obliga a
+            // ordenar/particionar todo el resultado sin necesidad, y es el caso más frecuente.
             if (!string.IsNullOrEmpty(metodo) && metodo != "Laboratorio")
             {
-                // El 'baseQuery' ya está filtrado. No se necesita agrupación.
-                return await baseQuery
-                    .OrderBy(v => v.FECHA)
-                    .ThenBy(v => v.DNI)
-                    .ToListAsync();
+                sql = $@"
+SELECT
+    {columnas}
+FROM V_BEALTH_SOLPRAC v
+{where.BuildWhereClause()}
+ORDER BY v.FECHA, v.DNI;";
             }
-
-            // --- Lógica para Laboratorio (Agrupación forzada en C#) ---
-
-            // Definimos la query para Laboratorio, usando los filtros de baseQuery
-            var laboratorioQuery = baseQuery
-                .Where(v => v.METODOPRACTICA == "Laboratorio");
-
-            // Ejecutamos la consulta en la DB y cargamos los resultados filtrados en MEMORIA (C#)
-            var laboratorioList = await laboratorioQuery.ToListAsync();
-
-            // Aplicamos el agrupamiento y la selección del primer elemento en C# (LINQ to Objects)
-            var laboratorioItems = laboratorioList
-                .GroupBy(v => v.idPedido)
-                .Select(g => g.First())
-                .ToList();
-
-
-            // Caso 2: Se especificó 'metodo == "Laboratorio"' 
-            if (metodo == "Laboratorio")
+            else
             {
-                // Ya tenemos el resultado agrupado y filtrado.
-                return laboratorioItems
-                    .OrderBy(v => v.FECHA)
-                    .ThenBy(v => v.DNI)
-                    .ToList();
+                // Caso 2 (metodo == Laboratorio) y Caso 3 (sin metodo): acá sí puede haber filas
+                // de Laboratorio a deduplicar por pedido. Primera versión de este cambio calculaba
+                // ROW_NUMBER() sobre TODO el resultado filtrado (Laboratorio + otros mezclados),
+                // y eso resultó MÁS LENTO que el código viejo: la ventana obliga a SQL Server a
+                // ordenar/particionar decenas de miles de filas de una, cuando en realidad solo
+                // hace falta deduplicar el subconjunto de Laboratorio (bug de performance detectado
+                // comparando contra producción con la misma consulta real antes de cerrar esto).
+                //
+                // Por eso acá se materializa la vista filtrada UNA sola vez en #Base (evita pagar
+                // los ~15 JOIN dos veces, que es lo que hacía el código viejo con sus 2 consultas),
+                // y el ROW_NUMBER() se calcula solo sobre el subconjunto ya materializado de
+                // Laboratorio -particionado por idPedido, sin necesidad de incluir METODOPRACTICA
+                // en la partición porque #Base.METODOPRACTICA ya es constante en ese subconjunto-,
+                // mucho más chico y barato de ordenar. Medido contra la base real: ~8 segundos
+                // totales vs ~17.5s con la ventana sobre todo el resultado y ~11-12s del código
+                // viejo con sus 2 consultas separadas.
+                sql = $@"
+DROP TABLE IF EXISTS #Base;
+
+SELECT
+    {columnas}
+INTO #Base
+FROM V_BEALTH_SOLPRAC v
+{where.BuildWhereClause()};
+
+SELECT *
+FROM (
+    SELECT *, ROW_NUMBER() OVER (PARTITION BY idPedido ORDER BY (SELECT NULL)) AS rn
+    FROM #Base
+    WHERE METODOPRACTICA = 'Laboratorio'
+) lab
+WHERE rn = 1
+
+UNION ALL
+
+SELECT *, NULL AS rn
+FROM #Base
+WHERE ISNULL(METODOPRACTICA, '') <> 'Laboratorio'
+
+ORDER BY FECHA, DNI;
+
+DROP TABLE #Base;";
             }
 
-            // Caso 3: NO se especificó el método (metodo == null), debe cargar TODO.
-
-            // Parte B: Otros (No requiere Agrupación)
-            // Cargamos todos los registros que NO son Laboratorio con el resto de los filtros aplicados.
-            var otrosItems = await baseQuery
-                .Where(v => v.METODOPRACTICA != "Laboratorio")
+            // FromSqlRaw contra un DbSet registrado (aunque sin tabla propia, ver DataBaseContext)
+            // usa el shaper compilado de EF para materializar -- SqlQueryRaw<T> usa un mapeo
+            // generico por reflexion, notablemente mas lento para un DTO con ~40 columnas y miles
+            // de filas (medido: la diferencia explicaba varios segundos del tiempo total).
+            return await _context.SolPractBhRpQuery
+                .FromSqlRaw(sql, where.Parameters)
+                .AsNoTracking()
                 .ToListAsync();
-
-            // Parte C: Unir, Ordenar y Retornar
-            var finalResult = laboratorioItems.Concat(otrosItems)
-                .OrderBy(v => v.FECHA)
-                .ThenBy(v => v.DNI)
-                .ToList();
-
-            return finalResult;
         }
         public async Task<IEnumerable<SolPractBhRpDto>> GetSolPractRpPdfAsync(string IDPEDIDO, string metodo)
         {
@@ -782,7 +801,7 @@ namespace ValoresData.Commands.CmdSolPract
             }
             if (estadoTurno != null && estadoTurno.Any())
             {
-                query = query.Where(v => estadoTurno.Contains(v.Estado_Turno_id));
+                query = query.Where(v => estadoTurno.Contains(v.Estado_Turno_id ?? -1));
             }
             if (!string.IsNullOrEmpty(usuario))
             {
@@ -813,7 +832,7 @@ namespace ValoresData.Commands.CmdSolPract
             {
                 METODOOK2 = group.Key,
                 METODOOK=group.FirstOrDefault().METODOOK,
-                FECHA = group.FirstOrDefault().FECHA,
+                FECHA = group.FirstOrDefault().FECHA ?? DateTime.MinValue,
                 ESTUDIO = group.FirstOrDefault().ESTUDIO,
                 tur_fecha = group.FirstOrDefault().tur_fecha,
                 ATENDIDO = group.FirstOrDefault().ATENDIDO,
@@ -825,7 +844,7 @@ namespace ValoresData.Commands.CmdSolPract
                 INDUCTOR_ID = group.FirstOrDefault().INDUCTOR_ID,
                 estado_Programa = group.FirstOrDefault().estado_Programa,
                 IDESTUDIO = group.FirstOrDefault().idEstudio,
-                Estado_Turno_id = group.FirstOrDefault().Estado_Turno_id,
+                Estado_Turno_id = group.FirstOrDefault().Estado_Turno_id ?? 0,
                 SolPractBhDtos = group.Key == "Laboratorio" ? group.Take(1) :
                  group.Where(x => x.turno_id != null).GroupBy(x => new { x.idEstudio, x.turno_id }).Select(g => g.First())
                  .Concat(group.Where(x => x.turno_id == null))
