@@ -142,6 +142,20 @@ namespace Valor.Controllers
 
             return NoContent();
         }
+        [HttpGet("Turno/{turnoId}")]
+        // [Authorize(Roles = "Admin,Supervisor")]
+        public async Task<ActionResult<IEnumerable<SolPractBhPedidoManualModel>>> GetRpVinculadosATurnoAsync(int turnoId)
+        {
+            var rps = await _solPractService.GetRpVinculadosATurnoAsync(turnoId);
+
+            if (rps == null || !rps.Any())
+            {
+                return NotFound("No se encontraron rp vinculados a ese turno");
+            }
+
+            return Ok(rps);
+        }
+
         [HttpDelete]
         [Route("/segumientoRp")]
         // [Authorize(Roles = "Admin,Supervisor")]

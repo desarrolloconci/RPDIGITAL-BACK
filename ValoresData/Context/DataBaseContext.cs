@@ -90,6 +90,8 @@ namespace ValoresData.Context
             modelBuilder.Entity<BhEstudiosModel>().HasNoKey();
             modelBuilder.Entity<UltimoPedidoPorDniModel>().HasNoKey();
             //modelBuilder.Entity<SolPractBhPedidoManualModel>().HasNoKey();
+            modelBuilder.Entity<RelSolPractModel>().Property(e => e.IDESTUDIO_NUM).ValueGeneratedOnAddOrUpdate();
+            modelBuilder.Entity<SolPractBhPedidoManualModel>().Property(e => e.IDESTUDIO_NUM).ValueGeneratedOnAddOrUpdate();
         }
 
     }

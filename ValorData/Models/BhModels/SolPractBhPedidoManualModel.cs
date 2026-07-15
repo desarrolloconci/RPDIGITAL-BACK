@@ -18,6 +18,7 @@ namespace ValorModels.Models.BhModels
             public string? DIAGNÓSTICO { get; set; }
             public string? METODOPRACTICA { get; set; }
             public string? IDESTUDIO { get; set; }
+            public int? IDESTUDIO_NUM { get; set; }
             public string? ESTUDIO { get; set; }
             public string? DNI { get; set; }
             public string? NOMBRE { get; set; }

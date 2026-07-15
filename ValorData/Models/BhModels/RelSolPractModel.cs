@@ -19,6 +19,7 @@ namespace ValorModels.Models.BhModels
         public DateOnly creado { get; set; }
         public string? usuario { get; set; }
         public int ? turno_id { get; set; }
+        public int? IDESTUDIO_NUM { get; set; }
         public string? metodoOK { get; set; }
         public DateTime tur_fecha { get; set; }
         public TimeOnly hs_Ini { get; set; }

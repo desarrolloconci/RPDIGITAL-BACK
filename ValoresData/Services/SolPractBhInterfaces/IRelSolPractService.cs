@@ -17,7 +17,7 @@ namespace ValoresData.Services.SolPractBhInterfaces
         public Task<bool> DeletRelSolPractTotalAsync(string idpedido, string metodoOK);
         public Task<bool> DeletRelSolPractUnitarioAsync(string idEstudio, string idPedido);
         public Task<bool> DeleteUnificadoRelSolPractAsync(SEG_DESASOCIOARTURNO_DTO model);
-        
+        public Task<IEnumerable<SolPractBhPedidoManualModel>> GetRpVinculadosATurnoAsync(int turnoId);
 
     }
 }

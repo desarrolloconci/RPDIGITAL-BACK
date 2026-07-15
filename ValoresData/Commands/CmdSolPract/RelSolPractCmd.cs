@@ -134,6 +134,25 @@ namespace ValoresData.Commands.CmdSolPract
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<IEnumerable<SolPractBhPedidoManualModel>> GetRpVinculadosATurnoAsync(int turnoId)
+        {
+            var relaciones = await _context.REL_SOL_PRACT
+                .Where(e => e.turno_id == turnoId)
+                .ToListAsync();
+
+            if (!relaciones.Any())
+            {
+                return Enumerable.Empty<SolPractBhPedidoManualModel>();
+            }
+
+            var idPedidos = relaciones.Select(r => r.idPedido).Distinct().ToList();
+            var idEstudioNums = relaciones.Select(r => r.IDESTUDIO_NUM).Distinct().ToList();
+
+            return await _context.BEALTH_SOLPRACT_P_MANUAL_OK
+                .Where(b => idPedidos.Contains(b.IDPEDIDO) && idEstudioNums.Contains(b.IDESTUDIO_NUM))
+                .ToListAsync();
+        }
     }
         
 

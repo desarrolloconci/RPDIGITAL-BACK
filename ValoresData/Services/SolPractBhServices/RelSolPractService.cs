@@ -89,6 +89,10 @@ namespace ValoresData.Services.SolPractBhServices
         {
             return await _cmd.DeletRelSolPractUnitarioAsync(idEstudio, idPedido);
         }
+        public async Task<IEnumerable<SolPractBhPedidoManualModel>> GetRpVinculadosATurnoAsync(int turnoId)
+        {
+            return await _cmd.GetRpVinculadosATurnoAsync(turnoId);
+        }
     }
 
 }
