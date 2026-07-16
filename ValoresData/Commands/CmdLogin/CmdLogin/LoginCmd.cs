@@ -129,21 +129,55 @@ namespace ValoresData.Commands.CmdLogin.CmdLogin
                 return false;
             }
 
-            user.Name = userModel.Name;
-            user.Last_name = userModel.Last_name;
-            user.Email = userModel.Email;
-            user.Role = userModel.Role;
-            user.Matricula = userModel.Matricula;
-
-            if (!string.IsNullOrEmpty(userModel.Password))
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                string salt = BCrypt.Net.BCrypt.GenerateSalt();
-                user.Password = BCrypt.Net.BCrypt.HashPassword(userModel.Password, salt);
-                user.Salt = salt;
-            }
+                user.Name = userModel.Name;
+                user.Last_name = userModel.Last_name;
+                user.Email = userModel.Email;
+                user.Role = userModel.Role;
+                user.Matricula = userModel.Matricula;
+                user.FIRMA = userModel.Firma;
 
-            await _context.SaveChangesAsync();
-            return true;
+                if (!string.IsNullOrEmpty(userModel.Password))
+                {
+                    string salt = BCrypt.Net.BCrypt.GenerateSalt();
+                    user.Password = BCrypt.Net.BCrypt.HashPassword(userModel.Password, salt);
+                    user.Salt = salt;
+                }
+
+                // Especialidades, matriculas asociadas y baterias se reemplazan por completo con lo
+                // que llega en el DTO, igual que en el alta (CreateMedicoAsync).
+                var especialidadesActuales = await _context.REL_ESP_SERVICIOS.Where(e => e.usuario_id == user.ID).ToListAsync();
+                _context.REL_ESP_SERVICIOS.RemoveRange(especialidadesActuales);
+                foreach (var especialidadId in userModel.EspecialidadesIds)
+                {
+                    _context.REL_ESP_SERVICIOS.Add(new RelEspServicioModel { usuario_id = user.ID, servicio_id = especialidadId });
+                }
+
+                var matriculasActuales = await _context.Rel_esp_matriculas.Where(m => m.usuario_id == user.ID).ToListAsync();
+                _context.Rel_esp_matriculas.RemoveRange(matriculasActuales);
+                foreach (var matricula in userModel.Matriculas)
+                {
+                    _context.Rel_esp_matriculas.Add(new RelEspMatriculasModel { usuario_id = user.ID, matricula = matricula });
+                }
+
+                var bateriasActuales = await _context.Rel_esp_baterias.Where(b => b.usuario_id == user.ID).ToListAsync();
+                _context.Rel_esp_baterias.RemoveRange(bateriasActuales);
+                foreach (var bateriaId in userModel.BateriasIds)
+                {
+                    _context.Rel_esp_baterias.Add(new RelBateriasEspModel { usuario_id = user.ID, bateria_id = bateriaId });
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
 
@@ -166,19 +200,28 @@ namespace ValoresData.Commands.CmdLogin.CmdLogin
 
         public async Task<IEnumerable<UserResultDto>> GetUsersAsync()
         {
-            var result = await (from v in _context.BH_USERS
-                                select new UserResultDto {
+            var usuarios = await _context.BH_USERS.ToListAsync();
 
-                Email = v.Email,
-                User_name =v.User_name,
-                Name=v.Name,
-                Last_name=v.Last_name,
-                Role=v.Role,
-                Matricula=v.Matricula
-                }).ToListAsync();
+            // Se traen las 3 relaciones completas y se agrupan en memoria (en vez de una consulta
+            // por usuario) para no hacer N+1 llamadas a la base.
+            var especialidadesPorUsuario = (await _context.REL_ESP_SERVICIOS.ToListAsync()).ToLookup(e => e.usuario_id);
+            var matriculasPorUsuario = (await _context.Rel_esp_matriculas.ToListAsync()).ToLookup(m => m.usuario_id);
+            var bateriasPorUsuario = (await _context.Rel_esp_baterias.ToListAsync()).ToLookup(b => b.usuario_id);
 
-            return result;
-
+            return usuarios.Select(u => new UserResultDto
+            {
+                ID = u.ID,
+                Email = u.Email,
+                User_name = u.User_name,
+                Name = u.Name,
+                Last_name = u.Last_name,
+                Role = u.Role,
+                Matricula = u.Matricula,
+                Firma = u.FIRMA,
+                EspecialidadesIds = especialidadesPorUsuario[u.ID].Select(e => e.servicio_id).ToList(),
+                Matriculas = matriculasPorUsuario[u.ID].Select(m => m.matricula).ToList(),
+                BateriasIds = bateriasPorUsuario[u.ID].Select(b => b.bateria_id).ToList()
+            }).ToList();
         }
 
         public async Task<UserModel> GetUserAsyncByUsername(string userName)
