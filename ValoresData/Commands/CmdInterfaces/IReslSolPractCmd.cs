@@ -20,5 +20,6 @@ namespace ValoresData.Commands.CmdInterfaces
         public Task<bool> DeletRelSolPractUnitarioAsync(string idEstudio, string idPedido);
         public Task<IEnumerable<RelSolPractModel>> GetRelSolVariosAsync(string idPedido, string idEstudio);
         public Task<IEnumerable<SolPractBhPedidoManualModel>> GetRpVinculadosATurnoAsync(int turnoId);
+        public Task<IEnumerable<int>> GetTurnoIdsConPedidoAsync(List<int> turnoIds);
     }
 }

@@ -82,6 +82,7 @@ namespace ValoresData.Commands.CmdInterfaces
               );
         public  Task<bool> DeleteSolPractTotalAsync(string idpedido);
         public Task<IEnumerable<SolPractBhDto>> GetPedidosAnterioresPorDniAsync(string dni);
+        public Task<IEnumerable<string>> GetDnisConRpAsync(List<string> dnis);
     }
 
 

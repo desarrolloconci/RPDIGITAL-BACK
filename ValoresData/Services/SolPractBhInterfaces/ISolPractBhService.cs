@@ -84,5 +84,6 @@ namespace ValoresData.Services.SolPractBhInterfaces
               );
         public Task<bool> DeleteSolPractTotalAsync(string idpedido);
         public Task<IEnumerable<SolPractBhDto>> GetPedidosAnterioresPorDniAsync(string dni);
+        public Task<Dictionary<string, bool>> GetDnisConRpAsync(List<string> dnis);
     }
 }

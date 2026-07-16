@@ -75,5 +75,11 @@ namespace ValoresData.Services.SolPractBhServices
         {
             return await _solPractBhCmd.GetPedidosAnterioresPorDniAsync(dni);
         }
+
+        public async Task<Dictionary<string, bool>> GetDnisConRpAsync(List<string> dnis)
+        {
+            var conRp = (await _solPractBhCmd.GetDnisConRpAsync(dnis)).ToHashSet();
+            return dnis.Distinct().ToDictionary(dni => dni, dni => conRp.Contains(dni));
+        }
     }
 }

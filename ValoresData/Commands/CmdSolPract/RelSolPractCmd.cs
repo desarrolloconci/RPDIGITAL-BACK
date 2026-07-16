@@ -153,6 +153,15 @@ namespace ValoresData.Commands.CmdSolPract
                 .Where(b => idPedidos.Contains(b.IDPEDIDO) && idEstudioNums.Contains(b.IDESTUDIO_NUM))
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<int>> GetTurnoIdsConPedidoAsync(List<int> turnoIds)
+        {
+            return await _context.REL_SOL_PRACT
+                .Where(e => e.turno_id.HasValue && turnoIds.Contains(e.turno_id.Value))
+                .Select(e => e.turno_id.Value)
+                .Distinct()
+                .ToListAsync();
+        }
     }
         
 

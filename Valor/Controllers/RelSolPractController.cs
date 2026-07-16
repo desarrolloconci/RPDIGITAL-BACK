@@ -156,6 +156,20 @@ namespace Valor.Controllers
             return Ok(rps);
         }
 
+        [HttpPost("Turno/Existe")]
+        // [Authorize(Roles = "Admin,Supervisor")]
+        public async Task<ActionResult<Dictionary<int, bool>>> GetTurnosConPedidoAsync([FromBody] List<int> turnoIds)
+        {
+            if (turnoIds == null || !turnoIds.Any())
+            {
+                return BadRequest(new { message = "La lista de turnos está vacía o es inválida", success = false });
+            }
+
+            var result = await _solPractService.GetTurnosConPedidoAsync(turnoIds);
+
+            return Ok(result);
+        }
+
         [HttpDelete]
         [Route("/segumientoRp")]
         // [Authorize(Roles = "Admin,Supervisor")]

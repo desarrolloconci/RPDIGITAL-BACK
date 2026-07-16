@@ -93,6 +93,11 @@ namespace ValoresData.Services.SolPractBhServices
         {
             return await _cmd.GetRpVinculadosATurnoAsync(turnoId);
         }
+        public async Task<Dictionary<int, bool>> GetTurnosConPedidoAsync(List<int> turnoIds)
+        {
+            var conPedido = (await _cmd.GetTurnoIdsConPedidoAsync(turnoIds)).ToHashSet();
+            return turnoIds.Distinct().ToDictionary(id => id, id => conPedido.Contains(id));
+        }
     }
 
 }

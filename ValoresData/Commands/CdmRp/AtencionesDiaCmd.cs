@@ -49,30 +49,24 @@ namespace ValoresData.Commands.CdmRp
             var fechaMañana = fechaHoy.AddDays(1);
             if (servicio == "886")
             {
-                var atencionesCMPreconsulta = await _dbContext.vMultiConsultaNatanet
+                var filas = await _dbContext.vMultiConsultaNatanet
                                 .Where(e => matriculasLista.Contains(e.MPEFECTOR) && e.FECHATENCION >= fechaHoy && e.FECHATENCION < fechaMañana && e.Depto_id == 54)
-                                .GroupBy(e => e.NROATENCION)
-                                .Select(g => g.First())
                                 .ToListAsync();
-                return atencionesCMPreconsulta;
+                return filas.GroupBy(e => e.NROATENCION).Select(g => g.First());
             }
             if (servicio == "884")
             {
-                var circuitosMedicos = await _dbContext.vMultiConsultaNatanet
+                var filas = await _dbContext.vMultiConsultaNatanet
                 .Where(e => e.MPEFECTOR == 999994 && e.FECHATENCION >= fechaHoy && e.FECHATENCION < fechaMañana)
-                .GroupBy(e => e.NROATENCION)
-                .Select(g => g.First())
                 .ToListAsync();
-                return circuitosMedicos;
+                return filas.GroupBy(e => e.NROATENCION).Select(g => g.First());
             }
 
-            var atenciones = await _dbContext.vMultiConsultaNatanet
+            var atencionesFilas = await _dbContext.vMultiConsultaNatanet
                 .Where(e => matriculasLista.Contains(e.MPEFECTOR) && e.FECHATENCION >= fechaHoy && e.FECHATENCION < fechaMañana && e.Depto_id != 54)
-                .GroupBy(e => e.NROATENCION)
-                .Select(g => g.First())
                 .ToListAsync();
 
-            return atenciones;
+            return atencionesFilas.GroupBy(e => e.NROATENCION).Select(g => g.First());
         }
 
         public async Task<IEnumerable<ListadoServicioAtencionDto>> GetServicioAtencionesDiaAsync(int UserID)

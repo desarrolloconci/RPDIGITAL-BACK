@@ -865,6 +865,35 @@ DROP TABLE #Base;";
 
             return true;
         }
+
+        public async Task<IEnumerable<string>> GetDnisConRpAsync(List<string> dnis)
+        {
+            // Mismo criterio que GetPedidosAnterioresPorDniAsync: el DNI puede estar guardado con o
+            // sin ceros a la izquierda segun el origen del dato, asi que expandimos cada uno a sus
+            // variantes y comparamos todo junto con IN (una sola consulta para toda la lista).
+            var candidatoAOriginal = new Dictionary<string, string>();
+            foreach (var dni in dnis.Where(d => !string.IsNullOrEmpty(d)).Distinct())
+            {
+                var dniSinCeros = dni.TrimStart('0');
+                var variantes = new List<string> { dni, dniSinCeros, dniSinCeros.PadLeft(7, '0'), dniSinCeros.PadLeft(8, '0'), dniSinCeros.PadLeft(9, '0') };
+                foreach (var variante in variantes.Distinct())
+                {
+                    candidatoAOriginal[variante] = dni;
+                }
+            }
+
+            var candidatos = candidatoAOriginal.Keys.ToList();
+
+            var dnisEncontrados = await _context.BEALTH_SOLPRACT_P_MANUAL_OK
+                .Where(b => candidatos.Contains(b.DNI))
+                .Select(b => b.DNI)
+                .Distinct()
+                .ToListAsync();
+
+            return dnisEncontrados
+                .Select(d => candidatoAOriginal.TryGetValue(d, out var original) ? original : d)
+                .Distinct();
+        }
     }
   }
 

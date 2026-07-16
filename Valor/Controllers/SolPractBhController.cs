@@ -147,6 +147,20 @@ namespace Valor.Controllers
             return await _solPractBhService.GetPedidosAnterioresPorDniAsync(dni);
         }
 
+        [HttpPost]
+        [Route("/Dni/Existe")]
+        public async Task<ActionResult<Dictionary<string, bool>>> GetDnisConRpAsync([FromBody] List<string> dnis)
+        {
+            if (dnis == null || !dnis.Any())
+            {
+                return BadRequest(new { message = "La lista de dni está vacía o es inválida", success = false });
+            }
+
+            var result = await _solPractBhService.GetDnisConRpAsync(dnis);
+
+            return Ok(result);
+        }
+
         [HttpDelete]
         // [Authorize(Roles = "Admin,Supervisor")]
         public async Task<IActionResult> DeleteSolPractTotalAsync(string idpedido)
