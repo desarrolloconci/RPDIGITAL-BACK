@@ -371,9 +371,21 @@ namespace ValoresData.Commands.CmdSolPract
         {
             _context.Database.SetCommandTimeout(300);
 
-            // Se arma el WHERE dinámico en SQL crudo: mismos filtros que antes, pero
-            // ejecutados en una sola consulta (antes eran hasta 2 round-trips + dedupe en C#).
+            // Caso 1 (metodo especifico no-Laboratorio) sigue armando un unico WHERE contra
+            // V_BEALTH_SOLPRAC (v.), igual que antes. Caso 2/3 arma DOS: "barato" (contra la
+            // vista liviana V_BEALTH_SOLPRAC_FILTRO, lv.) y "caro" (contra V_BEALTH_SOLPRAC
+            // completa, v., solo para lo que de verdad necesita sus joins). Ver comentario mas
+            // abajo, junto al SQL de Caso 2/3, para el detalle de por que existe esta separacion.
+            bool esCasoSimple = !string.IsNullOrEmpty(metodo) && metodo != "Laboratorio";
             var where = new SqlWhereBuilder();
+            var whereBarato = new SqlWhereBuilder();
+            var whereCaro = new SqlWhereBuilder();
+
+            void AgregarBarato(string condicionLv, string condicionV, params SqlParameter[] parametros)
+            {
+                if (esCasoSimple) where.Add(condicionV, parametros);
+                else whereBarato.Add(condicionLv, parametros);
+            }
 
             if (!string.IsNullOrEmpty(startFechaRP))
             {
@@ -382,58 +394,81 @@ namespace ValoresData.Commands.CmdSolPract
                     if (!string.IsNullOrEmpty(endFechaRP) &&
                         DateTime.TryParseExact(endFechaRP, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime endDate))
                     {
-                        where.Add("v.FECHA >= @startDate AND v.FECHA <= @endDate",
+                        AgregarBarato("lv.FECHA >= @startDate AND lv.FECHA <= @endDate", "v.FECHA >= @startDate AND v.FECHA <= @endDate",
                             new SqlParameter("@startDate", startDate.Date),
                             new SqlParameter("@endDate", endDate.Date));
                     }
                     else
                     {
-                        where.Add("v.FECHA = @startDate", new SqlParameter("@startDate", startDate.Date));
+                        AgregarBarato("lv.FECHA = @startDate", "v.FECHA = @startDate", new SqlParameter("@startDate", startDate.Date));
                     }
                 }
             }
 
             if (!string.IsNullOrEmpty(dni))
-                where.Add("v.DNI = @dni", new SqlParameter("@dni", dni));
+                AgregarBarato("lv.DNI = @dni", "v.DNI = @dni", new SqlParameter("@dni", dni));
 
             if (!string.IsNullOrEmpty(metodo))
-                where.Add("v.METODOPRACTICA = @metodo", new SqlParameter("@metodo", metodo));
+                AgregarBarato("lv.METODOPRACTICA = @metodo", "v.METODOPRACTICA = @metodo", new SqlParameter("@metodo", metodo));
 
+            // UNIDAD depende de v_unidadmedicadet (linked server): siempre "cara", incluso en Caso 2/3.
             if (unidad != null && unidad.Any())
-                where.Add("v.UNIDAD IN (SELECT [value] FROM OPENJSON(@unidad) WITH ([value] nvarchar(max) '$'))",
-                    new SqlParameter("@unidad", JsonSerializer.Serialize(unidad)));
+            {
+                var pUnidad = new SqlParameter("@unidad", JsonSerializer.Serialize(unidad));
+                if (esCasoSimple) where.Add("v.UNIDAD IN (SELECT [value] FROM OPENJSON(@unidad) WITH ([value] nvarchar(max) '$'))", pUnidad);
+                else whereCaro.Add("v.UNIDAD IN (SELECT [value] FROM OPENJSON(@unidad) WITH ([value] nvarchar(max) '$'))", pUnidad);
+            }
 
             if (!string.IsNullOrEmpty(estudio))
-                where.Add("v.ESTUDIO = @estudio", new SqlParameter("@estudio", estudio));
+                AgregarBarato("lv.ESTUDIO = @estudio", "v.ESTUDIO = @estudio", new SqlParameter("@estudio", estudio));
 
+            // estado_Programa sale de ASIGNACION_ESTADO_PROGRAMA, que a su vez cruza por
+            // s.UNIDAD (v_unidadmedicadet): tambien depende del linked server, va en "cara".
             if (estadoPrograma.HasValue)
-                where.Add("v.estado_Programa = @estadoPrograma", new SqlParameter("@estadoPrograma", estadoPrograma.Value));
+            {
+                var pEstadoPrograma = new SqlParameter("@estadoPrograma", estadoPrograma.Value);
+                if (esCasoSimple) where.Add("v.estado_Programa = @estadoPrograma", pEstadoPrograma);
+                else whereCaro.Add("v.estado_Programa = @estadoPrograma", pEstadoPrograma);
+            }
 
             if (estadoTurno != null && estadoTurno.Any())
-                where.Add("v.seguimiento_estado_turno IN (SELECT [value] FROM OPENJSON(@estadoTurno) WITH ([value] nvarchar(max) '$'))",
-                    new SqlParameter("@estadoTurno", JsonSerializer.Serialize(estadoTurno)));
+            {
+                var pEstadoTurno = new SqlParameter("@estadoTurno", JsonSerializer.Serialize(estadoTurno));
+                AgregarBarato(
+                    "lv.seguimiento_estado_turno IN (SELECT [value] FROM OPENJSON(@estadoTurno) WITH ([value] nvarchar(max) '$'))",
+                    "v.seguimiento_estado_turno IN (SELECT [value] FROM OPENJSON(@estadoTurno) WITH ([value] nvarchar(max) '$'))",
+                    pEstadoTurno);
+            }
 
             if (!string.IsNullOrEmpty(usuario))
-                where.Add("v.seg_usuario_gestion = @usuario", new SqlParameter("@usuario", usuario));
+                AgregarBarato("lv.seg_usuario_gestion = @usuario", "v.seg_usuario_gestion = @usuario", new SqlParameter("@usuario", usuario));
 
             if (!string.IsNullOrEmpty(prestador))
-                where.Add("v.PRESTADORQUEGENERASOLICITUD = @prestador", new SqlParameter("@prestador", prestador));
+                AgregarBarato("lv.PRESTADORQUEGENERASOLICITUD = @prestador", "v.PRESTADORQUEGENERASOLICITUD = @prestador", new SqlParameter("@prestador", prestador));
 
             if (!string.IsNullOrEmpty(obrasocial))
-                where.Add("v.OSCOD = @obrasocial", new SqlParameter("@obrasocial", obrasocial));
+                AgregarBarato("lv.OSCOD = @obrasocial", "v.OSCOD = @obrasocial", new SqlParameter("@obrasocial", obrasocial));
 
             if (!string.IsNullOrEmpty(ultimoContacto) && DateOnly.TryParse(ultimoContacto, out var fechaContacto))
-                where.Add("v.relsol_fechaGestion = @fechaContacto",
-                    new SqlParameter("@fechaContacto", fechaContacto.ToDateTime(TimeOnly.MinValue)));
+            {
+                var pFechaContacto = new SqlParameter("@fechaContacto", fechaContacto.ToDateTime(TimeOnly.MinValue));
+                AgregarBarato("lv.relsol_fechaGestion = @fechaContacto", "v.relsol_fechaGestion = @fechaContacto", pFechaContacto);
+            }
 
+            // INDUCTOR_ID sale de ASIGNACION_INDUCTORES, que cruza por x.UNIDAD = s.UNIDAD
+            // (v_unidadmedicadet): depende del linked server, va en "cara".
             if (inductor.HasValue)
-                where.Add("v.INDUCTOR_ID = @inductor", new SqlParameter("@inductor", inductor.Value));
+            {
+                var pInductor = new SqlParameter("@inductor", inductor.Value);
+                if (esCasoSimple) where.Add("v.INDUCTOR_ID = @inductor", pInductor);
+                else whereCaro.Add("v.INDUCTOR_ID = @inductor", pInductor);
+            }
 
             if (!string.IsNullOrEmpty(servicio))
-                where.Add("v.SERVICIOSOLICITUD = @servicio", new SqlParameter("@servicio", servicio));
+                AgregarBarato("lv.SERVICIOSOLICITUD = @servicio", "v.SERVICIOSOLICITUD = @servicio", new SqlParameter("@servicio", servicio));
 
             if (grupoGestionId.HasValue)
-                where.Add("v.seg_grupoDeGestionId = @grupoGestionId", new SqlParameter("@grupoGestionId", grupoGestionId.Value));
+                AgregarBarato("lv.seg_grupoDeGestionId = @grupoGestionId", "v.seg_grupoDeGestionId = @grupoGestionId", new SqlParameter("@grupoGestionId", grupoGestionId.Value));
 
             const string columnas = @"
         v.ID AS id,
@@ -481,12 +516,13 @@ namespace ValoresData.Commands.CmdSolPract
         v.OBSERVACION_INTERNA";
 
             string sql;
+            object[] parametros;
 
             // Caso 1: método específico distinto de Laboratorio -> el WHERE de arriba ya
             // excluye Laboratorio, no hay nada que deduplicar. Consulta simple sin ROW_NUMBER:
             // calcular esa ventana igual (aunque el resultado se descarte después) obliga a
             // ordenar/particionar todo el resultado sin necesidad, y es el caso más frecuente.
-            if (!string.IsNullOrEmpty(metodo) && metodo != "Laboratorio")
+            if (esCasoSimple)
             {
                 sql = $@"
 SELECT
@@ -494,37 +530,43 @@ SELECT
 FROM V_BEALTH_SOLPRAC v
 {where.BuildWhereClause()}
 ORDER BY v.FECHA, v.DNI;";
+                parametros = where.Parameters;
             }
             else
             {
                 // Caso 2 (metodo == Laboratorio) y Caso 3 (sin metodo): acá sí puede haber filas
-                // de Laboratorio a deduplicar por pedido. Primera versión de este cambio calculaba
-                // ROW_NUMBER() sobre TODO el resultado filtrado (Laboratorio + otros mezclados),
-                // y eso resultó MÁS LENTO que el código viejo: la ventana obliga a SQL Server a
-                // ordenar/particionar decenas de miles de filas de una, cuando en realidad solo
-                // hace falta deduplicar el subconjunto de Laboratorio (bug de performance detectado
-                // comparando contra producción con la misma consulta real antes de cerrar esto).
+                // de Laboratorio a deduplicar por pedido, y son los casos con los filtros más
+                // amplios (sin metodo/unidad seguido). Filtrar directo contra V_BEALTH_SOLPRAC
+                // obliga a evaluar sus ~15 joins -1 de ellos contra linked server (v_unidadmedicadet),
+                // y otros 2 que dependen de esa misma tabla (estado_Programa, INDUCTOR_ID)- para
+                // TODAS las filas candidatas del rango de fechas, aunque el filtro real (ej.
+                // estadoTurno+grupoGestionId) termine dejando solo un puñado. Medido contra
+                // producción: una consulta así con ~14 mil filas candidatas tardaba 40-47s.
                 //
-                // Por eso acá se materializa la vista filtrada UNA sola vez en #Base (evita pagar
-                // los ~15 JOIN dos veces, que es lo que hacía el código viejo con sus 2 consultas),
-                // y el ROW_NUMBER() se calcula solo sobre el subconjunto ya materializado de
-                // Laboratorio -particionado por idPedido, sin necesidad de incluir METODOPRACTICA
-                // en la partición porque #Base.METODOPRACTICA ya es constante en ese subconjunto-,
-                // mucho más chico y barato de ordenar. Medido contra la base real: ~8 segundos
-                // totales vs ~17.5s con la ventana sobre todo el resultado y ~11-12s del código
-                // viejo con sus 2 consultas separadas.
+                // Por eso se separa en dos fases:
+                //  1) "whereBarato" resuelve que (idPedido, idEstudio) matchean el filtro contra
+                //     V_BEALTH_SOLPRAC_FILTRO, la vista liviana sin esos 3 joins caros (ver su
+                //     definición en SQL Server). Acá también se hace el dedup de Laboratorio,
+                //     porque ya tenemos METODOPRACTICA disponible sin pagar nada extra.
+                //  2) Recién ahí se enriquece contra V_BEALTH_SOLPRAC completa, pero SOLO para
+                //     esas filas (join a #Claves) -y "whereCaro" (unidad/estadoPrograma/inductor)
+                //     se aplica acá, que es donde esas columnas existen-.
+                // Medido contra producción con el mismo filtro real: ~5.5s totales (fase 1 ~2.6s
+                // + fase 2 ~2.9s) vs los 40-47s de antes.
                 sql = $@"
 DROP TABLE IF EXISTS #Base;
 
-SELECT
-    {columnas}
+SELECT lv.IDPEDIDO, lv.IDESTUDIO_NUM, lv.METODOPRACTICA
 INTO #Base
-FROM V_BEALTH_SOLPRAC v
-{where.BuildWhereClause()};
+FROM V_BEALTH_SOLPRAC_FILTRO lv
+{whereBarato.BuildWhereClause()};
 
-SELECT *
+DROP TABLE IF EXISTS #Claves;
+
+SELECT IDPEDIDO, IDESTUDIO_NUM
+INTO #Claves
 FROM (
-    SELECT *, ROW_NUMBER() OVER (PARTITION BY idPedido ORDER BY (SELECT NULL)) AS rn
+    SELECT IDPEDIDO, IDESTUDIO_NUM, ROW_NUMBER() OVER (PARTITION BY IDPEDIDO ORDER BY (SELECT NULL)) AS rn
     FROM #Base
     WHERE METODOPRACTICA = 'Laboratorio'
 ) lab
@@ -532,13 +574,20 @@ WHERE rn = 1
 
 UNION ALL
 
-SELECT *, NULL AS rn
+SELECT IDPEDIDO, IDESTUDIO_NUM
 FROM #Base
-WHERE ISNULL(METODOPRACTICA, '') <> 'Laboratorio'
+WHERE ISNULL(METODOPRACTICA, '') <> 'Laboratorio';
 
-ORDER BY FECHA, DNI;
+SELECT
+    {columnas}
+FROM V_BEALTH_SOLPRAC v
+INNER JOIN #Claves c ON v.IDPEDIDO = c.IDPEDIDO AND TRY_CAST(v.IDESTUDIO AS INT) = c.IDESTUDIO_NUM
+{whereCaro.BuildWhereClause()}
+ORDER BY v.FECHA, v.DNI;
 
-DROP TABLE #Base;";
+DROP TABLE #Base;
+DROP TABLE #Claves;";
+                parametros = whereBarato.Parameters.Concat(whereCaro.Parameters).ToArray();
             }
 
             // FromSqlRaw contra un DbSet registrado (aunque sin tabla propia, ver DataBaseContext)
@@ -546,7 +595,7 @@ DROP TABLE #Base;";
             // generico por reflexion, notablemente mas lento para un DTO con ~40 columnas y miles
             // de filas (medido: la diferencia explicaba varios segundos del tiempo total).
             return await _context.SolPractBhRpQuery
-                .FromSqlRaw(sql, where.Parameters)
+                .FromSqlRaw(sql, parametros)
                 .AsNoTracking()
                 .ToListAsync();
         }
