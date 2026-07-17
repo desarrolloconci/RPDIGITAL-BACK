@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,8 +9,12 @@ namespace ValorModels.Models.BhModels
 {
     public class SolPractBhPedidoManualModel
     {
-      
+
             public int ID { get; set; }
+            // No es columna de BEALTH_SOLPRACT_P_MANUAL_OK: se completa en el Cmd resolviendo
+            // CODIGOPRESTADOR contra BH_USERS.
+            [NotMapped]
+            public string? MATRICULA { get; set; }
             public string IDPEDIDO { get; set; }
             public string? IDTRATAMIENTO { get; set; }
             public string? NOMBREBATERIA { get; set; }

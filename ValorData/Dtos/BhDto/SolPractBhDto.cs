@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,10 @@ namespace ValorModels.Dtos.BhDto
     public class SolPractBhDto
     {
         public int id { get; set; }
+        // No sale de ninguna consulta por FromSqlRaw (GetSolPractRpAsync no la completa): se
+        // resuelve aparte en GetPedidosAnterioresPorDniAsync, cruzando CODIGOPRESTADOR con BH_USERS.
+        [NotMapped]
+        public string? MATRICULA { get; set; }
         public string? DNI { get; set; }
         public string? NOMBRE { get; set; }
         public string? OBRASOCIAL { get; set; }

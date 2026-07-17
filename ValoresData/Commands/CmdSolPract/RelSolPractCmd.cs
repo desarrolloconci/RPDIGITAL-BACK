@@ -149,9 +149,42 @@ namespace ValoresData.Commands.CmdSolPract
             var idPedidos = relaciones.Select(r => r.idPedido).Distinct().ToList();
             var idEstudioNums = relaciones.Select(r => r.IDESTUDIO_NUM).Distinct().ToList();
 
-            return await _context.BEALTH_SOLPRACT_P_MANUAL_OK
+            var pedidos = await _context.BEALTH_SOLPRACT_P_MANUAL_OK
                 .Where(b => idPedidos.Contains(b.IDPEDIDO) && idEstudioNums.Contains(b.IDESTUDIO_NUM))
                 .ToListAsync();
+
+            await CompletarMatriculaAsync(pedidos);
+
+            return pedidos;
+        }
+
+        // CODIGOPRESTADOR en BEALTH_SOLPRACT_P_MANUAL_OK es el ID (como string) de BH_USERS,
+        // no la matricula en si -misma logica que ya usa GetFirma en SolPractBhCmd-.
+        private async Task CompletarMatriculaAsync(List<SolPractBhPedidoManualModel> pedidos)
+        {
+            var idsPrestador = pedidos
+                .Select(p => int.TryParse(p.CODIGOPRESTADOR, out var id) ? id : (int?)null)
+                .Where(id => id.HasValue)
+                .Select(id => id!.Value)
+                .Distinct()
+                .ToList();
+
+            if (!idsPrestador.Any())
+            {
+                return;
+            }
+
+            var matriculas = await _context.BH_USERS
+                .Where(u => idsPrestador.Contains(u.ID))
+                .ToDictionaryAsync(u => u.ID, u => u.Matricula);
+
+            foreach (var pedido in pedidos)
+            {
+                if (int.TryParse(pedido.CODIGOPRESTADOR, out var id) && matriculas.TryGetValue(id, out var matricula))
+                {
+                    pedido.MATRICULA = matricula;
+                }
+            }
         }
 
         public async Task<IEnumerable<int>> GetTurnoIdsConPedidoAsync(List<int> turnoIds)

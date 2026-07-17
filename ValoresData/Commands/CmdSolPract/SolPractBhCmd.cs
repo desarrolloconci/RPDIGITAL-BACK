@@ -186,23 +186,54 @@ namespace ValoresData.Commands.CmdSolPract
                 from v in _context.V_UNION_BEHEALTH_SOLPRACT
                 where candidatosDni.Contains(v.DNI)
                 orderby v.FECHA descending
-                select new SolPractBhDto
+                select new
                 {
-                    id = v.ID,
-                    DNI = v.DNI,
-                    NOMBRE = v.NOMBRE,
-                    OBRASOCIAL = v.OBRASOCIAL,
-                    PRESTADORQUEGENERASOLICITUD = v.PRESTADORQUEGENERASOLICITUD,
-                    FECHA = v.FECHA ?? DateTime.MinValue,
-                    idPedido = v.IDPEDIDO,
-                    idEstudio = v.IDESTUDIO,
-                    ESTUDIO = v.ESTUDIO,
-                    METODOOK = v.METODOPRACTICA,
-                    Estado_pedido = v.ESTADO,
-                    DIAGNÓSTICO = v.DIAGNÓSTICO
+                    Dto = new SolPractBhDto
+                    {
+                        id = v.ID,
+                        DNI = v.DNI,
+                        NOMBRE = v.NOMBRE,
+                        OBRASOCIAL = v.OBRASOCIAL,
+                        PRESTADORQUEGENERASOLICITUD = v.PRESTADORQUEGENERASOLICITUD,
+                        FECHA = v.FECHA ?? DateTime.MinValue,
+                        idPedido = v.IDPEDIDO,
+                        idEstudio = v.IDESTUDIO,
+                        ESTUDIO = v.ESTUDIO,
+                        METODOOK = v.METODOPRACTICA,
+                        METODOPRACTICA = v.METODOPRACTICA,
+                        Estado_pedido = v.ESTADO,
+                        DIAGNÓSTICO = v.DIAGNÓSTICO
+                    },
+                    v.CODIGOPRESTADOR
                 };
 
-            return await query.Take(200).ToListAsync();
+            var resultado = await query.Take(200).ToListAsync();
+
+            // CODIGOPRESTADOR es el ID (como string) de BH_USERS, no la matricula en si -misma
+            // logica que ya usa GetFirma mas abajo-.
+            var idsPrestador = resultado
+                .Select(r => int.TryParse(r.CODIGOPRESTADOR, out var id) ? id : (int?)null)
+                .Where(id => id.HasValue)
+                .Select(id => id!.Value)
+                .Distinct()
+                .ToList();
+
+            if (idsPrestador.Any())
+            {
+                var matriculas = await _context.BH_USERS
+                    .Where(u => idsPrestador.Contains(u.ID))
+                    .ToDictionaryAsync(u => u.ID, u => u.Matricula);
+
+                foreach (var r in resultado)
+                {
+                    if (int.TryParse(r.CODIGOPRESTADOR, out var id) && matriculas.TryGetValue(id, out var matricula))
+                    {
+                        r.Dto.MATRICULA = matricula;
+                    }
+                }
+            }
+
+            return resultado.Select(r => r.Dto);
         }
 
         public async Task<IEnumerable<SolPractBhMetodoDto>> GetSolPractAsync(
