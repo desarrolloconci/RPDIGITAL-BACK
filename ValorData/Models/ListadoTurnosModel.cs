@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,12 @@ namespace ValorModels.Models
         public string nom_nom { get; set; }
         public string cancelado { get; set; }
         public Int16 tipoNomenclador_id { get; set; }
+
+        // Código y nombre de práctica resueltos via AG_TURNO_ESTUDIO + V_MT_NOMENCLADOR
+        // (ver CompletarPracticaAsync en ListadoTurnoCmd); si el turno no tiene estudio
+        // asociado en AG_TURNO_ESTUDIO, queda null y el front usa el fallback nom_cod/nom_nom.
+        [NotMapped]
+        public string? Practica { get; set; }
 
     }
 }
