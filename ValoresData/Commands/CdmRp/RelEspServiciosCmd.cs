@@ -44,7 +44,39 @@ namespace ValoresData.Commands.CdmRp
             return await _context.V_Rel_esp_servicios.Where(e=> e.usuario_id == usuario_id).ToListAsync();
         }
 
+        public async Task<bool> InsertRelEspServicios(RelEspServicioModel model)
+        {
+            if (model == null) return false;
 
-    
+            try
+            {
+                _context.REL_ESP_SERVICIOS.Add(model);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al insertar: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<RelEspServicioModel> GetRelEspServiciosByIdAsync(int id)
+        {
+            return await _context.REL_ESP_SERVICIOS.FindAsync(id);
+        }
+
+        public async Task<bool> DeleteRelEspServiciosAsync(int id)
+        {
+            var dbServicio = await GetRelEspServiciosByIdAsync(id);
+            if (dbServicio is null)
+            {
+                return false;
+            }
+            _context.REL_ESP_SERVICIOS.Remove(dbServicio);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

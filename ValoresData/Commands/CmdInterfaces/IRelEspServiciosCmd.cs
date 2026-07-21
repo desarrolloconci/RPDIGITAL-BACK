@@ -15,6 +15,14 @@ namespace ValoresData.Commands.CmdInterfaces
         public Task<IEnumerable<RelEspServiciosModel>> GetRelEspServiciosAsync();
 
         public Task<IEnumerable<RelSolPractBhServicioSolModel>> GetRelSolPractBhServicioSolAsync(int usuario_id);
-        
+
+        public Task<List<RelEspServiciosModel>> GetRelEspServiciosDetailsAsync(int usuario_id);
+
+        public Task<bool> InsertRelEspServicios(RelEspServicioModel model);
+
+        public Task<RelEspServicioModel> GetRelEspServiciosByIdAsync(int id);
+
+        public Task<bool> DeleteRelEspServiciosAsync(int id);
+
     }
 }

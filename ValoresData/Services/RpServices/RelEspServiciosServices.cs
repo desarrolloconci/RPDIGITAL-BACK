@@ -26,5 +26,20 @@ namespace ValoresData.Services.RpServices
         {
             return await _relEspServiciosCmd.GetRelSolPractBhServicioSolAsync(usuario_id);
         }
+
+        public async Task<List<RelEspServiciosModel>> GetRelEspServiciosDetailsAsync(int usuario_id)
+        {
+            return await _relEspServiciosCmd.GetRelEspServiciosDetailsAsync(usuario_id);
+        }
+
+        public async Task<bool> InsertRelEspServicios(RelEspServicioModel model)
+        {
+            return await _relEspServiciosCmd.InsertRelEspServicios(model);
+        }
+
+        public async Task<bool> DeleteRelEspServiciosAsync(int id)
+        {
+            return await _relEspServiciosCmd.DeleteRelEspServiciosAsync(id);
+        }
     }
 }
