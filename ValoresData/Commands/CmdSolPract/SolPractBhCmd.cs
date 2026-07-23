@@ -736,6 +736,9 @@ DROP TABLE #Claves;";
                     if (!string.IsNullOrEmpty(SolPract.NUMEROAFILIADO))
                         item.NUMEROAFILIADO = SolPract.NUMEROAFILIADO;
 
+                    if (!string.IsNullOrEmpty(SolPract.CELULAR))
+                        item.CELULAR = SolPract.CELULAR;
+
 
                     item.FECHA = SolPract.FECHA;
 
