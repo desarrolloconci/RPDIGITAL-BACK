@@ -116,12 +116,17 @@ namespace ValoresData.Context
 
         public DbSet<ListadoTurnosModel> vListadoTurnos { get; set; }
         public DbSet <AtencionesDiaModel> vMultiConsultaNatanet {  get; set; }
+        // Sin tabla/vista propia: solo se consulta via FromSqlRaw (AtencionesPacienteCmd), contra
+        // MOVENCA/MOVPRAC/Nomenclador/SERVICIOS (misma fuente que vMultiConsultaNatanet, pero
+        // agregando el join a Nomenclador para resolver la practica que esa vista no expone).
+        public DbSet<AtencionPacienteModel> AtencionesPaciente { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ListadoTurnosModel>()
                 .HasNoKey();
             modelBuilder.Entity<AtencionesDiaModel>().HasNoKey();
+            modelBuilder.Entity<AtencionPacienteModel>().HasNoKey();
 
         }
     }

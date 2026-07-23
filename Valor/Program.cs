@@ -113,6 +113,8 @@ builder.Services.AddScoped<IBhUltimoContactoService, UltimoContactoService>();
 builder.Services.AddScoped<IBhUltimoContactoCmd, BhUltimoContactoCmd>();
 builder.Services.AddScoped<IAtencionesDiaService, AtencionesDiaServices>();
 builder.Services.AddScoped<IAtencionesDialCmd, AtencionesDiaCmd>();
+builder.Services.AddScoped<IAtencionesPacienteService, AtencionesPacienteService>();
+builder.Services.AddScoped<IAtencionesPacienteCmd, AtencionesPacienteCmd>();
 builder.Services.AddScoped<IPrestadoresRpService, PrestadoresRpSerivce>();
 builder.Services.AddScoped<IPrestadoresRpCmd, PrestadoresRpCmd>();
 builder.Services.AddScoped<IRelEspeServiciosServices, RelEspServiciosServices>();
