@@ -23,9 +23,9 @@ namespace ValoresData.Services
             return await _listadoTurnoCmd.GetListadoTurnoAsync();
         }
 
-        public async Task<IEnumerable<ListadoTurnosModel>> GetListadoTurnoByDni(string dni, DateOnly fecha)
+        public async Task<IEnumerable<ListadoTurnosModel>> GetListadoTurnoByDni(string dni, DateOnly fecha, string? idEstudio = null, string? metodo = null)
         {
-            return await _listadoTurnoCmd.GetListadoTurnoByDni(dni, fecha);
+            return await _listadoTurnoCmd.GetListadoTurnoByDni(dni, fecha, idEstudio, metodo);
 
         }
 

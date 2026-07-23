@@ -12,7 +12,7 @@ namespace ValoresData.Commands.CmdInterfaces
     {
         public Task<IEnumerable<ListadoTurnosModel>> GetListadoTurnoAsync();
 
-        public Task<IEnumerable<ListadoTurnosModel>> GetListadoTurnoByDni(string dni, DateOnly fecha);
+        public Task<IEnumerable<ListadoTurnosModel>> GetListadoTurnoByDni(string dni, DateOnly fecha, string? idEstudio = null, string? metodo = null);
         public Task<IEnumerable<ListadoServicioTurnoDto>> GetListadoserviciosByDni(string dni, DateOnly fecha);
     }
 }

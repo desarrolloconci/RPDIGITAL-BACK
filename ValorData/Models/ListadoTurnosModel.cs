@@ -33,5 +33,12 @@ namespace ValorModels.Models
         [NotMapped]
         public string? Practica { get; set; }
 
+        // true si el servicio_id del turno matchea alguna de las 3 reglas de
+        // PP_BUSCAR_ATENCIONES_BH_3 contra el idEstudio/metodo del pedido seleccionado
+        // (ver CompletarRecomendadoAsync en ListadoTurnoCmd). Solo se completa cuando
+        // GetListadoTurnoByDni recibe idEstudio/metodo; si no, queda null.
+        [NotMapped]
+        public bool? EsRecomendado { get; set; }
+
     }
 }

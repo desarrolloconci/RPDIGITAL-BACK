@@ -29,9 +29,9 @@ namespace Valor.Controllers
 
         [HttpGet("{dni}/{fecha}")]
 
-        public async Task<ActionResult<ListadoTurnosModel>> GetListadoTurnosByDni(string dni, DateOnly fecha)
+        public async Task<ActionResult<ListadoTurnosModel>> GetListadoTurnosByDni(string dni, DateOnly fecha, [FromQuery] string? idEstudio = null, [FromQuery] string? metodo = null)
         {
-            var excepcion = await _listadoturnoService.GetListadoTurnoByDni(dni, fecha);
+            var excepcion = await _listadoturnoService.GetListadoTurnoByDni(dni, fecha, idEstudio, metodo);
 
             if (excepcion == null)
             {

@@ -83,6 +83,9 @@ namespace ValoresData.Context
         // Sin tabla/vista propia: solo se consulta via FromSqlRaw (CompletarPracticaAsync en
         // ListadoTurnoCmd), contra el servidor enlazado SRV-DESA01.TWCC.dbo.V_MT_NOMENCLADOR.
         public DbSet<NomencladorPracticaModel> V_MT_NOMENCLADOR { get; set; }
+        // Sin tabla/vista propia: solo se consulta via FromSqlRaw (CompletarRecomendadoAsync en
+        // ListadoTurnoCmd), contra vistas del servidor enlazado SRV-DESA02 (MIND/ETL).
+        public DbSet<RecomendacionTurnoModel> RecomendacionTurno { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RelSolPractBhMetodoModel>().HasNoKey();
@@ -94,6 +97,7 @@ namespace ValoresData.Context
             modelBuilder.Entity<BhEstudiosModel>().HasNoKey();
             modelBuilder.Entity<UltimoPedidoPorDniModel>().HasNoKey();
             modelBuilder.Entity<NomencladorPracticaModel>().HasNoKey();
+            modelBuilder.Entity<RecomendacionTurnoModel>().HasNoKey();
             //modelBuilder.Entity<SolPractBhPedidoManualModel>().HasNoKey();
             modelBuilder.Entity<RelSolPractModel>().Property(e => e.IDESTUDIO_NUM).ValueGeneratedOnAddOrUpdate();
             modelBuilder.Entity<SolPractBhPedidoManualModel>().Property(e => e.IDESTUDIO_NUM).ValueGeneratedOnAddOrUpdate();
