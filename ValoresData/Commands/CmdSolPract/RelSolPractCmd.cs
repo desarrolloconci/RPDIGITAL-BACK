@@ -72,14 +72,20 @@ namespace ValoresData.Commands.CmdSolPract
         }
 
         public async Task<bool> InsertRelSolPractAsyncVarios(RelSolPractModel relSolPractModel)
-        {           
+        {
             var estudios = _context.V_BEALTH_SOLPRAC
                 .Where(x => x.IDPEDIDO == relSolPractModel.idPedido && x.METODOOK== relSolPractModel.metodoOK)
-                .Select(x => x.IDESTUDIO) 
+                .Select(x => x.IDESTUDIO)
                 .ToList();
 
-            foreach (var idEstudio in estudios)
-            {               
+            // Evita duplicar: solo inserta los estudios de este pedido que todavia no tienen fila.
+            var estudiosExistentes = await _context.REL_SOL_PRACT
+                .Where(e => e.idPedido == relSolPractModel.idPedido)
+                .Select(e => e.idEstudio)
+                .ToListAsync();
+
+            foreach (var idEstudio in estudios.Except(estudiosExistentes))
+            {
                _context.REL_SOL_PRACT.Add(new RelSolPractModel
                 {
                     idPedido = relSolPractModel.idPedido,

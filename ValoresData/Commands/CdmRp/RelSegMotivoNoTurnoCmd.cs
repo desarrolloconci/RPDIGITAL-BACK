@@ -54,7 +54,13 @@ namespace ValoresData.Commands.CdmRp
             if (!estudios.Any())
                 return false;
 
-            var entidades = estudios.Select(idestudio => new RelSegMotivoNoTurnoModel
+            // Evita duplicar: solo inserta los estudios de este pedido que todavia no tienen fila.
+            var estudiosExistentes = await _context.SEG_REL_MOTIVO_NO_TURNO
+                .Where(e => e.idPedido == model.idPedido)
+                .Select(e => e.idEstudio)
+                .ToListAsync();
+
+            var entidades = estudios.Except(estudiosExistentes).Select(idestudio => new RelSegMotivoNoTurnoModel
             {
                idPedido=model.idPedido,
                idEstudio = idestudio,
