@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ValoresData.Services.RpInterfaces;
 using ValorModels.Dtos;
@@ -30,7 +31,7 @@ namespace Valor.Controllers
             return Ok(atenciones);
         }
         [HttpGet("ServiciosMultiples")]
-        //[Authorize(Roles = "Admin,Supervisor")]
+        //[Authorize]
         public async Task<ActionResult<IEnumerable<AtencionesDiaModel>>> GetAtencionesDiaServicioAsync(int UserID, string servicio)
         {
             var atenciones = await _atencionesDiaService.GetAtencionesDiaServicioAsync(UserID,servicio);
@@ -43,8 +44,7 @@ namespace Valor.Controllers
         }
 
         [HttpGet("Servicios/{UserID}")]
-
-
+       // [Authorize]
         public async Task<ActionResult<IEnumerable<ListadoServicioAtencionDto>>> GetServicioAtencionesDiaAsync(int UserID)
         {
             var excepcion = await _atencionesDiaService.GetServicioAtencionesDiaAsync(UserID);

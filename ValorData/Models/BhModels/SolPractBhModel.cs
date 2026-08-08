@@ -4,7 +4,7 @@
     {
         public int ID { get; set; }
         public string IDPEDIDO { get; set; }
-        public string IDTRATAMIENTO { get; set; }
+        public string? IDTRATAMIENTO { get; set; }
         public string NOMBREBATERIA { get; set; }
         public DateTime FECHA { get; set; }
         public DateTime FECHACREACION { get; set; }
@@ -22,23 +22,23 @@
         public string EMAIL { get; set; }
         public string CODIGOPRESTADOR { get; set; }
         public string PRESTADORQUEGENERASOLICITUD { get; set; }
-        public string IDTURNO { get; set; }
+        public string? IDTURNO { get; set; }
         public DateTime? FECHAHORA { get; set; }
         public DateTime? FECHAHORAALTA { get; set; }
         public DateTime? FECHAHORAGESTIONDEESTADO { get; set; }
         public string USUARIOALTA { get; set; }
-        public string IDSERVICIOTURNO { get; set; }
-        public string SERVICIOTURNO { get; set; }
+        public string? IDSERVICIOTURNO { get; set; }
+        public string? SERVICIOTURNO { get; set; }
         public string IDSERVICIOSOLICITUD { get; set; }
         public string SERVICIOSOLICITUD { get; set; }
-        public string CODIGOPRESTADORDELTURNO { get; set; }
-        public string PRESTADORDELTURNO { get; set; }
+        public string? CODIGOPRESTADORDELTURNO { get; set; }
+        public string? PRESTADORDELTURNO { get; set; }
         public DateTime? FECHAHORACONF { get; set; }
         public DateTime? FECHAHORAATENCION { get; set; }
-        public string ESTADO { get; set; }
+        public string? ESTADO { get; set; }
         public string USUARIOGESTIONOESTADO { get; set; }
-        public string CONTACTACION { get; set; }
-        public string MOTIVONOTURNO { get; set; }
+        public string? CONTACTACION { get; set; }
+        public string? MOTIVONOTURNO { get; set; }
         public string OBSERVACIONES { get; set; }
         public DateTime? CREADO { get; set; }
         public string USUARIO { get; set; }

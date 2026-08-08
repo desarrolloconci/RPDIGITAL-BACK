@@ -12,5 +12,6 @@ namespace ValorModels.Dtos
         public int? turno_id { get; set; }
         public string? idPedido { get; set; }
         public string? idEstudio { get; set; }
+        public string? usuario { get; set; }
     }
 }

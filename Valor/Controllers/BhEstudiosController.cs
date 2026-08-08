@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ValoresData.Services.SolPractBhInterfaces;
 using ValorModels.Models.BhModels;
@@ -14,7 +15,7 @@ namespace Valor.Controllers
             _bhEstudiosService = bhEstudiosService;
         }
         [HttpGet]
-        // [Authorize]
+       // [Authorize]
         public async Task<IEnumerable<BhEstudiosModel>> GetBhEstudiosAsync([FromQuery] string? search)
         {
             return await _bhEstudiosService.GetBhEstudiosAsync(search);

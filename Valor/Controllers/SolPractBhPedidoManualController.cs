@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ValoresData.Services.SolPractBhServices;
 using ValorModels.Models.BhModels;
@@ -36,7 +37,7 @@ namespace Valor.Controllers
             return SolPractModel;
         }
         [HttpPost]
-        // [Authorize(Roles = "Admin, Supervisor")]
+       // [Authorize]
         public async Task<IActionResult> InsertSolPractBhPedidoManualAsync([FromBody] List<SolPractBhPedidoManualModel> SolPractBhPedidoManualModel)
         {
             if (SolPractBhPedidoManualModel == null)

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ValoresData.Services.SolPractBhInterfaces;
 using ValorModels.Models;
@@ -16,7 +17,7 @@ namespace Valor.Controllers
         }
 
         [HttpGet("{dni}")]
-        //[Authorize]
+       // [Authorize]
         public async Task<ActionResult<UltimoPedidoPorDniModel>> GetPacienteAsync(string dni)
         {
             var Paciente = await _service.GetPacienteAsync(dni);

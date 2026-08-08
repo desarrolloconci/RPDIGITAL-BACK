@@ -15,10 +15,19 @@ namespace ValoresData.Commands.CdmRp
     public class RelSegMotivoNoTurnoCmd : IRelSegMotivoNoTurnoCmd
     {
         private readonly DataBaseContext _context;
-        public RelSegMotivoNoTurnoCmd(DataBaseContext context)
+        private readonly ILogCambiosRpCmd _logCmd;
+        public RelSegMotivoNoTurnoCmd(DataBaseContext context, ILogCambiosRpCmd logCmd)
         {
             _context = context;
+            _logCmd = logCmd;
         }
+
+        private async Task<string?> GetNombreMotivoAsync(int? idMotivo)
+        {
+            if (idMotivo is null) return null;
+            return (await _context.SEG_MOTIVO_NO_TURNO.FirstOrDefaultAsync(m => m.id == idMotivo))?.motivo_no_turno;
+        }
+
         public async Task<IEnumerable<RelSegMotivoNoTurnoModel>> GetRelSegMotivoNoTurnoAsync()
         {
             return await _context.SEG_REL_MOTIVO_NO_TURNO.ToListAsync();
@@ -38,6 +47,13 @@ namespace ValoresData.Commands.CdmRp
 
             _context.SEG_REL_MOTIVO_NO_TURNO.Add(model);
             var result = await _context.SaveChangesAsync();
+
+            if (result > 0)
+            {
+                var nombreMotivo = await GetNombreMotivoAsync(model.id_motivo_no_turno);
+                await _logCmd.RegistrarCambioAsync(model.idPedido, model.idEstudio,
+                    "Motivo no turno", "Motivo", null, nombreMotivo, model.id_usuario.ToString());
+            }
 
             return result > 0;
         }
@@ -72,7 +88,19 @@ namespace ValoresData.Commands.CdmRp
 
             _context.SEG_REL_MOTIVO_NO_TURNO.AddRange(entidades);
 
-            return await _context.SaveChangesAsync() > 0;
+            var resultVarios = await _context.SaveChangesAsync() > 0;
+
+            if (resultVarios)
+            {
+                var nombreMotivo = await GetNombreMotivoAsync(model.id_motivo_no_turno);
+                foreach (var entidad in entidades)
+                {
+                    await _logCmd.RegistrarCambioAsync(model.idPedido, entidad.idEstudio,
+                        "Motivo no turno", "Motivo", null, nombreMotivo, model.id_usuario.ToString());
+                }
+            }
+
+            return resultVarios;
         }
         public async Task<bool> UpdateRelSegMotivoNoAsync(RelSegMotivoNoTurnoModel model)
         {
@@ -80,6 +108,8 @@ namespace ValoresData.Commands.CdmRp
                 .FirstOrDefaultAsync(e => e.idPedido == model.idPedido && e.idEstudio == model.idEstudio);
             if (entity != null)
             {
+                var idMotivoAnterior = entity.id_motivo_no_turno;
+
                 entity.idPedido = model.idPedido;
                 entity.idEstudio = model.idEstudio;
                 entity.Metodo = model.Metodo;
@@ -87,6 +117,12 @@ namespace ValoresData.Commands.CdmRp
                 entity.id_usuario = model.id_usuario;
                 entity.fecha = model.fecha;
                 await _context.SaveChangesAsync();
+
+                var nombreAnterior = await GetNombreMotivoAsync(idMotivoAnterior);
+                var nombreNuevo = await GetNombreMotivoAsync(model.id_motivo_no_turno);
+                await _logCmd.RegistrarCambioAsync(model.idPedido, model.idEstudio,
+                    "Motivo no turno", "Motivo", nombreAnterior, nombreNuevo, model.id_usuario.ToString());
+
                 return true;
             }
             return false;
@@ -113,6 +149,8 @@ namespace ValoresData.Commands.CdmRp
             if (!entidades.Any())
                 return false;
 
+            var idsMotivoAnterior = entidades.ToDictionary(e => e.idEstudio, e => e.id_motivo_no_turno);
+
             foreach (var entity in entidades)
             {
                 entity.Metodo = model.Metodo;
@@ -121,7 +159,38 @@ namespace ValoresData.Commands.CdmRp
                 entity.fecha = model.fecha;
             }
 
-            return await _context.SaveChangesAsync() > 0;
+            var resultUpdateVarios = await _context.SaveChangesAsync() > 0;
+
+            if (resultUpdateVarios)
+            {
+                var nombreNuevo = await GetNombreMotivoAsync(model.id_motivo_no_turno);
+                foreach (var entity in entidades)
+                {
+                    var nombreAnterior = await GetNombreMotivoAsync(idsMotivoAnterior[entity.idEstudio]);
+                    await _logCmd.RegistrarCambioAsync(model.idPedido, entity.idEstudio,
+                        "Motivo no turno", "Motivo", nombreAnterior, nombreNuevo, model.id_usuario.ToString());
+                }
+            }
+
+            return resultUpdateVarios;
+        }
+
+        public async Task<bool> DeleteRelSegMotivoNoTurnoAsync(string idPedido, string idEstudio, string? usuario = null)
+        {
+            var entity = await _context.SEG_REL_MOTIVO_NO_TURNO
+                .FirstOrDefaultAsync(e => e.idPedido == idPedido && e.idEstudio == idEstudio);
+
+            if (entity is null) return false;
+
+            var nombreMotivo = await GetNombreMotivoAsync(entity.id_motivo_no_turno);
+
+            _context.SEG_REL_MOTIVO_NO_TURNO.Remove(entity);
+            await _context.SaveChangesAsync();
+
+            await _logCmd.RegistrarCambioAsync(idPedido, idEstudio,
+                "Motivo no turno", "Motivo", nombreMotivo, null, usuario);
+
+            return true;
         }
     }
 }

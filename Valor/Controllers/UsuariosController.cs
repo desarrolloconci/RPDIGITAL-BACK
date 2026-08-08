@@ -20,5 +20,13 @@ namespace Valor.Controllers
         {
             return await _service.GetUsersAsync();
         }
+
+        // Listado de usuarios de GECLISA, para el picker de "vincular con Usuario_id de GECLISA"
+        // al crear/editar un medico en Natanet.
+        [HttpGet("Geclisa")]
+        public async Task<IEnumerable<UsuarioGeclisaListadoDto>> GetUsuariosGeclisaAsync()
+        {
+            return await _service.GetUsuariosGeclisaAsync();
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +13,11 @@ namespace ValoresData.Commands.CdmRp
     public class SegObservacionesCmd : ISegObservacionesCmd
     {
         private readonly DataBaseContext _context;
-        public SegObservacionesCmd(DataBaseContext context)
+        private readonly ILogCambiosRpCmd _logCmd;
+        public SegObservacionesCmd(DataBaseContext context, ILogCambiosRpCmd logCmd)
         {
             _context = context;
+            _logCmd = logCmd;
         }
         public async Task<IEnumerable<SegObservacionesModel>> GetSegObservacionesAsync()
         {
@@ -34,6 +36,12 @@ namespace ValoresData.Commands.CdmRp
 
             _context.SEG_OBSERVACIONES.Add(model);
             var result = await _context.SaveChangesAsync();
+
+            if (result > 0)
+            {
+                await _logCmd.RegistrarCambioAsync(model.idPedido, model.idEstudio,
+                    "Observacion", "Observacion", null, model.observacion, model.idUsuario.ToString());
+            }
 
             return result > 0;
         }
@@ -69,7 +77,18 @@ namespace ValoresData.Commands.CdmRp
 
             _context.SEG_OBSERVACIONES.AddRange(entidades);
 
-            return await _context.SaveChangesAsync() > 0;
+            var resultVarios = await _context.SaveChangesAsync() > 0;
+
+            if (resultVarios)
+            {
+                foreach (var entidad in entidades)
+                {
+                    await _logCmd.RegistrarCambioAsync(model.idPedido, entidad.idEstudio,
+                        "Observacion", "Observacion", null, model.observacion, model.idUsuario.ToString());
+                }
+            }
+
+            return resultVarios;
         }
 
         public async Task<bool> UpdateSegObservacionesAsync(SegObservacionesModel model)
@@ -78,6 +97,8 @@ namespace ValoresData.Commands.CdmRp
                 .FirstOrDefaultAsync(e => e.idPedido == model.idPedido && e.idEstudio == model.idEstudio);
             if (entity != null)
             {
+                var observacionAnterior = entity.observacion;
+
                 entity.idPedido = model.idPedido;
                 entity.idEstudio = model.idEstudio;
                 entity.Metodo = model.Metodo;
@@ -85,6 +106,10 @@ namespace ValoresData.Commands.CdmRp
                 entity.idUsuario = model.idUsuario;
                 entity.Fecha = model.Fecha;
                 await _context.SaveChangesAsync();
+
+                await _logCmd.RegistrarCambioAsync(model.idPedido, model.idEstudio,
+                    "Observacion", "Observacion", observacionAnterior, model.observacion, model.idUsuario.ToString());
+
                 return true;
             }
             return false;
@@ -111,6 +136,8 @@ namespace ValoresData.Commands.CdmRp
             if (!entidades.Any())
                 return false;
 
+            var observacionesAnteriores = entidades.ToDictionary(e => e.idEstudio, e => e.observacion);
+
             foreach (var entity in entidades)
             {
                 entity.Metodo = model.Metodo;
@@ -119,7 +146,36 @@ namespace ValoresData.Commands.CdmRp
                 entity.Fecha = model.Fecha;
             }
 
-            return await _context.SaveChangesAsync() > 0;
+            var resultUpdateVarios = await _context.SaveChangesAsync() > 0;
+
+            if (resultUpdateVarios)
+            {
+                foreach (var entity in entidades)
+                {
+                    await _logCmd.RegistrarCambioAsync(model.idPedido, entity.idEstudio,
+                        "Observacion", "Observacion", observacionesAnteriores[entity.idEstudio], model.observacion, model.idUsuario.ToString());
+                }
+            }
+
+            return resultUpdateVarios;
+        }
+
+        public async Task<bool> DeleteSegObservacionesAsync(string idPedido, string idEstudio, string? usuario = null)
+        {
+            var entity = await _context.SEG_OBSERVACIONES
+                .FirstOrDefaultAsync(e => e.idPedido == idPedido && e.idEstudio == idEstudio);
+
+            if (entity is null) return false;
+
+            var observacionAnterior = entity.observacion;
+
+            _context.SEG_OBSERVACIONES.Remove(entity);
+            await _context.SaveChangesAsync();
+
+            await _logCmd.RegistrarCambioAsync(idPedido, idEstudio,
+                "Observacion", "Observacion", observacionAnterior, null, usuario);
+
+            return true;
         }
     }
 }

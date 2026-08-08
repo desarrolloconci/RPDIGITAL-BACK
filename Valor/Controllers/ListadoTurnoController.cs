@@ -42,6 +42,20 @@ namespace Valor.Controllers
 
         }
 
+        [HttpGet("turno/{turnoId}")]
+
+        public async Task<ActionResult<ListadoTurnosModel>> GetTurnoByIdAsync(int turnoId)
+        {
+            var turno = await _listadoturnoService.GetTurnoByIdAsync(turnoId);
+
+            if (turno == null)
+            {
+                return NotFound("Valor no encontrado");
+            }
+
+            return Ok(turno);
+        }
+
         [HttpGet("Servicios/{dni}/{fecha}")]
         
 

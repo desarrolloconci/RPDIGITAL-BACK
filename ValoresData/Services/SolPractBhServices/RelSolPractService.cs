@@ -74,10 +74,10 @@ namespace ValoresData.Services.SolPractBhServices
                 if (model.metodoOK == "Laboratorio" || model.metodoOK == "Módulo Base" || model.metodoOK == "Modulo Base")
                 {
 
-                    return await _cmd.DeletRelSolPractTotalAsync(model.idPedido,model.metodoOK);
+                    return await _cmd.DeletRelSolPractTotalAsync(model.idPedido,model.metodoOK, model.usuario);
                 }
                 else
-                    return await _cmd.DeletRelSolPractUnitarioAsync(model.idEstudio,model.idPedido);
+                    return await _cmd.DeletRelSolPractUnitarioAsync(model.idEstudio,model.idPedido, model.usuario);
             }
             catch (Exception ex) { Console.WriteLine(ex); return false; }
         }

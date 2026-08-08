@@ -17,5 +17,6 @@ namespace ValoresData.Commands.CmdInterfaces
         public Task<IEnumerable<RelSegMotivoNoTurnoModel>> GetRelSegMotivoById(RelSegMotivoNoTurnoModel model);
         public Task<bool> UpdateRelSegMotivoNoAsync(RelSegMotivoNoTurnoModel model);
         public Task<bool> UpdateRelSegMotivoNoVarios(RelSegMotivoNoTurnoModel model);
+        public Task<bool> DeleteRelSegMotivoNoTurnoAsync(string idPedido, string idEstudio, string? usuario = null);
     }
 }

@@ -29,6 +29,11 @@ namespace ValoresData.Services
 
         }
 
+        public async Task<ListadoTurnosModel?> GetTurnoByIdAsync(int turnoId)
+        {
+            return await _listadoTurnoCmd.GetTurnoByIdAsync(turnoId);
+        }
+
         public async Task<IEnumerable<ListadoServicioTurnoDto>> GetListadoserviciosByDni(string dni, DateOnly fecha)
         {
             return await _listadoTurnoCmd.GetListadoserviciosByDni(dni, fecha);

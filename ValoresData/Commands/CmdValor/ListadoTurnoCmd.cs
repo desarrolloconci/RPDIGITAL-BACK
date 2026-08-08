@@ -156,6 +156,16 @@ namespace ValoresData.Commands.CmdValor
             }
         }
 
+        public async Task<ListadoTurnosModel?> GetTurnoByIdAsync(int turnoId)
+        {
+            var turno = await _dbContext.vListadoTurnos.FirstOrDefaultAsync(e => e.turno_id == turnoId);
+            if (turno == null) return null;
+
+            await CompletarPracticaAsync(new List<ListadoTurnosModel> { turno });
+
+            return turno;
+        }
+
         public async Task<IEnumerable<ListadoServicioTurnoDto>> GetListadoserviciosByDni(string dni, DateOnly fecha)
         {
             var fechaDateTime = fecha.ToDateTime(TimeOnly.MinValue);

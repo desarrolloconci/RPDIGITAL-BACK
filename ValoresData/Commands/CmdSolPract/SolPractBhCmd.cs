@@ -24,9 +24,92 @@ namespace ValoresData.Commands.CmdSolPract
     public class SolPractBhCmd : ISolPractBhCmd
     {
         private readonly DataBaseContext _context;
-        public SolPractBhCmd(DataBaseContext context)
+        private readonly ILogCambiosRpCmd _logCmd;
+        public SolPractBhCmd(DataBaseContext context, ILogCambiosRpCmd logCmd)
         {
             _context = context;
+            _logCmd = logCmd;
+        }
+
+        // Compartida entre GetSolPractRpAsync (listado filtrado) y GetSolPractRpFilaAsync (refresco
+        // puntual de una fila), para que ambas devuelvan el mismo shape de SolPractBhDto.
+        private const string ColumnasSolPractRp = @"
+        v.ID AS id,
+        v.DNI,
+        v.NOMBRE,
+        v.OBRASOCIAL,
+        v.PRESTADORQUEGENERASOLICITUD,
+        v.FECHA,
+        v.idrelsol,
+        v.IDPEDIDO AS idPedido,
+        v.IDESTUDIO AS idEstudio,
+        v.relsol_fechaGestion AS fechaGestion,
+        v.relsol_observaciones AS observaciones,
+        v.relsol_creado AS creado,
+        v.relsol_usuario AS usuario,
+        v.ESTUDIO,
+        v.turno_id,
+        v.METODOPRACTICA,
+        v.UNIDAD AS unidad,
+        v.SERVICIOSOLICITUD AS servicio,
+        v.CONFESPECIAL,
+        v.INDUCTOR,
+        v.Estado_pedido,
+        v.ATENDIDO,
+        v.UNIDAD AS UNIDAD_NOMBRE,
+        v.estado_Programa,
+        v.tur_fecha,
+        v.OSCOD,
+        v.INDUCTOR_ID,
+        v.Estado_Turno_id,
+        CAST(NULL AS nvarchar(max)) AS Estado_Turno,
+        v.EMAIL,
+        v.CELULAR,
+        v.NUMEROAFILIADO,
+        v.motivo_no_turno,
+        v.seguimiento_estado_turno,
+        v.seguimiento_cantidad_contactos,
+        CAST(NULL AS nvarchar(max)) AS METODOOK,
+        v.DIAGNÓSTICO,
+        v.seg_usuario_gestion,
+        v.grupo_gestion,
+        v.seg_grupoDeGestionId,
+        CAST(NULL AS nvarchar(max)) AS METODOOK2,
+        v.SEG_OBSERVACION,
+        v.OBSERVACION_INTERNA";
+
+        // Refresco puntual de una fila (o de las filas de un mismo metodo "Varios") tras editar
+        // motivo/cantidad de contactos/etc, en vez de refrescar todo el listado filtrado: esta
+        // consulta solo evalua los ~15 joins de V_BEALTH_SOLPRAC para el pedido puntual, no para
+        // todo el rango de fechas/filtros activos (ver comentario largo en GetSolPractRpAsync sobre
+        // por que ese costo importa).
+        public async Task<IEnumerable<SolPractBhDto>> GetSolPractRpFilaAsync(string idPedido, string? idEstudio, string? metodo)
+        {
+            var where = new SqlWhereBuilder();
+            where.Add("v.IDPEDIDO = @idPedido", new SqlParameter("@idPedido", idPedido));
+
+            bool esVarios = !string.IsNullOrEmpty(metodo) && (metodo == "Laboratorio" || metodo == "Módulo Base" || metodo == "Modulo Base");
+
+            if (esVarios)
+            {
+                where.Add("v.METODOPRACTICA = @metodo", new SqlParameter("@metodo", metodo));
+            }
+            else if (!string.IsNullOrEmpty(idEstudio))
+            {
+                where.Add("v.IDESTUDIO = @idEstudio", new SqlParameter("@idEstudio", idEstudio));
+            }
+
+            var sql = $@"
+SELECT
+    {ColumnasSolPractRp}
+FROM V_BEALTH_SOLPRAC v
+{where.BuildWhereClause()}
+ORDER BY v.FECHA, v.DNI;";
+
+            return await _context.SolPractBhRpQuery
+                .FromSqlRaw(sql, where.Parameters)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<SolPractBhDto>> GetSolPractAsyncDistinct(
@@ -501,50 +584,7 @@ namespace ValoresData.Commands.CmdSolPract
             if (grupoGestionId.HasValue)
                 AgregarBarato("lv.seg_grupoDeGestionId = @grupoGestionId", "v.seg_grupoDeGestionId = @grupoGestionId", new SqlParameter("@grupoGestionId", grupoGestionId.Value));
 
-            const string columnas = @"
-        v.ID AS id,
-        v.DNI,
-        v.NOMBRE,
-        v.OBRASOCIAL,
-        v.PRESTADORQUEGENERASOLICITUD,
-        v.FECHA,
-        v.idrelsol,
-        v.IDPEDIDO AS idPedido,
-        v.IDESTUDIO AS idEstudio,
-        v.relsol_fechaGestion AS fechaGestion,
-        v.relsol_observaciones AS observaciones,
-        v.relsol_creado AS creado,
-        v.relsol_usuario AS usuario,
-        v.ESTUDIO,
-        v.turno_id,
-        v.METODOPRACTICA,
-        v.UNIDAD AS unidad,
-        v.SERVICIOSOLICITUD AS servicio,
-        v.CONFESPECIAL,
-        v.INDUCTOR,
-        v.Estado_pedido,
-        v.ATENDIDO,
-        v.UNIDAD AS UNIDAD_NOMBRE,
-        v.estado_Programa,
-        v.tur_fecha,
-        v.OSCOD,
-        v.INDUCTOR_ID,
-        v.Estado_Turno_id,
-        CAST(NULL AS nvarchar(max)) AS Estado_Turno,
-        v.EMAIL,
-        v.CELULAR,
-        v.NUMEROAFILIADO,
-        v.motivo_no_turno,
-        v.seguimiento_estado_turno,
-        v.seguimiento_cantidad_contactos,
-        CAST(NULL AS nvarchar(max)) AS METODOOK,
-        v.DIAGNÓSTICO,
-        v.seg_usuario_gestion,
-        v.grupo_gestion,
-        v.seg_grupoDeGestionId,
-        CAST(NULL AS nvarchar(max)) AS METODOOK2,
-        v.SEG_OBSERVACION,
-        v.OBSERVACION_INTERNA";
+            string columnas = ColumnasSolPractRp;
 
             string sql;
             object[] parametros;
@@ -722,6 +762,15 @@ DROP TABLE #Claves;";
             var update = await _context.BEALTH_SOLPRACT_P_MANUAL_OK.Where(e => e.IDPEDIDO == SolPract.IDPEDIDO).ToListAsync();
             if (update.Any())
             {
+                // Se toma como "antes" el primer renglon: obra social/email/telefono/fecha son datos
+                // del paciente/pedido, no de un estudio puntual, e iguales en todos los renglones.
+                var anterior = update.First();
+                var obraSocialAnterior = anterior.OBRASOCIAL;
+                var emailAnterior = anterior.EMAIL;
+                var numeroAfiliadoAnterior = anterior.NUMEROAFILIADO;
+                var celularAnterior = anterior.CELULAR;
+                var fechaAnterior = anterior.FECHA;
+
                 foreach (var item in update)
                 {
                     if (!string.IsNullOrEmpty(SolPract.IDOBRASOCIAL))
@@ -746,6 +795,17 @@ DROP TABLE #Claves;";
                 }
 
                 await _context.SaveChangesAsync();
+
+                // Se loguea el valor final realmente guardado (anterior.X luego del loop), no
+                // SolPract.X: los campos de arriba son opcionales -si vienen vacios no se
+                // sobreescriben- y loguear el dato crudo del request mostraria un cambio a vacio
+                // que en los hechos nunca paso.
+                await _logCmd.RegistrarCambioAsync(SolPract.IDPEDIDO, null, "Editar datos del paciente", "Obra social", obraSocialAnterior, anterior.OBRASOCIAL, SolPract.USUARIO);
+                await _logCmd.RegistrarCambioAsync(SolPract.IDPEDIDO, null, "Editar datos del paciente", "Email", emailAnterior, anterior.EMAIL, SolPract.USUARIO);
+                await _logCmd.RegistrarCambioAsync(SolPract.IDPEDIDO, null, "Editar datos del paciente", "Numero afiliado", numeroAfiliadoAnterior, anterior.NUMEROAFILIADO, SolPract.USUARIO);
+                await _logCmd.RegistrarCambioAsync(SolPract.IDPEDIDO, null, "Editar datos del paciente", "Telefono", celularAnterior, anterior.CELULAR, SolPract.USUARIO);
+                await _logCmd.RegistrarCambioAsync(SolPract.IDPEDIDO, null, "Editar datos del paciente", "Fecha", fechaAnterior?.ToString("dd/MM/yyyy"), anterior.FECHA?.ToString("dd/MM/yyyy"), SolPract.USUARIO);
+
                 return true;
             }
 
@@ -936,15 +996,74 @@ DROP TABLE #Claves;";
             return groupedResults;
         }
 
-        public async Task<bool> DeleteSolPractTotalAsync(string idpedido)
+        public async Task<bool> DeleteSolPractTotalAsync(string idpedido, string? usuario = null, string? motivoBorrado = null)
         {
             var rp = await _context.BEALTH_SOLPRACT_P_MANUAL_OK.Where(e => e.IDPEDIDO == idpedido).ToListAsync();
             if (rp == null || !rp.Any())
             {
                 return false;
             }
+
+            // No se borra: se mueve a RP_BORRADOS para poder seguir viendolo (y su historial de
+            // cambios, que sigue atado al mismo IDPEDIDO) desde /rp/borrados.
+            var borrados = rp.Select(item => new RpBorradoModel
+            {
+                // Se deja que RP_BORRADOS genere su propio ID (es IDENTITY): no tiene sentido
+                // copiar el ID viejo de BEALTH_SOLPRACT_P_MANUAL_OK, esta tabla es solo un archivo.
+                IDPEDIDO = item.IDPEDIDO,
+                IDTRATAMIENTO = item.IDTRATAMIENTO,
+                NOMBREBATERIA = item.NOMBREBATERIA,
+                FECHA = item.FECHA,
+                FECHACREACION = item.FECHACREACION,
+                DIAGNÓSTICO = item.DIAGNÓSTICO,
+                METODOPRACTICA = item.METODOPRACTICA,
+                IDESTUDIO = item.IDESTUDIO,
+                IDESTUDIO_NUM = item.IDESTUDIO_NUM,
+                ESTUDIO = item.ESTUDIO,
+                DNI = item.DNI,
+                NOMBRE = item.NOMBRE,
+                IDOBRASOCIAL = item.IDOBRASOCIAL,
+                OBRASOCIAL = item.OBRASOCIAL,
+                NUMEROAFILIADO = item.NUMEROAFILIADO,
+                CELULAR = item.CELULAR,
+                EMAIL = item.EMAIL,
+                CODIGOPRESTADOR = item.CODIGOPRESTADOR,
+                PRESTADORQUEGENERASOLICITUD = item.PRESTADORQUEGENERASOLICITUD,
+                IDTURNO = item.IDTURNO,
+                FECHAHORA = item.FECHAHORA,
+                FECHAHORAALTA = item.FECHAHORAALTA,
+                FECHAHORAGESTIONDEESTADO = item.FECHAHORAGESTIONDEESTADO,
+                USUARIOALTA = item.USUARIOALTA,
+                IDSERVICIOTURNO = item.IDSERVICIOTURNO,
+                SERVICIOTURNO = item.SERVICIOTURNO,
+                IDSERVICIOSOLICITUD = item.IDSERVICIOSOLICITUD,
+                SERVICIOSOLICITUD = item.SERVICIOSOLICITUD,
+                CODIGOPRESTADORDELTURNO = item.CODIGOPRESTADORDELTURNO,
+                PRESTADORDELTURNO = item.PRESTADORDELTURNO,
+                FECHAHORACONF = item.FECHAHORACONF,
+                FECHAHORAATENCION = item.FECHAHORAATENCION,
+                ESTADO = item.ESTADO,
+                USUARIOGESTIONOESTADO = item.USUARIOGESTIONOESTADO,
+                CONTACTACION = item.CONTACTACION,
+                MOTIVONOTURNO = item.MOTIVONOTURNO,
+                OBSERVACIONES = item.OBSERVACIONES,
+                CREADO = item.CREADO,
+                USUARIO = item.USUARIO,
+                Nro_Atencion = item.Nro_Atencion,
+                No_gestion = item.No_gestion,
+                Id_servicio_atencion = item.Id_servicio_atencion,
+                OBSERVACION_INTERNA = item.OBSERVACION_INTERNA,
+                fechaBorrado = DateTime.Now,
+                usuarioBorro = usuario,
+                motivoBorrado = motivoBorrado,
+            }).ToList();
+
+            _context.RP_BORRADOS.AddRange(borrados);
             _context.BEALTH_SOLPRACT_P_MANUAL_OK.RemoveRange(rp);
             await _context.SaveChangesAsync();
+
+            await _logCmd.RegistrarCambioAsync(idpedido, null, "Eliminar pedido", "Pedido",
+                $"{rp.Count} estudio(s) - Motivo: {motivoBorrado ?? "-"}", null, usuario);
 
             return true;
         }

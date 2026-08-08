@@ -16,6 +16,7 @@ namespace ValorModels.Dtos.LoginDto
         public string Role { get; set; }
         public string? Matricula { get; set; }
         public string? Firma { get; set; }
+        public int? GeclisaUsuarioId { get; set; }
         public List<string> EspecialidadesIds { get; set; } = new List<string>();
         public List<int> Matriculas { get; set; } = new List<int>();
         public List<int> BateriasIds { get; set; } = new List<int>();

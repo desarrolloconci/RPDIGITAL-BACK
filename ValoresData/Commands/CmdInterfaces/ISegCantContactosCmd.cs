@@ -13,8 +13,8 @@ namespace ValoresData.Commands.CmdInterfaces
     {
         public Task<bool> InsertSegCantContactosAsync(SegCantContactosModel model);
         public Task<bool> InsertSegCantContactotVarios(SegCantContactosModel model);
-        public Task<bool> DeleteSegCantContactoTotalAsync(SegCantContactosModel model);
-        public Task<bool> DeleteSegCantContactoUnitarioAsync(SegCantContactosModel model);
+        public Task<bool> DeleteSegCantContactoTotalAsync(SegCantContactosModel model, string? usuario = null);
+        public Task<bool> DeleteSegCantContactoUnitarioAsync(SegCantContactosModel model, string? usuario = null);
         public Task<bool> UpdateSegCantidadContactosAsync(SegCantContactosModel model);
         public Task<bool> UpdateSegCantidadContactosVarios(SegCantContactosModel model);
         public Task<IEnumerable<SegCantContactosModel>> GetSegCantidadContactos(SegCantContactosModel model);

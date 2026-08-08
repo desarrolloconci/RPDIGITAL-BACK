@@ -64,6 +64,7 @@ namespace ValoresData.Services.SolPractBhInterfaces
 
 
         public Task<IEnumerable<SolPractBhRpDto>> GetSolPractRpPdfAsync(string IDPEDIDO, string metodo);
+        public Task<IEnumerable<SolPractBhDto>> GetSolPractRpFilaAsync(string idPedido, string? idEstudio, string? metodo);
         public Task<bool> UpdateSolPractRpAsync(SolPractBhPedidoManualModel SolPract);
         public  Task<IEnumerable<SolPractBhMetodoDto>> GetSolPractSeguimientoAsync(
                DateTime? fechaCreacionRP = null,
@@ -82,7 +83,7 @@ namespace ValoresData.Services.SolPractBhInterfaces
                string? ultimoContacto = null,
                int? inductor = null
               );
-        public Task<bool> DeleteSolPractTotalAsync(string idpedido);
+        public Task<bool> DeleteSolPractTotalAsync(string idpedido, string? usuario = null, string? motivoBorrado = null);
         public Task<IEnumerable<SolPractBhDto>> GetPedidosAnterioresPorDniAsync(string dni);
         public Task<Dictionary<string, bool>> GetDnisConRpAsync(List<string> dnis);
     }

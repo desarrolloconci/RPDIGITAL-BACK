@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ValoresData.Services.ServicesInterfaces;
 using ValorModels.Dtos;
@@ -16,7 +17,7 @@ namespace Valor.Controllers
         }
 
         [HttpPost]
-        //  [Authorize(Roles = "Admin, Supervisor")]
+        //[Authorize]
         public async Task<IActionResult> SendMailAsync([FromBody] SendEmailRequestDto requestDto)
         {
             if (!ModelState.IsValid)

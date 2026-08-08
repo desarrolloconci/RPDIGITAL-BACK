@@ -37,6 +37,10 @@ namespace ValoresData.Services.SolPractBhServices
         {
             return await _solPractBhCmd.GetSolPractRpPdfAsync(IDPEDIDO, metodo);
         }
+        public async Task<IEnumerable<SolPractBhDto>> GetSolPractRpFilaAsync(string idPedido, string? idEstudio, string? metodo)
+        {
+            return await _solPractBhCmd.GetSolPractRpFilaAsync(idPedido, idEstudio, metodo);
+        }
         public async Task<bool> UpdateSolPractRpAsync(SolPractBhPedidoManualModel SolPract)
         {
             var Tipo_pedido = await _solPractBhCmd.GetSolPractUnionAsync(SolPract.IDPEDIDO);
@@ -66,9 +70,9 @@ namespace ValoresData.Services.SolPractBhServices
         { return await _solPractBhCmd.GetSolPractSeguimientoAsync(fechaCreacionRP, startFechaRP, endFechaRP, unidad, dni, metodo, prestador, estudio, estadoPrograma, estadoTurno, usuario, servicio, obrasocial, ultimoContacto, inductor);
         }
 
-        public async Task<bool> DeleteSolPractTotalAsync(string idpedido)
+        public async Task<bool> DeleteSolPractTotalAsync(string idpedido, string? usuario = null, string? motivoBorrado = null)
         {
-            return await _solPractBhCmd.DeleteSolPractTotalAsync(idpedido);
+            return await _solPractBhCmd.DeleteSolPractTotalAsync(idpedido, usuario, motivoBorrado);
         }
 
         public async Task<IEnumerable<SolPractBhDto>> GetPedidosAnterioresPorDniAsync(string dni)

@@ -15,11 +15,13 @@ namespace ValoresData.Commands.CdmRp
    public class SegCantContactosCmd : ISegCantContactosCmd
     {
         private readonly DataBaseContext _context;
-        public SegCantContactosCmd(DataBaseContext context)
+        private readonly ILogCambiosRpCmd _logCmd;
+        public SegCantContactosCmd(DataBaseContext context, ILogCambiosRpCmd logCmd)
         {
             _context = context;
+            _logCmd = logCmd;
         }
-        public async Task<bool> DeleteSegCantContactoTotalAsync(SegCantContactosModel model)
+        public async Task<bool> DeleteSegCantContactoTotalAsync(SegCantContactosModel model, string? usuario = null)
         {
             var entities = await _context.SEG_CANT_CONTACTOS
                 .Where(e => e.idPedido == model.idPedido && e.MetodoOK == model.MetodoOK)
@@ -32,10 +34,16 @@ namespace ValoresData.Commands.CdmRp
             _context.SEG_CANT_CONTACTOS.RemoveRange(entities);
             await _context.SaveChangesAsync();
 
+            foreach (var entity in entities)
+            {
+                await _logCmd.RegistrarCambioAsync(model.idPedido, entity.idEstudio,
+                    "Cantidad de contactos", "Cantidad de contactos", entity.cantidad.ToString(), null, usuario);
+            }
+
             return true;
         }
 
-        public async Task<bool> DeleteSegCantContactoUnitarioAsync(SegCantContactosModel model)
+        public async Task<bool> DeleteSegCantContactoUnitarioAsync(SegCantContactosModel model, string? usuario = null)
         {
             var entity = await _context.SEG_CANT_CONTACTOS
              .FirstOrDefaultAsync(e => e.idEstudio == model.idEstudio && e.idPedido == model.idPedido);
@@ -47,6 +55,10 @@ namespace ValoresData.Commands.CdmRp
 
             _context.SEG_CANT_CONTACTOS.Remove(entity);
             await _context.SaveChangesAsync();
+
+            await _logCmd.RegistrarCambioAsync(model.idPedido, model.idEstudio,
+                "Cantidad de contactos", "Cantidad de contactos", entity.cantidad.ToString(), null, usuario);
+
             return true;
         }
 
@@ -63,7 +75,15 @@ namespace ValoresData.Commands.CdmRp
             if (!estudios.Any())
                 return false;
 
-            var entidades = estudios.Select(idestudio => new SegCantContactosModel
+            // Evita duplicar: solo inserta los estudios de este pedido que todavia no tienen fila.
+            var estudiosExistentes = await _context.SEG_CANT_CONTACTOS
+                .Where(e => e.idPedido == model.idPedido)
+                .Select(e => e.idEstudio)
+                .ToListAsync();
+
+            var idEstudiosNuevos = estudios.Except(estudiosExistentes).ToList();
+
+            var entidades = idEstudiosNuevos.Select(idestudio => new SegCantContactosModel
             {
                 idPedido = model.idPedido,
                 idEstudio = idestudio,
@@ -75,7 +95,18 @@ namespace ValoresData.Commands.CdmRp
 
             _context.SEG_CANT_CONTACTOS.AddRange(entidades);
 
-            return await _context.SaveChangesAsync() > 0;
+            var resultVarios = await _context.SaveChangesAsync() > 0;
+
+            if (resultVarios)
+            {
+                foreach (var idEstudio in idEstudiosNuevos)
+                {
+                    await _logCmd.RegistrarCambioAsync(model.idPedido, idEstudio,
+                        "Cantidad de contactos", "Cantidad de contactos", null, model.cantidad.ToString(), model.id_usuario.ToString());
+                }
+            }
+
+            return resultVarios;
         }
 
         public async Task<bool> InsertSegCantContactosAsync(SegCantContactosModel model)
@@ -95,7 +126,15 @@ namespace ValoresData.Commands.CdmRp
 
             _context.SEG_CANT_CONTACTOS.Add(entity);
 
-            return await _context.SaveChangesAsync() > 0;
+            var result = await _context.SaveChangesAsync() > 0;
+
+            if (result)
+            {
+                await _logCmd.RegistrarCambioAsync(model.idPedido, model.idEstudio,
+                    "Cantidad de contactos", "Cantidad de contactos", null, model.cantidad.ToString(), model.id_usuario.ToString());
+            }
+
+            return result;
         }
 
         public async Task<bool> UpdateSegCantidadContactosAsync(SegCantContactosModel model)
@@ -104,6 +143,8 @@ namespace ValoresData.Commands.CdmRp
                 .FirstOrDefaultAsync(e => e.idPedido == model.idPedido && e.idEstudio == model.idEstudio);
             if (entity != null)
             {
+                var cantidadAnterior = entity.cantidad;
+
                 entity.idPedido = model.idPedido;
                 entity.idEstudio = model.idEstudio;
                 entity.MetodoOK = model.MetodoOK;
@@ -111,6 +152,10 @@ namespace ValoresData.Commands.CdmRp
                 entity.cantidad = model.cantidad;
                 entity.fecha = model.fecha;
                 await _context.SaveChangesAsync();
+
+                await _logCmd.RegistrarCambioAsync(model.idPedido, model.idEstudio,
+                    "Cantidad de contactos", "Cantidad de contactos", cantidadAnterior.ToString(), model.cantidad.ToString(), model.id_usuario.ToString());
+
                 return true;
             }
             return false;
@@ -137,6 +182,8 @@ namespace ValoresData.Commands.CdmRp
             if (!entidades.Any())
                 return false;
 
+            var cantidadesAnteriores = entidades.ToDictionary(e => e.idEstudio, e => e.cantidad);
+
             foreach (var entity in entidades)
             {
                 entity.MetodoOK = model.MetodoOK;
@@ -145,7 +192,18 @@ namespace ValoresData.Commands.CdmRp
                 entity.fecha = model.fecha;
             }
 
-            return await _context.SaveChangesAsync() > 0;
+            var resultUpdateVarios = await _context.SaveChangesAsync() > 0;
+
+            if (resultUpdateVarios)
+            {
+                foreach (var entity in entidades)
+                {
+                    await _logCmd.RegistrarCambioAsync(model.idPedido, entity.idEstudio,
+                        "Cantidad de contactos", "Cantidad de contactos", cantidadesAnteriores[entity.idEstudio].ToString(), model.cantidad.ToString(), model.id_usuario.ToString());
+                }
+            }
+
+            return resultUpdateVarios;
         }
 
         public async Task<IEnumerable<SegCantContactosModel>> GetSegCantidadContactos(SegCantContactosModel model)

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ValoresData.Services.SolPractBhInterfaces;
 using ValorModels.Dtos.BhDto;
@@ -62,6 +63,7 @@ namespace Valor.Controllers
         }
         [HttpGet]
         [Route("/Rp")]
+       // [Authorize]
         public async Task<IEnumerable<SolPractBhDto>> GetSolPractRpAsync(
           DateTime? fechaCreacionRP,
           string? startFechaRP,
@@ -86,9 +88,19 @@ namespace Valor.Controllers
 
         [HttpGet]
         [Route("/RpPdf")]
+        //[Authorize]
         public async Task<IEnumerable<SolPractBhRpDto>> GetSolPractRpPdfAsync(string IDPEDIDO, string metodo)
         {
             return await _solPractBhService.GetSolPractRpPdfAsync(IDPEDIDO, metodo);
+        }
+
+        // Refresco puntual de una fila (o de las filas "Varios" de un mismo metodo) tras editar
+        // motivo/cantidad de contactos, para no repetir todo el listado filtrado.
+        [HttpGet]
+        [Route("/RpFila")]
+        public async Task<IEnumerable<SolPractBhDto>> GetSolPractRpFilaAsync(string idPedido, string? idEstudio, string? metodo)
+        {
+            return await _solPractBhService.GetSolPractRpFilaAsync(idPedido, idEstudio, metodo);
         }
         [HttpPut]
         // [Authorize(Roles = "Admin,Supervisor")]
@@ -142,6 +154,7 @@ namespace Valor.Controllers
         }
         [HttpGet]
         [Route("/PedidosAnteriores")]
+      //  [Authorize]
         public async Task<IEnumerable<SolPractBhDto>> GetPedidosAnterioresPorDniAsync(string dni)
         {
             return await _solPractBhService.GetPedidosAnterioresPorDniAsync(dni);
@@ -162,11 +175,11 @@ namespace Valor.Controllers
         }
 
         [HttpDelete]
-        // [Authorize(Roles = "Admin,Supervisor")]
-        public async Task<IActionResult> DeleteSolPractTotalAsync(string idpedido)
+       // [Authorize]
+        public async Task<IActionResult> DeleteSolPractTotalAsync(string idpedido, string? usuario = null, string? motivoBorrado = null)
         {
 
-            var result = await _solPractBhService.DeleteSolPractTotalAsync(idpedido);
+            var result = await _solPractBhService.DeleteSolPractTotalAsync(idpedido, usuario, motivoBorrado);
 
             if (!result)
             {

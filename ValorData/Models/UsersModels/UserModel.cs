@@ -18,5 +18,8 @@ namespace ValorModels.Models.UsersModels
         public string Salt { get; set; }
         public string? FIRMA { get; set; }
         public string? Matricula { get; set; }
+        // Usuario_id correspondiente en la tabla Usuarios de GECLISA (base separada, sin FK real).
+        // Se asigna a mano en el alta/edicion elegido de un listado (ver UsuariosGeclisaController).
+        public int? GeclisaUsuarioId { get; set; }
     }
 }

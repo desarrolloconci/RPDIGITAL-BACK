@@ -71,7 +71,8 @@ namespace ValoresData.Commands.CmdLogin.CmdLogin
                     Role = medicoModel.Role,
                     Salt = salt,
                     FIRMA = medicoModel.Firma,
-                    Matricula = medicoModel.Matricula
+                    Matricula = medicoModel.Matricula,
+                    GeclisaUsuarioId = medicoModel.GeclisaUsuarioId
                 };
                 _context.BH_USERS.Add(newUser);
                 await _context.SaveChangesAsync();
@@ -138,6 +139,7 @@ namespace ValoresData.Commands.CmdLogin.CmdLogin
                 user.Role = userModel.Role;
                 user.Matricula = userModel.Matricula;
                 user.FIRMA = userModel.Firma;
+                user.GeclisaUsuarioId = userModel.GeclisaUsuarioId;
 
                 if (!string.IsNullOrEmpty(userModel.Password))
                 {
@@ -218,6 +220,7 @@ namespace ValoresData.Commands.CmdLogin.CmdLogin
                 Role = u.Role,
                 Matricula = u.Matricula,
                 Firma = u.FIRMA,
+                GeclisaUsuarioId = u.GeclisaUsuarioId,
                 EspecialidadesIds = especialidadesPorUsuario[u.ID].Select(e => e.servicio_id).ToList(),
                 Matriculas = matriculasPorUsuario[u.ID].Select(m => m.matricula).ToList(),
                 BateriasIds = bateriasPorUsuario[u.ID].Select(b => b.bateria_id).ToList()

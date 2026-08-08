@@ -14,10 +14,15 @@ namespace ValoresData.Commands.CmdSolPract
     public class RelSolPractCmd : IReslSolPractCmd
     {
         private readonly DataBaseContext _context;
-        public RelSolPractCmd(DataBaseContext context)
+        private readonly ILogCambiosRpCmd _logCmd;
+        public RelSolPractCmd(DataBaseContext context, ILogCambiosRpCmd logCmd)
         {
             _context = context;
+            _logCmd = logCmd;
         }
+
+        private static string DescribirTurno(RelSolPractModel model) =>
+            $"{model.serv_nombre?.Trim()} fecha turno: {model.tur_fecha:dd/MM/yyyy} {model.hs_Ini:HH:mm}hs";
 
         public async Task<IEnumerable<RelSolPractModel>> GetRelSolPractAsync()
         {
@@ -30,6 +35,8 @@ namespace ValoresData.Commands.CmdSolPract
             await _context.SaveChangesAsync();
             if (relSolPractModel != null)
             {
+                await _logCmd.RegistrarCambioAsync(relSolPractModel.idPedido, relSolPractModel.idEstudio,
+                    "Asociar turno", "Turno", null, DescribirTurno(relSolPractModel), relSolPractModel.usuario, relSolPractModel.turno_id);
                 return true;
             }
             return false;
@@ -49,6 +56,8 @@ namespace ValoresData.Commands.CmdSolPract
             var relsol = await _context.REL_SOL_PRACT.FindAsync(relSolPractModel.id);
             if (relsol != null)
             {
+                var turnoAnterior = DescribirTurno(relsol);
+
                 relsol.idPedido = relSolPractModel.idPedido;
                 relsol.idEstudio = relSolPractModel.idEstudio;
                 relsol.estadoPrograma = relSolPractModel.estadoPrograma;
@@ -65,6 +74,10 @@ namespace ValoresData.Commands.CmdSolPract
                 relsol.serv_nombre= relSolPractModel.serv_nombre;
 
                 await _context.SaveChangesAsync();
+
+                await _logCmd.RegistrarCambioAsync(relsol.idPedido, relsol.idEstudio,
+                    "Asociar turno", "Turno", turnoAnterior, DescribirTurno(relsol), relsol.usuario, relsol.turno_id);
+
                 return true;
             }
 
@@ -84,12 +97,13 @@ namespace ValoresData.Commands.CmdSolPract
                 .Select(e => e.idEstudio)
                 .ToListAsync();
 
-            foreach (var idEstudio in estudios.Except(estudiosExistentes))
+            var idEstudiosNuevos = estudios.Except(estudiosExistentes).ToList();
+            foreach (var idEstudio in idEstudiosNuevos)
             {
                _context.REL_SOL_PRACT.Add(new RelSolPractModel
                 {
                     idPedido = relSolPractModel.idPedido,
-                    idEstudio = idEstudio, 
+                    idEstudio = idEstudio,
                     estadoPrograma = relSolPractModel.estadoPrograma,
                     estadoTurno = relSolPractModel.estadoTurno,
                     fechaGestion = relSolPractModel.fechaGestion,
@@ -106,16 +120,22 @@ namespace ValoresData.Commands.CmdSolPract
             }
             await _context.SaveChangesAsync();
 
+            foreach (var idEstudio in idEstudiosNuevos)
+            {
+                await _logCmd.RegistrarCambioAsync(relSolPractModel.idPedido, idEstudio,
+                    "Asociar turno", "Turno", null, DescribirTurno(relSolPractModel), relSolPractModel.usuario, relSolPractModel.turno_id);
+            }
+
             return true;
         }
 
-        public async Task<bool> DeletRelSolPractTotalAsync(string idpedido, string metodoOK)
+        public async Task<bool> DeletRelSolPractTotalAsync(string idpedido, string metodoOK, string? usuario = null)
         {
-            
+
             var entities = await _context.REL_SOL_PRACT
                 .Where(e => e.idPedido == idpedido && e.metodoOK == metodoOK)
                 .ToListAsync();
-           
+
             if (entities == null || !entities.Any())
             {
                 return false;
@@ -123,10 +143,16 @@ namespace ValoresData.Commands.CmdSolPract
             _context.REL_SOL_PRACT.RemoveRange(entities);
             await _context.SaveChangesAsync();
 
+            foreach (var entity in entities)
+            {
+                await _logCmd.RegistrarCambioAsync(idpedido, entity.idEstudio,
+                    "Desasociar turno", "Turno", DescribirTurno(entity), null, usuario, entity.turno_id);
+            }
+
             return true;
         }
 
-        public async Task<bool> DeletRelSolPractUnitarioAsync(string idEstudio,string idPedido)
+        public async Task<bool> DeletRelSolPractUnitarioAsync(string idEstudio,string idPedido, string? usuario = null)
         {
             var entity = await _context.REL_SOL_PRACT
          .FirstOrDefaultAsync(e => e.idEstudio == idEstudio && e.idPedido == idPedido);
@@ -138,6 +164,10 @@ namespace ValoresData.Commands.CmdSolPract
 
             _context.REL_SOL_PRACT.Remove(entity);
             await _context.SaveChangesAsync();
+
+            await _logCmd.RegistrarCambioAsync(idPedido, idEstudio,
+                "Desasociar turno", "Turno", DescribirTurno(entity), null, usuario, entity.turno_id);
+
             return true;
         }
 

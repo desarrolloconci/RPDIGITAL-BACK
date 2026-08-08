@@ -47,7 +47,9 @@ namespace ValoresData.Context
         public DbSet<ObservacionesPacientesBhModel> OBSERVACIONES_PACIENTES_BH { get; set; }
        // public DbSet<SolPractBhPedidoManualModel> BEALTH_SOLPRACT_P_MANUAL { get; set; }
         public DbSet<SolPractBhPedidoManualModel> BEALTH_SOLPRACT_P_MANUAL_OK { get; set; }
-      
+        public DbSet<RpBorradoModel> RP_BORRADOS { get; set; }
+        public DbSet<MotivoBorradoPedidoModel> MOTIVO_BORRADO_PEDIDO { get; set; }
+
         public DbSet<BhEstudiosModel> V_BH_ESTUDIOS { get; set; }
         public DbSet<AsignacionInductoresModel> ASIGNACION_INDUCTORES { get; set; }
         public DbSet<AsignacionEstadoProgramaModel> ASIGNACION_ESTADO_PROGRAMA { get; set; }
@@ -78,6 +80,7 @@ namespace ValoresData.Context
         public DbSet<SegUsuariosModel> V_Seg_Usuarios { get; set; }
         public DbSet<SegMetodoModel> V_SEG_METODO { get; set; }
         public DbSet<SegObservacionesModel> SEG_OBSERVACIONES { get; set; }
+        public DbSet<LogCambioRpModel> SEG_LOG_CAMBIOS_RP { get; set; }
         public DbSet<UltimoPedidoPorDniModel> V_UltimoPedidoPorDni { get; set; }
         public DbSet<AgTurnoEstudioModel> AG_TURNO_ESTUDIO { get; set; }
         // Sin tabla/vista propia: solo se consulta via FromSqlRaw (CompletarPracticaAsync en

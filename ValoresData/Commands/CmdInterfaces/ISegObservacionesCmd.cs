@@ -16,5 +16,6 @@ namespace ValoresData.Commands.CmdInterfaces
         public Task<IEnumerable<SegObservacionesModel>> GetSegObservacionesById(SegObservacionesModel model);
         public Task<bool> UpdateSegObservacionesAsync(SegObservacionesModel model);
         public Task<bool> UpdateSegObservacionesVarios(SegObservacionesModel model);
+        public Task<bool> DeleteSegObservacionesAsync(string idPedido, string idEstudio, string? usuario = null);
     }
 }

@@ -80,7 +80,8 @@ namespace ValoresData.Commands.CmdInterfaces
                string? ultimoContacto = null,
                int? inductor = null
               );
-        public  Task<bool> DeleteSolPractTotalAsync(string idpedido);
+        public Task<IEnumerable<SolPractBhDto>> GetSolPractRpFilaAsync(string idPedido, string? idEstudio, string? metodo);
+        public  Task<bool> DeleteSolPractTotalAsync(string idpedido, string? usuario = null, string? motivoBorrado = null);
         public Task<IEnumerable<SolPractBhDto>> GetPedidosAnterioresPorDniAsync(string dni);
         public Task<IEnumerable<string>> GetDnisConRpAsync(List<string> dnis);
     }

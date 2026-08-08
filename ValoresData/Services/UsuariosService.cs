@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +19,11 @@ namespace ValoresData.Services
         public async Task<IEnumerable<UsuarioDto>> GetUsersAsync()
         {
             return await _cmd.GetUsersAsync();
+        }
+
+        public async Task<IEnumerable<UsuarioGeclisaListadoDto>> GetUsuariosGeclisaAsync()
+        {
+            return await _cmd.GetUsuariosGeclisaAsync();
         }
     }
 }

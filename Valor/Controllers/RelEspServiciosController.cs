@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ValoresData.Services.RpInterfaces;
 using ValoresData.Services.RpServices;
@@ -17,7 +18,7 @@ namespace Valor.Controllers
             _relEspeServiciosServices = relEspeServiciosServices;
         }
         [HttpGet("{usuario_id}")]
-        //[Authorize(Roles = "Admin,Supervisor")]
+       // [Authorize]
         public async Task<ActionResult<IEnumerable<RelSolPractBhServicioSolModel>>> GetRelSolPractBhServicioSolAsync(int usuario_id)
         {
             var atenciones = await _relEspeServiciosServices.GetRelSolPractBhServicioSolAsync(usuario_id);
@@ -27,6 +28,7 @@ namespace Valor.Controllers
         }
 
         [HttpGet("detalle/{usuario_id}")]
+       // [Authorize]
         public async Task<ActionResult<IEnumerable<RelEspServiciosModel>>> GetRelEspServiciosDetailsAsync(int usuario_id)
         {
             var servicios = await _relEspeServiciosServices.GetRelEspServiciosDetailsAsync(usuario_id);
@@ -34,6 +36,7 @@ namespace Valor.Controllers
         }
 
         [HttpPost]
+      //  [Authorize]
         public async Task<IActionResult> InsertRelEspServicios([FromBody] List<RelEspServicioModel> model)
         {
             if (model == null || !model.Any())
@@ -76,6 +79,7 @@ namespace Valor.Controllers
         }
 
         [HttpDelete("{id}")]
+       // [Authorize]
         public async Task<IActionResult> DeleteRelEspServiciosAsync(int id)
         {
             if (id <= 0)

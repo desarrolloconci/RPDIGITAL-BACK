@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ValoresData.Services.SolPractBhInterfaces;
 using ValorModels.Dtos;
@@ -25,6 +26,7 @@ namespace Valor.Controllers
         }
 
         [HttpPost("crear-personal")]
+       // [Authorize]
         public async Task<IActionResult> CrearBateriaPersonalAsync([FromBody] CrearBateriaPersonalDto dto)
         {
             if (dto == null || string.IsNullOrWhiteSpace(dto.Nombre) || dto.EstudioIds == null || !dto.EstudioIds.Any())
@@ -44,6 +46,7 @@ namespace Valor.Controllers
         }
 
         [HttpPut("{id}/editar-personal")]
+      //  [Authorize]
         public async Task<IActionResult> EditarBateriaPersonalAsync(int id, [FromBody] CrearBateriaPersonalDto dto)
         {
             if (dto == null || string.IsNullOrWhiteSpace(dto.Nombre) || dto.EstudioIds == null || !dto.EstudioIds.Any())
@@ -68,6 +71,7 @@ namespace Valor.Controllers
         }
 
         [HttpDelete("{id}/personal")]
+       // [Authorize]
         public async Task<IActionResult> EliminarBateriaPersonalAsync(int id, [FromQuery] int usuarioId)
         {
             try

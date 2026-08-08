@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGeneration.Design;
 using ValoresData.Services.RpInterfaces;
@@ -18,7 +19,7 @@ namespace Valor.Controllers
             _EspBateriaService = relEspBateriaService;
         }
         [HttpGet("{usuario_id}")]
-        //[Authorize(Roles = "Admin,Supervisor")]
+       // [Authorize]
         public async Task<ActionResult<IEnumerable<BhBateriasModel>>> GetRelSolPractBhBateriaAsync(int usuario_id)
         {
             var atenciones = await _EspBateriaService.GetRelSolPractBhBateriaAsync(usuario_id);

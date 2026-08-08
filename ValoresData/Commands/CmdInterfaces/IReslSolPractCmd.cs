@@ -16,8 +16,8 @@ namespace ValoresData.Commands.CmdInterfaces
         public Task<RelSolPractModel> GetRelSolAsyncById(int id);
         public Task<bool> UpdateRelSolAsync(RelSolPractModel relSolPractModel);
         public Task<bool> InsertRelSolPractAsyncVarios(RelSolPractModel relSolPractModel);
-        public  Task<bool> DeletRelSolPractTotalAsync(string idpedido, string metodoOK);
-        public Task<bool> DeletRelSolPractUnitarioAsync(string idEstudio, string idPedido);
+        public  Task<bool> DeletRelSolPractTotalAsync(string idpedido, string metodoOK, string? usuario = null);
+        public Task<bool> DeletRelSolPractUnitarioAsync(string idEstudio, string idPedido, string? usuario = null);
         public Task<IEnumerable<RelSolPractModel>> GetRelSolVariosAsync(string idPedido, string idEstudio);
         public Task<IEnumerable<SolPractBhPedidoManualModel>> GetRpVinculadosATurnoAsync(int turnoId);
         public Task<IEnumerable<int>> GetTurnoIdsConPedidoAsync(List<int> turnoIds);

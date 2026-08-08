@@ -27,10 +27,10 @@ namespace ValoresData.Services.RpServices
                 if (model.MetodoOK == "Laboratorio" || model.MetodoOK == "Módulo Base" || model.MetodoOK == "Modulo Base")
                 {
 
-                    return await _cmd.DeleteSegCantContactoTotalAsync(model);
+                    return await _cmd.DeleteSegCantContactoTotalAsync(model, model.id_usuario.ToString());
                 }
                 else
-                    return await _cmd.DeleteSegCantContactoUnitarioAsync(model);
+                    return await _cmd.DeleteSegCantContactoUnitarioAsync(model, model.id_usuario.ToString());
             }
             catch (Exception ex) { Console.WriteLine(ex); return false; }
         }

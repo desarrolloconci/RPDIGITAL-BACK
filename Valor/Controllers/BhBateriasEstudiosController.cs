@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ValoresData.Services.SolPractBhInterfaces;
 using ValorModels.Models.BhModels;
@@ -22,7 +23,7 @@ namespace Valor.Controllers
             return await _bh.GeBhBateriasEstudiosAsync();
         }
         [HttpGet("{GrupoId}")]
-        //[Authorize(Roles = "Admin,Supervisor")]
+       // [Authorize]
         public async Task<IEnumerable<BhBateriasEstudiosModel>> GetBhBateriasEstudiosGrupoAsync(int GrupoId)
         {
             var asignacionModel = await _bh.GetBhBateriasEstudiosGrupoAsync(GrupoId);

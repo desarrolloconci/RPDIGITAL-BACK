@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ValoresData.Services.SolPractBhInterfaces;
 using ValorModels.Models;
@@ -17,7 +18,7 @@ namespace Valor.Controllers
         }
 
         [HttpGet]
-        // [Authorize]
+       // [Authorize]
         public async Task<IEnumerable<RelSolPractBhMetodoModel>> GetRelSolPractBhMetodoAsync()
         {
             return await _solPractBhMetodoService.GetRelSolPractBhMetodoAsync();
@@ -32,14 +33,14 @@ namespace Valor.Controllers
         }
         [HttpGet]
         [Route("/servicio")]
-        // [Authorize]
+        //[Authorize]
         public async Task<IEnumerable<RelSolPractBhServicioSolModel>> GetRelSolPractBhServicioSolAsync()
         {
             return await _solPractBhMetodoService.GetRelSolPractBhServicioSolAsync();
         }
         [HttpGet]
         [Route("/osBh")]
-        // [Authorize]
+        //[Authorize]
         public async Task<IEnumerable<RelSolPractBhOsModel>> GetRelSolPractBhOsAsync()
         {
             return await _solPractBhMetodoService.GetRelSolPractBhOsAsync();
