@@ -7,7 +7,11 @@ using Serilog.Events;
 using System.Text;
 using ValoresData.Commands;
 using ValoresData.Commands.CdmRp;
+using ValoresData.Commands.CmdHistoriasClinicas;
+using ValoresData.Commands.CmdIndicaciones;
 using ValoresData.Commands.CmdInterfaces;
+using ValoresData.Commands.CmdLaboratorio;
+using ValoresData.Commands.CmdModulos;
 using ValoresData.Commands.CmdLogin.CmdLogin;
 using ValoresData.Commands.CmdLogin.CmdLoginInterfaces;
 using ValoresData.Commands.CmdSolPract;
@@ -117,6 +121,15 @@ builder.Services.AddScoped<IAtencionesDiaService, AtencionesDiaServices>();
 builder.Services.AddScoped<IAtencionesDialCmd, AtencionesDiaCmd>();
 builder.Services.AddScoped<IAtencionesPacienteService, AtencionesPacienteService>();
 builder.Services.AddScoped<IAtencionesPacienteCmd, AtencionesPacienteCmd>();
+builder.Services.AddScoped<ILogCambiosRpService, LogCambiosRpService>();
+builder.Services.AddScoped<ILogCambiosRpCmd, LogCambiosRpCmd>();
+builder.Services.AddScoped<ILimpiarGestionEstudioService, LimpiarGestionEstudioService>();
+builder.Services.AddScoped<IRpBorradosService, RpBorradosService>();
+builder.Services.AddScoped<IRpBorradosCmd, RpBorradosCmd>();
+builder.Services.AddScoped<IMotivoBorradoPedidoService, MotivoBorradoPedidoService>();
+builder.Services.AddScoped<IMotivoBorradoPedidoCmd, MotivoBorradoPedidoCmd>();
+builder.Services.AddScoped<ITicketSoporteService, TicketSoporteService>();
+builder.Services.AddScoped<ITicketSoporteCmd, TicketSoporteCmd>();
 builder.Services.AddScoped<IPrestadoresRpService, PrestadoresRpSerivce>();
 builder.Services.AddScoped<IPrestadoresRpCmd, PrestadoresRpCmd>();
 builder.Services.AddScoped<IRelEspeServiciosServices, RelEspServiciosServices>();
@@ -146,6 +159,15 @@ builder.Services.AddScoped<IDatosPacientesCargaManualCmd, DatosPacientesCargaMan
 builder.Services.AddScoped<IUsuariosCmd, UsuariosCmd>();
 builder.Services.AddScoped<IUsusarioService, UsuariosService>();
 builder.Services.AddScoped<ILogsService, LogsService>();
+builder.Services.AddScoped<IGeclisaConnectionFactory, GeclisaConnectionFactory>();
+builder.Services.AddScoped<IHistoriasClinicasCmd, HistoriasClinicasCmd>();
+builder.Services.AddScoped<IHistoriasClinicasService, HistoriasClinicasService>();
+builder.Services.AddScoped<ILaboratorioCmd, LaboratorioCmd>();
+builder.Services.AddScoped<ILaboratorioService, LaboratorioService>();
+builder.Services.AddScoped<IIndicacionesCmd, IndicacionesCmd>();
+builder.Services.AddScoped<IIndicacionesService, IndicacionesService>();
+builder.Services.AddScoped<IModulosCmd, ModulosCmd>();
+builder.Services.AddScoped<IModulosService, ModulosService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -222,6 +244,7 @@ app.UseSwaggerUI();
 app.UseCors("NuevaPolitica");
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
