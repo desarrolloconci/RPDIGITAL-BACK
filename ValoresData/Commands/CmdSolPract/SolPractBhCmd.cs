@@ -672,7 +672,10 @@ DROP TABLE #Claves;";
         }
         public async Task<IEnumerable<SolPractBhRpDto>> GetSolPractRpPdfAsync(string IDPEDIDO, string metodo)
         {
-            var query= await _context.V_BEALTH_SOLPRAC.Where(e => e.IDPEDIDO == IDPEDIDO && e.METODOOK == metodo).ToListAsync();
+            // METODOOK no sirve para filtrar aca: para "Atencion integral"/"Integral 2" la vista lo
+            // calcula distinto por cada fila (ESTUDIO + NOMBREBATERIA), nunca matchea el metodo que
+            // manda el front (item.metodopractica). METODOPRACTICA si es estable por pedido.
+            var query= await _context.V_BEALTH_SOLPRAC.Where(e => e.IDPEDIDO == IDPEDIDO && e.METODOPRACTICA == metodo).ToListAsync();
 
             string firma = null;
             if (query.Any())
