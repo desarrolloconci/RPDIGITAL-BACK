@@ -7,6 +7,7 @@ using Serilog.Events;
 using System.Text;
 using ValoresData.Commands;
 using ValoresData.Commands.CdmRp;
+using ValoresData.Commands.CmdHistoriasClinicas;
 using ValoresData.Commands.CmdIndicaciones;
 using ValoresData.Commands.CmdInterfaces;
 using ValoresData.Commands.CmdLaboratorio;
@@ -127,6 +128,8 @@ builder.Services.AddScoped<IRpBorradosService, RpBorradosService>();
 builder.Services.AddScoped<IRpBorradosCmd, RpBorradosCmd>();
 builder.Services.AddScoped<IMotivoBorradoPedidoService, MotivoBorradoPedidoService>();
 builder.Services.AddScoped<IMotivoBorradoPedidoCmd, MotivoBorradoPedidoCmd>();
+builder.Services.AddScoped<ITicketSoporteService, TicketSoporteService>();
+builder.Services.AddScoped<ITicketSoporteCmd, TicketSoporteCmd>();
 builder.Services.AddScoped<IPrestadoresRpService, PrestadoresRpSerivce>();
 builder.Services.AddScoped<IPrestadoresRpCmd, PrestadoresRpCmd>();
 builder.Services.AddScoped<IRelEspeServiciosServices, RelEspServiciosServices>();
@@ -157,6 +160,8 @@ builder.Services.AddScoped<IUsuariosCmd, UsuariosCmd>();
 builder.Services.AddScoped<IUsusarioService, UsuariosService>();
 builder.Services.AddScoped<ILogsService, LogsService>();
 builder.Services.AddScoped<IGeclisaConnectionFactory, GeclisaConnectionFactory>();
+builder.Services.AddScoped<IHistoriasClinicasCmd, HistoriasClinicasCmd>();
+builder.Services.AddScoped<IHistoriasClinicasService, HistoriasClinicasService>();
 builder.Services.AddScoped<ILaboratorioCmd, LaboratorioCmd>();
 builder.Services.AddScoped<ILaboratorioService, LaboratorioService>();
 builder.Services.AddScoped<IIndicacionesCmd, IndicacionesCmd>();
@@ -204,7 +209,9 @@ builder.Services.AddCors(options =>
             "http://192.168.9.5:3007",
             "http://192.168.9.5:3013",
             "http://192.168.9.2:3005",
-            "http://localhost:85")
+            "http://localhost:85",
+            "http://localhost:3005",
+            "http://localhost:3100")
         .AllowAnyHeader()
         .AllowAnyMethod();
     });

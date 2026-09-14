@@ -81,6 +81,7 @@ namespace ValoresData.Context
         public DbSet<SegMetodoModel> V_SEG_METODO { get; set; }
         public DbSet<SegObservacionesModel> SEG_OBSERVACIONES { get; set; }
         public DbSet<LogCambioRpModel> SEG_LOG_CAMBIOS_RP { get; set; }
+        public DbSet<TicketSoporteModel> TICKETS_SOPORTE { get; set; }
         public DbSet<UltimoPedidoPorDniModel> V_UltimoPedidoPorDni { get; set; }
         public DbSet<AgTurnoEstudioModel> AG_TURNO_ESTUDIO { get; set; }
         // Sin tabla/vista propia: solo se consulta via FromSqlRaw (CompletarPracticaAsync en
